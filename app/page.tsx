@@ -1,65 +1,129 @@
-import Image from "next/image";
+"use client";
+import { useCombatPhase } from "./hooks/useCombatPhase";
+import { useCombatEngine } from "./hooks/useCombatEngine";
+import { useCombatAnimations } from "./hooks/useCombatAnimations";
+import { useCombatActions } from "./hooks/useCombatActions";
+import { useCombatController } from "./hooks/useCombatController";
+import { TimingBar } from "./components/TimingBar";
+import { HpBar } from "./components/HpBar";
+import { ATTACK_WINDOW, PARRY_WINDOW } from "./lib/combatConfig";
+import { RESULT_LABELS } from "./lib/resultOutput";
+import { SpriteIdle } from "./components/SpriteIdle";
+import { SpriteAttack } from "./components/SpriteAttack";
+import { SpriteHurt } from "./components/SpriteHurt";
+import { SpriteParry } from "./components/SpriteParry";
+import { SpriteCounterAttack } from "./components/SpriteCounterAttack";
+import VictoryScreen from "./components/VictoryScreen";
+import { DefeatScreen } from "./components/DefeatScreen";
+import { useCallback } from "react";
 
 export default function Home() {
+  const { phase, result, setResult, transition } = useCombatPhase();
+  const engine = useCombatEngine(transition);
+  const anim = useCombatAnimations();
+
+  const {
+    progress,
+    start,
+    stop,
+    reset,
+    releaseAt,
+    setReleaseAt,
+    onHitFrame,
+    handlePointerDown,
+    handlePointerUp,
+    handleTap,
+  } = useCombatActions({
+    phase,
+    engine,
+    anim,
+    setResult,
+    onParryTimeout: (p) => {
+      const { event, result } = engine.onParry(p);
+      setResult(result);
+      if (event.type === "HURT") anim.triggerHurt();
+      else if (event.type === "PARRY") anim.triggerParry();
+    },
+  });
+
+  const resetUI = useCallback(() => setReleaseAt(null), [setReleaseAt]);
+  useCombatController({ phase, start, stop, reset, resetUI });
+
+  const isParry = phase === "enemy_attack";
+  const timingWindow = isParry ? PARRY_WINDOW : ATTACK_WINDOW;
+
+  const label = result
+    ? isParry
+      ? RESULT_LABELS.parry[result]
+      : RESULT_LABELS.attack[result]
+    : null;
+
+  if (phase === "victory") return <VictoryScreen />;
+  if (phase === "defeat") return <DefeatScreen />;
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="flex items-center justify-center min-h-screen bg-zinc-950 text-white p-4">
+      <div className="w-full max-w-105 space-y-8">
+        <HpBar hp={engine.enemyHp} max={100} colorClass="bg-red-500" />
+        <HpBar hp={engine.playerHp} max={100} colorClass="bg-emerald-500" />
+
+        {label && (
+          <p className="text-center text-2xl font-bold text-yellow-400">
+            {label}
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+        )}
+
+        {anim.animState === "hurt" ? (
+          <SpriteHurt
+            trigger={anim.hurtTrigger}
+            onComplete={() => anim.dispatchAnim({ type: "RESET" })}
+          />
+        ) : anim.animState === "attack" ? (
+          <SpriteAttack
+            trigger={anim.attackTrigger}
+            onHitFrame={onHitFrame}
+            onComplete={() => anim.dispatchAnim({ type: "RESET" })}
+          />
+        ) : anim.animState === "parry" ? (
+          <SpriteParry
+            trigger={anim.parryTrigger}
+            onComplete={() => anim.dispatchAnim({ type: "RESET" })}
+          />
+        ) : anim.animState === "counter" ? (
+          <SpriteCounterAttack
+            trigger={anim.counterTrigger}
+            onHitFrame={onHitFrame}
+            onComplete={() => anim.dispatchAnim({ type: "RESET" })}
+          />
+        ) : (
+          <SpriteIdle />
+        )}
+
+        <TimingBar
+          progress={progress}
+          perfect={timingWindow.perfect}
+          good={timingWindow.good}
+          releaseAt={releaseAt}
+          result={result}
+        />
+
+        <button
+          className="w-full py-6 text-xl font-semibold bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 rounded-2xl transition-all active:scale-[0.985] select-none"
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          onClick={handleTap}
+        >
+          {phase === "player_attack"
+            ? "Hold to Charge Attack"
+            : "Tap to Parry!"}
+        </button>
+
+        <p className="text-center text-zinc-400 text-sm px-4">
+          {phase === "player_attack"
+            ? "Hold button. Release in the marked area"
+            : "Tap exactly when the bar is in the white zone"}
+        </p>
+      </div>
+    </main>
   );
 }
