@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 
 const FRAME_WIDTH = 100;
 const FRAME_HEIGHT = 100;
-const FRAME_COUNT = 6;
+const FRAME_COUNT = 8;
 const SCALE = 4;
 
-export function SpriteIdle() {
+export function SpriteWalk() {
   const [frame, setFrame] = useState(0);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export function SpriteIdle() {
       style={{
         width: FRAME_WIDTH * SCALE,
         height: FRAME_HEIGHT * SCALE,
-        backgroundImage: "url('/Soldier-Idle.png')",
+        backgroundImage: "url('/Soldier-Walk.png')",
         backgroundRepeat: "no-repeat",
         backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * SCALE}px ${
           FRAME_HEIGHT * SCALE

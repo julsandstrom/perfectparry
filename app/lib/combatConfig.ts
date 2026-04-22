@@ -9,9 +9,9 @@ export const PARRY_WINDOW = {
 } as const;
 
 export const ATTACK_META = {
-  durationMs: 1500,
+  durationMs: 800,
 };
 
 export const PARRY_META = {
-  durationMs: 1000,
+  durationMs: 800,
 };

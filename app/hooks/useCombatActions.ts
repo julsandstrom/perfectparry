@@ -58,6 +58,7 @@ export function useCombatActions({
   }, [phase, release, anim]);
 
   const handleTap = useCallback(() => {
+    if (phase === "resolving") return;
     if (phase === "enemy_attack") {
       const snapshot = release();
       setReleaseAt(snapshot);

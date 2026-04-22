@@ -5,13 +5,17 @@ import {
   TransitionFn,
   ParryOutcome,
   TimingGrade,
+  ResolveFn,
 } from "../types";
 
 const ENEMY_BASE_HP = 100;
 const PLAYER_BASE_HP = 100;
 const ENEMY_ATTACK_DAMAGE = 40;
 
-export function useCombatEngine(transition: TransitionFn): CombatEngineState {
+export function useCombatEngine(
+  transition: TransitionFn,
+  resolve: ResolveFn,
+): CombatEngineState {
   const [playerHp, setPlayerHp] = useState(PLAYER_BASE_HP);
   const [enemyHp, setEnemyHp] = useState(ENEMY_BASE_HP);
 
@@ -28,14 +32,15 @@ export function useCombatEngine(transition: TransitionFn): CombatEngineState {
       }
       return next;
     });
-    if (!gameOver) transition("enemy_attack", 450);
+    if (!gameOver) resolve("enemy_attack");
     return result;
   };
 
   const onParry = (progress: number): ParryOutcome => {
     const { result, blocked, counter } = evaluateParry(progress);
     if (blocked) {
-      transition(counter > 0 ? "counter" : "player_attack", 150);
+      if (counter > 0) resolve("counter", 600);
+      else resolve("player_attack");
       return { event: { type: counter > 0 ? "PARRY" : "NONE" }, result };
     }
     let gameOver = false;
@@ -48,7 +53,7 @@ export function useCombatEngine(transition: TransitionFn): CombatEngineState {
       }
       return next;
     });
-    if (!gameOver) transition("player_attack", 450);
+    if (!gameOver) resolve("player_attack");
     return { event: { type: "HURT" }, result };
   };
 
@@ -65,9 +70,8 @@ export function useCombatEngine(transition: TransitionFn): CombatEngineState {
       }
       return next;
     });
-    if (!gameOver) transition("player_attack", 450);
+    if (!gameOver) resolve("player_attack");
     return result;
   };
-
   return { playerHp, enemyHp, onAttack, onParry, onCounter };
 }

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 const FRAME_WIDTH = 100;
 const FRAME_HEIGHT = 100;
 const FRAME_COUNT = 4;
-const SCALE = 8;
+const SCALE = 4;
 const HURT_DURATION_MS = 400;
 
 export function SpriteHurt({
@@ -58,16 +58,14 @@ export function SpriteHurt({
     >
       <div
         style={{
-          position: "absolute",
-          left: 0,
-          top: 0,
-          width: FRAME_WIDTH * FRAME_COUNT * SCALE,
+          width: FRAME_WIDTH * SCALE,
           height: FRAME_HEIGHT * SCALE,
-          backgroundImage: `url('/Soldier-Hurt.png')`,
+          backgroundImage: "url('/Soldier-Hurt.png')",
           backgroundRepeat: "no-repeat",
           backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * SCALE}px ${FRAME_HEIGHT * SCALE}px`,
           backgroundPosition: `-${frame * FRAME_WIDTH * SCALE}px 0px`,
           imageRendering: "pixelated",
+          marginTop: 170,
         }}
       />
     </div>

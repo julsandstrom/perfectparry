@@ -16,10 +16,11 @@ import { SpriteCounterAttack } from "./components/SpriteCounterAttack";
 import VictoryScreen from "./components/VictoryScreen";
 import { DefeatScreen } from "./components/DefeatScreen";
 import { useCallback } from "react";
+import { SpriteEnemyIdle } from "./components/SpriteEnemyIdle";
 
 export default function Home() {
-  const { phase, result, setResult, transition } = useCombatPhase();
-  const engine = useCombatEngine(transition);
+  const { phase, result, setResult, transition, resolve } = useCombatPhase();
+  const engine = useCombatEngine(transition, resolve);
   const anim = useCombatAnimations();
 
   const {
@@ -62,43 +63,50 @@ export default function Home() {
   if (phase === "defeat") return <DefeatScreen />;
 
   return (
-    <main className="flex items-center justify-center min-h-screen bg-zinc-950 text-white p-4">
+    <main className="flex  min-h-screen bg-zinc-950 text-white ">
       <div className="w-full max-w-105 space-y-8">
-        <HpBar hp={engine.enemyHp} max={100} colorClass="bg-red-500" />
+        <HpBar hp={engine.enemyHp} max={100} colorClass="bg-red-500" />{" "}
         <HpBar hp={engine.playerHp} max={100} colorClass="bg-emerald-500" />
-
         {label && (
           <p className="text-center text-2xl font-bold text-yellow-400">
             {label}
           </p>
         )}
-
-        {anim.animState === "hurt" ? (
-          <SpriteHurt
-            trigger={anim.hurtTrigger}
-            onComplete={() => anim.dispatchAnim({ type: "RESET" })}
-          />
-        ) : anim.animState === "attack" ? (
-          <SpriteAttack
-            trigger={anim.attackTrigger}
-            onHitFrame={onHitFrame}
-            onComplete={() => anim.dispatchAnim({ type: "RESET" })}
-          />
-        ) : anim.animState === "parry" ? (
-          <SpriteParry
-            trigger={anim.parryTrigger}
-            onComplete={() => anim.dispatchAnim({ type: "RESET" })}
-          />
-        ) : anim.animState === "counter" ? (
-          <SpriteCounterAttack
-            trigger={anim.counterTrigger}
-            onHitFrame={onHitFrame}
-            onComplete={() => anim.dispatchAnim({ type: "RESET" })}
-          />
-        ) : (
-          <SpriteIdle />
-        )}
-
+        <div className="relative w-full h-[200px] overflow-hidden">
+          {/* Player - anchored bottom-left */}
+          <div className="absolute bottom-0 -left-35 ">
+            {anim.animState === "attack" ? (
+              <SpriteAttack
+                trigger={anim.attackTrigger}
+                onHitFrame={onHitFrame}
+                onComplete={() => anim.dispatchAnim({ type: "RESET" })}
+              />
+            ) : anim.animState === "hurt" ? (
+              <SpriteHurt
+                trigger={anim.hurtTrigger}
+                onComplete={() => anim.dispatchAnim({ type: "RESET" })}
+              />
+            ) : anim.animState === "parry" ? (
+              <SpriteParry
+                trigger={anim.parryTrigger}
+                onComplete={() => anim.dispatchAnim({ type: "RESET" })}
+              />
+            ) : anim.animState === "counter" ? (
+              <SpriteCounterAttack
+                trigger={anim.counterTrigger}
+                onHitFrame={onHitFrame}
+                onComplete={() => anim.dispatchAnim({ type: "RESET" })}
+              />
+            ) : (
+              <div>
+                <SpriteIdle /> <div className="absolute bottom-0 right-0"></div>
+              </div>
+            )}
+          </div>
+          <div className="absolute bottom-0 right-0">
+            <SpriteEnemyIdle />
+          </div>
+        </div>
         <TimingBar
           progress={progress}
           perfect={timingWindow.perfect}
@@ -106,23 +114,19 @@ export default function Home() {
           releaseAt={releaseAt}
           result={result}
         />
-
-        <button
-          className="w-full py-6 text-xl font-semibold bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 rounded-2xl transition-all active:scale-[0.985] select-none"
-          onPointerDown={handlePointerDown}
-          onPointerUp={handlePointerUp}
-          onClick={handleTap}
-        >
-          {phase === "player_attack"
-            ? "Hold to Charge Attack"
-            : "Tap to Parry!"}
-        </button>
-
-        <p className="text-center text-zinc-400 text-sm px-4">
-          {phase === "player_attack"
-            ? "Hold button. Release in the marked area"
-            : "Tap exactly when the bar is in the white zone"}
-        </p>
+        <div className="flex-1">
+          {" "}
+          <button
+            className="w-full py-6 text-xl font-semibold bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 rounded-2xl transition-all active:scale-[0.985] select-none"
+            onPointerDown={handlePointerDown}
+            onPointerUp={handlePointerUp}
+            onClick={handleTap}
+          >
+            {phase === "player_attack"
+              ? "Hold to Charge Attack"
+              : "Tap to Parry!"}
+          </button>
+        </div>
       </div>
     </main>
   );

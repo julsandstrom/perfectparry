@@ -14,5 +14,14 @@ export function useCombatPhase() {
     else go();
   }, []);
 
-  return { phase, result, setResult, transition };
+  // Use this instead of transition when you want a freeze frame first
+  const resolve = useCallback((to: Phase, holdMs = 800) => {
+    setPhase("resolving");
+    setTimeout(() => {
+      setResult(null);
+      setPhase(to);
+    }, holdMs);
+  }, []);
+
+  return { phase, result, setResult, transition, resolve };
 }

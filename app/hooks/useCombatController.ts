@@ -8,17 +8,17 @@ export function useCombatController({
   reset,
   resetUI,
 }: CombatControllerOptions) {
+  //
+
+  //
   useEffect(() => {
     resetUI();
-
     if (phase === "enemy_attack" || phase === "counter") {
       reset();
       const timer = setTimeout(() => start(), 50);
       return () => clearTimeout(timer);
     }
-
     stop();
-
-    if (phase === "player_attack") reset();
+    if (phase === "player_attack" || phase === "resolving") reset();
   }, [phase, resetUI, reset, start, stop]);
 }

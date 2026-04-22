@@ -1,9 +1,12 @@
 export type Phase =
   | "player_attack"
+  | "resolving"
   | "enemy_attack"
   | "counter"
   | "victory"
   | "defeat";
+
+export type ResolveFn = (to: Phase, holdMs?: number) => void;
 
 export type TimingGrade = "perfect" | "good" | "miss";
 

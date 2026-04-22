@@ -7,7 +7,7 @@ const FRAME_HEIGHT = 100;
 const FRAME_COUNT = 6;
 const ATTACK_DURATION_MS = 500;
 const HIT_FRAME = 3;
-
+const SCALE = 4;
 export function SpriteParry({
   trigger,
   onHitFrame,
@@ -61,15 +61,16 @@ export function SpriteParry({
   return (
     <div
       style={{
-        width: FRAME_WIDTH * 8,
-        height: FRAME_HEIGHT * 8,
+        width: FRAME_WIDTH * SCALE,
+        height: FRAME_HEIGHT * SCALE,
         backgroundImage: "url('/Soldier-Parry01.png')",
         backgroundRepeat: "no-repeat",
-        backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * 8}px ${
-          FRAME_HEIGHT * 8
+        backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * SCALE}px ${
+          FRAME_HEIGHT * SCALE
         }px`,
-        backgroundPosition: `-${frame * FRAME_WIDTH * 8}px 0px`,
+        backgroundPosition: `-${frame * FRAME_WIDTH * SCALE}px 0px`,
         imageRendering: "pixelated",
+        marginBottom: -170,
       }}
     />
   );

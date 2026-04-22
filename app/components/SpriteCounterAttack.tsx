@@ -7,7 +7,7 @@ const FRAME_HEIGHT = 100;
 const FRAME_COUNT = 9;
 const ATTACK_DURATION_MS = 500;
 const HIT_FRAME = 3;
-
+const SCALE = 4;
 export function SpriteCounterAttack({
   trigger,
   onHitFrame,
@@ -60,14 +60,15 @@ export function SpriteCounterAttack({
   return (
     <div
       style={{
-        width: FRAME_WIDTH * 8,
-        height: FRAME_HEIGHT * 8,
+        width: FRAME_WIDTH * SCALE,
+        height: FRAME_HEIGHT * SCALE,
         backgroundImage: "url('/Soldier-Counter-Attack.png')",
         backgroundRepeat: "no-repeat",
-        backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * 8}px ${
-          FRAME_HEIGHT * 8
+        backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * SCALE}px ${
+          FRAME_HEIGHT * SCALE
         }px`,
-        backgroundPosition: `-${frame * FRAME_WIDTH * 8}px 0px`,
+        marginBottom: -170,
+        backgroundPosition: `-${frame * FRAME_WIDTH * SCALE}px 0px`,
         imageRendering: "pixelated",
       }}
     />
