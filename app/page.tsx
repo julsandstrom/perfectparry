@@ -17,6 +17,7 @@ import VictoryScreen from "./components/VictoryScreen";
 import { DefeatScreen } from "./components/DefeatScreen";
 import { useCallback } from "react";
 import { SpriteEnemyIdle } from "./components/SpriteEnemyIdle";
+import { SpriteWalk } from "./components/SpriteWalk";
 
 export default function Home() {
   const { phase, result, setResult, transition, resolve } = useCombatPhase();
@@ -59,6 +60,11 @@ export default function Home() {
       : RESULT_LABELS.attack[result]
     : null;
 
+  const playerLeft =
+    anim.animState === "walk_in" || anim.animState === "attack"
+      ? "-left-8"
+      : "-left-35";
+
   if (phase === "victory") return <VictoryScreen />;
   if (phase === "defeat") return <DefeatScreen />;
 
@@ -74,11 +80,24 @@ export default function Home() {
         )}
         <div className="relative w-full h-[200px] overflow-hidden">
           {/* Player - anchored bottom-left */}
-          <div className="absolute bottom-0 -left-35 ">
-            {anim.animState === "attack" ? (
+          <div
+            className={`absolute bottom-0 transition-left duration-300 ${playerLeft}`}
+          >
+            {anim.animState === "walk_in" ? (
+              <SpriteWalk
+                trigger={anim.walkInTrigger}
+                onComplete={() => anim.triggerAttack()}
+              />
+            ) : anim.animState === "attack" ? (
               <SpriteAttack
                 trigger={anim.attackTrigger}
                 onHitFrame={onHitFrame}
+                onComplete={() => anim.triggerWalkOut()}
+              />
+            ) : anim.animState === "walk_out" ? (
+              <SpriteWalk
+                trigger={anim.walkOutTrigger}
+                flipped={true}
                 onComplete={() => anim.dispatchAnim({ type: "RESET" })}
               />
             ) : anim.animState === "hurt" ? (
@@ -98,9 +117,7 @@ export default function Home() {
                 onComplete={() => anim.dispatchAnim({ type: "RESET" })}
               />
             ) : (
-              <div>
-                <SpriteIdle /> <div className="absolute bottom-0 right-0"></div>
-              </div>
+              <SpriteIdle />
             )}
           </div>
           <div className="absolute bottom-0 right-0">

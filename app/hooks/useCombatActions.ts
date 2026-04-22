@@ -53,7 +53,7 @@ export function useCombatActions({
   const handlePointerUp = useCallback(() => {
     if (phase === "player_attack") {
       pendingAttack.current = release();
-      anim.triggerAttack();
+      anim.triggerWalkIn();
     }
   }, [phase, release, anim]);
 

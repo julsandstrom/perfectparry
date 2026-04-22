@@ -11,6 +11,10 @@ function animReducer(state: AnimState, action: AnimAction): AnimState {
       return "parry";
     case "COUNTER":
       return "counter";
+    case "WALK_IN":
+      return "walk_in";
+    case "WALK_OUT":
+      return "walk_out";
     case "RESET":
       return "idle";
     default:
@@ -21,6 +25,8 @@ function animReducer(state: AnimState, action: AnimAction): AnimState {
 export function useCombatAnimations() {
   const [animState, dispatchAnim] = useReducer(animReducer, "idle");
   const [attackTrigger, setAttackTrigger] = useState(0);
+  const [walkInTrigger, setWalkInTrigger] = useState(0);
+  const [walkOutTrigger, setWalkOutTrigger] = useState(0);
   const [hurtTrigger, setHurtTrigger] = useState(0);
   const [parryTrigger, setParryTrigger] = useState(0);
   const [counterTrigger, setCounterTrigger] = useState(0);
@@ -31,9 +37,18 @@ export function useCombatAnimations() {
     return () => clearTimeout(t);
   }, [animState]);
 
+  const triggerWalkIn = useCallback(() => {
+    setWalkInTrigger((t) => t + 1);
+    dispatchAnim({ type: "WALK_IN" });
+  }, []);
+
   const triggerAttack = useCallback(() => {
     setAttackTrigger((t) => t + 1);
     dispatchAnim({ type: "ATTACK" });
+  }, []);
+  const triggerWalkOut = useCallback(() => {
+    setWalkOutTrigger((t) => t + 1);
+    dispatchAnim({ type: "WALK_OUT" });
   }, []);
 
   const triggerHurt = useCallback(() => {
@@ -53,14 +68,18 @@ export function useCombatAnimations() {
 
   return {
     animState,
+    dispatchAnim,
     attackTrigger,
+    walkInTrigger,
+    walkOutTrigger,
     hurtTrigger,
     parryTrigger,
     counterTrigger,
+    triggerWalkIn,
     triggerAttack,
+    triggerWalkOut,
     triggerHurt,
     triggerParry,
-    dispatchAnim,
     triggerCounter,
   };
 }

@@ -39,15 +39,23 @@ export interface CombatEngineState {
 }
 
 // --- Animations ---
-export type AnimState = "idle" | "attack" | "hurt" | "parry" | "counter";
+export type AnimState =
+  | "idle"
+  | "walk_in"
+  | "attack"
+  | "walk_out"
+  | "hurt"
+  | "parry"
+  | "counter";
 
 export type AnimAction =
   | { type: "ATTACK" }
+  | { type: "WALK_IN" }
+  | { type: "WALK_OUT" }
   | { type: "HURT" }
   | { type: "PARRY" }
   | { type: "COUNTER" }
   | { type: "RESET" };
-
 // --- Controller ---
 export interface CombatControllerOptions {
   phase: Phase;
@@ -63,6 +71,8 @@ export interface CombatActionsOptions {
   engine: CombatEngineState;
   anim: {
     triggerAttack: () => void;
+    triggerWalkIn: () => void;
+    triggerWalkOut: () => void;
     triggerHurt: () => void;
     triggerParry: () => void;
     triggerCounter: () => void;
