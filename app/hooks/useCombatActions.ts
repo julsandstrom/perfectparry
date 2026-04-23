@@ -64,8 +64,11 @@ export function useCombatActions({
       setReleaseAt(snapshot);
       const { event, result } = engine.onParry(snapshot);
       setResult(result);
-      if (event.type === "HURT") anim.triggerHurt();
-      else if (event.type === "PARRY") anim.triggerParry();
+      if (event.type === "HURT") anim.triggerEnemyAttack("hurt");
+      else if (event.type === "PARRY") {
+        anim.triggerParry();
+        anim.triggerEnemyAttack("parry");
+      }
     }
     if (phase === "counter") {
       const snapshot = release();

@@ -5,8 +5,8 @@ const FRAME_WIDTH = 96;
 const FRAME_HEIGHT = 64;
 const FRAME_COUNT = 9;
 const SCALE = 2;
-const ATTACK_DURATION_MS = 500;
-const HIT_FRAME = 3;
+const ATTACK_DURATION_MS = 400;
+const HIT_FRAME = 7;
 
 export function SpriteEnemyAttack({
   trigger,
@@ -55,11 +55,12 @@ export function SpriteEnemyAttack({
       style={{
         width: FRAME_WIDTH * SCALE,
         height: FRAME_HEIGHT * SCALE,
-        backgroundImage: "url('/Soldier-Attack01.png')",
+        backgroundImage: "url('/Skeleton_01_White_Attack01.png')",
         backgroundRepeat: "no-repeat",
         backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * SCALE}px ${FRAME_HEIGHT * SCALE}px`,
         backgroundPosition: `-${frame * FRAME_WIDTH * SCALE}px 0px`,
         imageRendering: "pixelated",
+        transform: "scaleX(-1)",
       }}
     />
   );

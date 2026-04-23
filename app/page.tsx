@@ -18,6 +18,8 @@ import { DefeatScreen } from "./components/DefeatScreen";
 import { useCallback } from "react";
 import { SpriteEnemyIdle } from "./components/SpriteEnemyIdle";
 import { SpriteWalk } from "./components/SpriteWalk";
+import { SpriteEnemyAttack } from "./components/SpriteEnemyAttack";
+import { SpriteEnemyWalk } from "./components/SpriteEnemyWalk";
 
 export default function Home() {
   const { phase, result, setResult, transition, resolve } = useCombatPhase();
@@ -43,8 +45,8 @@ export default function Home() {
     onParryTimeout: (p) => {
       const { event, result } = engine.onParry(p);
       setResult(result);
-      if (event.type === "HURT") anim.triggerHurt();
-      else if (event.type === "PARRY") anim.triggerParry();
+      if (event.type === "HURT") anim.triggerEnemyAttack("hurt");
+      else if (event.type === "PARRY") anim.triggerEnemyAttack("parry");
     },
   });
 
@@ -64,6 +66,11 @@ export default function Home() {
     anim.animState === "walk_in" || anim.animState === "attack"
       ? "-left-8"
       : "-left-35";
+
+  const enemyRight =
+    anim.animState === "enemy_walk_in" || anim.animState === "enemy_attack"
+      ? "right-16"
+      : "right-0";
 
   if (phase === "victory") return <VictoryScreen />;
   if (phase === "defeat") return <DefeatScreen />;
@@ -120,8 +127,35 @@ export default function Home() {
               <SpriteIdle />
             )}
           </div>
-          <div className="absolute bottom-0 right-0">
-            <SpriteEnemyIdle />
+
+          <div
+            className={`absolute z-50 bottom-0 transition-all duration-400 ${enemyRight}`}
+          >
+            {anim.animState === "enemy_walk_in" ? (
+              <SpriteEnemyWalk
+                trigger={anim.enemyWalkInTrigger}
+                onComplete={() => anim.triggerEnemyAttackAnim()}
+              />
+            ) : anim.animState === "enemy_attack" ? (
+              <SpriteEnemyAttack
+                trigger={anim.enemyAttackTrigger}
+                onComplete={() => {
+                  anim.triggerEnemyWalkOut();
+                }}
+              />
+            ) : anim.animState === "enemy_walk_out" ? (
+              <SpriteEnemyWalk
+                trigger={anim.enemyWalkOutTrigger}
+                flipped={true}
+                onComplete={() => {
+                  if (anim.pendingEnemyResult.current === "hurt")
+                    anim.triggerHurt();
+                  else anim.dispatchAnim({ type: "RESET" });
+                }}
+              />
+            ) : (
+              <SpriteEnemyIdle />
+            )}
           </div>
         </div>
         <TimingBar

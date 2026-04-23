@@ -44,6 +44,9 @@ export type AnimState =
   | "walk_in"
   | "attack"
   | "walk_out"
+  | "enemy_attack"
+  | "enemy_walk_in"
+  | "enemy_walk_out"
   | "hurt"
   | "parry"
   | "counter";
@@ -52,6 +55,9 @@ export type AnimAction =
   | { type: "ATTACK" }
   | { type: "WALK_IN" }
   | { type: "WALK_OUT" }
+  | { type: "ENEMY_WALK_IN" }
+  | { type: "ENEMY_ATTACK" }
+  | { type: "ENEMY_WALK_OUT" }
   | { type: "HURT" }
   | { type: "PARRY" }
   | { type: "COUNTER" }
@@ -76,6 +82,7 @@ export interface CombatActionsOptions {
     triggerHurt: () => void;
     triggerParry: () => void;
     triggerCounter: () => void;
+    triggerEnemyAttack: (outcome: "parry" | "hurt") => void;
   };
   setResult: (r: TimingGrade | null) => void;
   onParryTimeout: (progress: number) => void;
