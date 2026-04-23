@@ -20,11 +20,20 @@ import { SpriteEnemyIdle } from "./components/SpriteEnemyIdle";
 import { SpriteWalk } from "./components/SpriteWalk";
 import { SpriteEnemyAttack } from "./components/SpriteEnemyAttack";
 import { SpriteEnemyWalk } from "./components/SpriteEnemyWalk";
+import { SpriteEnemyHurt } from "./components/SpriteEnemyHurt";
+import { SpriteEnemyDie } from "./components/SpriteEnemyDie";
+import { SpriteDie } from "./components/SpriteDie";
 
 export default function Home() {
   const { phase, result, setResult, transition, resolve } = useCombatPhase();
-  const engine = useCombatEngine(transition, resolve);
   const anim = useCombatAnimations();
+
+  const engine = useCombatEngine(
+    transition,
+    resolve,
+    () => anim.triggerEnemyDie(),
+    () => anim.triggerDie(),
+  );
 
   const {
     progress,
@@ -63,23 +72,32 @@ export default function Home() {
     : null;
 
   const playerLeft =
-    anim.animState === "walk_in" || anim.animState === "attack"
+    anim.playerAnim === "walk_in" || anim.playerAnim === "attack"
       ? "-left-8"
       : "-left-35";
 
   const enemyRight =
-    anim.animState === "enemy_walk_in" || anim.animState === "enemy_attack"
+    anim.enemyAnim === "walk_in" || anim.enemyAnim === "attack"
       ? "right-16"
       : "right-0";
 
-  if (phase === "victory") return <VictoryScreen />;
-  if (phase === "defeat") return <DefeatScreen />;
+  // if (phase === "victory") return <VictoryScreen />;
+  // if (phase === "defeat") return <DefeatScreen />;
 
   return (
-    <main className="flex  min-h-screen bg-zinc-950 text-white ">
+    <main className="relative flex min-h-screen bg-zinc-950 text-white ">
+      {phase === "victory" && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60">
+          <VictoryScreen />
+        </div>
+      )}
+
+      {phase === "defeat" && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60">
+          <DefeatScreen />
+        </div>
+      )}
       <div className="w-full max-w-105 space-y-8">
-        <HpBar hp={engine.enemyHp} max={100} colorClass="bg-red-500" />{" "}
-        <HpBar hp={engine.playerHp} max={100} colorClass="bg-emerald-500" />
         {label && (
           <p className="text-center text-2xl font-bold text-yellow-400">
             {label}
@@ -90,38 +108,43 @@ export default function Home() {
           <div
             className={`absolute bottom-0 transition-left duration-300 ${playerLeft}`}
           >
-            {anim.animState === "walk_in" ? (
+            {anim.playerAnim === "walk_in" ? (
               <SpriteWalk
                 trigger={anim.walkInTrigger}
                 onComplete={() => anim.triggerAttack()}
               />
-            ) : anim.animState === "attack" ? (
+            ) : anim.playerAnim === "attack" ? (
               <SpriteAttack
                 trigger={anim.attackTrigger}
                 onHitFrame={onHitFrame}
                 onComplete={() => anim.triggerWalkOut()}
               />
-            ) : anim.animState === "walk_out" ? (
+            ) : anim.playerAnim === "walk_out" ? (
               <SpriteWalk
                 trigger={anim.walkOutTrigger}
                 flipped={true}
-                onComplete={() => anim.dispatchAnim({ type: "RESET" })}
+                onComplete={() => anim.resetPlayer()}
               />
-            ) : anim.animState === "hurt" ? (
+            ) : anim.playerAnim === "hurt" ? (
               <SpriteHurt
                 trigger={anim.hurtTrigger}
-                onComplete={() => anim.dispatchAnim({ type: "RESET" })}
+                onComplete={() => anim.resetPlayer()}
               />
-            ) : anim.animState === "parry" ? (
+            ) : anim.playerAnim === "parry" ? (
               <SpriteParry
                 trigger={anim.parryTrigger}
-                onComplete={() => anim.dispatchAnim({ type: "RESET" })}
+                onComplete={() => anim.resetPlayer()}
               />
-            ) : anim.animState === "counter" ? (
+            ) : anim.playerAnim === "counter" ? (
               <SpriteCounterAttack
                 trigger={anim.counterTrigger}
                 onHitFrame={onHitFrame}
-                onComplete={() => anim.dispatchAnim({ type: "RESET" })}
+                onComplete={() => anim.resetPlayer()}
+              />
+            ) : anim.playerAnim === "die" ? (
+              <SpriteDie
+                trigger={anim.playerDieTrigger}
+                onComplete={() => transition("defeat")}
               />
             ) : (
               <SpriteIdle />
@@ -129,34 +152,50 @@ export default function Home() {
           </div>
 
           <div
-            className={`absolute z-50 bottom-0 transition-all duration-400 ${enemyRight}`}
+            className={`absolute z-50 bottom-0 transition-all duration-300 ${enemyRight}`}
           >
-            {anim.animState === "enemy_walk_in" ? (
+            {anim.enemyAnim === "walk_in" ? (
               <SpriteEnemyWalk
                 trigger={anim.enemyWalkInTrigger}
                 onComplete={() => anim.triggerEnemyAttackAnim()}
               />
-            ) : anim.animState === "enemy_attack" ? (
+            ) : anim.enemyAnim === "attack" ? (
               <SpriteEnemyAttack
                 trigger={anim.enemyAttackTrigger}
-                onComplete={() => {
-                  anim.triggerEnemyWalkOut();
-                }}
+                onComplete={() => anim.triggerEnemyWalkOut()}
               />
-            ) : anim.animState === "enemy_walk_out" ? (
+            ) : anim.enemyAnim === "walk_out" ? (
               <SpriteEnemyWalk
                 trigger={anim.enemyWalkOutTrigger}
                 flipped={true}
                 onComplete={() => {
-                  if (anim.pendingEnemyResult.current === "hurt")
+                  if (
+                    anim.pendingEnemyResult.current === "hurt" &&
+                    anim.playerAnim !== "die"
+                  )
                     anim.triggerHurt();
-                  else anim.dispatchAnim({ type: "RESET" });
+                  anim.resetEnemy();
                 }}
+              />
+            ) : anim.enemyAnim === "hurt" ? (
+              <SpriteEnemyHurt
+                trigger={anim.enemyHurtTrigger}
+                onComplete={() => anim.resetEnemy()}
+              />
+            ) : anim.enemyAnim === "die" ? (
+              <SpriteEnemyDie
+                trigger={anim.enemyDieTrigger}
+                onComplete={() => transition("victory")}
               />
             ) : (
               <SpriteEnemyIdle />
             )}
           </div>
+        </div>
+        <div className="w-full grid grid-cols-2 gap-10 mb-32">
+          {" "}
+          <HpBar hp={engine.playerHp} max={100} colorClass="bg-emerald-500" />
+          <HpBar hp={engine.enemyHp} max={100} colorClass="bg-red-500" />{" "}
         </div>
         <TimingBar
           progress={progress}
@@ -168,7 +207,7 @@ export default function Home() {
         <div className="flex-1">
           {" "}
           <button
-            className="w-full py-6 text-xl font-semibold bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 rounded-2xl transition-all active:scale-[0.985] select-none"
+            className="w-full py-6 text-xl font-semibold bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 rounded-xs transition-all active:scale-[0.985] select-none"
             onPointerDown={handlePointerDown}
             onPointerUp={handlePointerUp}
             onClick={handleTap}

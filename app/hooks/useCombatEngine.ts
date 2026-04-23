@@ -15,6 +15,8 @@ const ENEMY_ATTACK_DAMAGE = 40;
 export function useCombatEngine(
   transition: TransitionFn,
   resolve: ResolveFn,
+  onEnemyDie: () => void,
+  onPlayerDie: () => void,
 ): CombatEngineState {
   const [playerHp, setPlayerHp] = useState(PLAYER_BASE_HP);
   const [enemyHp, setEnemyHp] = useState(ENEMY_BASE_HP);
@@ -27,7 +29,7 @@ export function useCombatEngine(
       const next = applyDamage(prev, damage);
       if (next <= 0) {
         gameOver = true;
-        transition("victory");
+        onEnemyDie();
         return 0;
       }
       return next;
@@ -48,7 +50,7 @@ export function useCombatEngine(
       const next = applyDamage(prev, ENEMY_ATTACK_DAMAGE);
       if (next <= 0) {
         gameOver = true;
-        transition("defeat");
+        onPlayerDie();
         return 0;
       }
       return next;
@@ -65,7 +67,7 @@ export function useCombatEngine(
       const next = applyDamage(prev, damage);
       if (next <= 0) {
         gameOver = true;
-        transition("victory");
+        onEnemyDie();
         return 0;
       }
       return next;

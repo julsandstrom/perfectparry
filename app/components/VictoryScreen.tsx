@@ -1,10 +1,13 @@
 const VictoryScreen = () => {
   return (
     <div>
-      <p className="text-4xl">You win!</p>
+      <p className="text-4xl mb-10">You win!</p>
 
-      <button>Restart</button>
-      <button>Home</button>
+      <div className="flex gap-5">
+        {" "}
+        <button>Restart</button>
+        <button>Home</button>
+      </div>
     </div>
   );
 };

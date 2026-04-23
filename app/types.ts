@@ -39,28 +39,40 @@ export interface CombatEngineState {
 }
 
 // --- Animations ---
-export type AnimState =
+export type PlayerAnimState =
   | "idle"
   | "walk_in"
   | "attack"
   | "walk_out"
-  | "enemy_attack"
-  | "enemy_walk_in"
-  | "enemy_walk_out"
   | "hurt"
   | "parry"
-  | "counter";
+  | "counter"
+  | "die";
 
-export type AnimAction =
-  | { type: "ATTACK" }
+export type EnemyAnimState =
+  | "idle"
+  | "walk_in"
+  | "attack"
+  | "hurt"
+  | "walk_out"
+  | "die";
+
+export type PlayerAnimAction =
   | { type: "WALK_IN" }
+  | { type: "ATTACK" }
   | { type: "WALK_OUT" }
-  | { type: "ENEMY_WALK_IN" }
-  | { type: "ENEMY_ATTACK" }
-  | { type: "ENEMY_WALK_OUT" }
   | { type: "HURT" }
   | { type: "PARRY" }
   | { type: "COUNTER" }
+  | { type: "DIE" }
+  | { type: "RESET" };
+
+export type EnemyAnimAction =
+  | { type: "WALK_IN" }
+  | { type: "ATTACK" }
+  | { type: "HURT" }
+  | { type: "WALK_OUT" }
+  | { type: "DIE" }
   | { type: "RESET" };
 // --- Controller ---
 export interface CombatControllerOptions {
@@ -76,13 +88,16 @@ export interface CombatActionsOptions {
   phase: Phase;
   engine: CombatEngineState;
   anim: {
-    triggerAttack: () => void;
     triggerWalkIn: () => void;
+    triggerAttack: () => void;
     triggerWalkOut: () => void;
     triggerHurt: () => void;
+    triggerEnemyHurt: () => void;
     triggerParry: () => void;
     triggerCounter: () => void;
     triggerEnemyAttack: (outcome: "parry" | "hurt") => void;
+    resetPlayer: () => void;
+    resetEnemy: () => void;
   };
   setResult: (r: TimingGrade | null) => void;
   onParryTimeout: (progress: number) => void;

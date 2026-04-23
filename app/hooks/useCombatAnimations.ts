@@ -1,26 +1,53 @@
-import { useCallback, useEffect, useReducer, useRef, useState } from "react";
-import { AnimState, AnimAction } from "../types";
+import { useCallback, useReducer, useRef, useState } from "react";
+import {
+  PlayerAnimState,
+  PlayerAnimAction,
+  EnemyAnimState,
+  EnemyAnimAction,
+} from "../types";
 
-function animReducer(state: AnimState, action: AnimAction): AnimState {
+function playerReducer(
+  state: PlayerAnimState,
+  action: PlayerAnimAction,
+): PlayerAnimState {
   switch (action.type) {
+    case "WALK_IN":
+      return "walk_in";
     case "ATTACK":
       return "attack";
-    case "ENEMY_ATTACK":
-      return "enemy_attack";
+    case "WALK_OUT":
+      return "walk_out";
     case "HURT":
       return "hurt";
     case "PARRY":
       return "parry";
     case "COUNTER":
       return "counter";
+    case "DIE":
+      return "die";
+    case "RESET":
+    case "RESET":
+      return "idle";
+    default:
+      return state;
+  }
+}
+
+function enemyReducer(
+  state: EnemyAnimState,
+  action: EnemyAnimAction,
+): EnemyAnimState {
+  switch (action.type) {
     case "WALK_IN":
       return "walk_in";
+    case "ATTACK":
+      return "attack";
+    case "HURT":
+      return "hurt";
     case "WALK_OUT":
       return "walk_out";
-    case "ENEMY_WALK_IN":
-      return "enemy_walk_in";
-    case "ENEMY_WALK_OUT":
-      return "enemy_walk_out";
+    case "DIE":
+      return "die";
     case "RESET":
       return "idle";
     default:
@@ -29,94 +56,111 @@ function animReducer(state: AnimState, action: AnimAction): AnimState {
 }
 
 export function useCombatAnimations() {
-  const [animState, dispatchAnim] = useReducer(animReducer, "idle");
+  const [playerAnim, dispatchPlayer] = useReducer(playerReducer, "idle");
+  const [enemyAnim, dispatchEnemy] = useReducer(enemyReducer, "idle");
+
+  // --- triggers ---
   const [attackTrigger, setAttackTrigger] = useState(0);
   const [walkInTrigger, setWalkInTrigger] = useState(0);
   const [walkOutTrigger, setWalkOutTrigger] = useState(0);
   const [hurtTrigger, setHurtTrigger] = useState(0);
+  const [enemyHurtTrigger, setEnemyHurtTrigger] = useState(0);
   const [parryTrigger, setParryTrigger] = useState(0);
   const [counterTrigger, setCounterTrigger] = useState(0);
   const [enemyAttackTrigger, setEnemyAttackTrigger] = useState(0);
-  const pendingEnemyResult = useRef<"parry" | "hurt">("hurt");
   const [enemyWalkInTrigger, setEnemyWalkInTrigger] = useState(0);
   const [enemyWalkOutTrigger, setEnemyWalkOutTrigger] = useState(0);
+  const [enemyDieTrigger, setEnemyDieTrigger] = useState(0);
+  const [playerDieTrigger, setPlayerDieTrigger] = useState(0);
 
-  useEffect(() => {
-    if (animState === "hurt" || animState === "parry") return;
-    const t = setTimeout(() => dispatchAnim({ type: "RESET" }), 400);
-    return () => clearTimeout(t);
-  }, [animState]);
+  const pendingEnemyResult = useRef<"parry" | "hurt">("hurt");
 
-  const triggerEnemyWalkIn = useCallback(() => {
-    setEnemyWalkInTrigger((t) => t + 1);
-    dispatchAnim({ type: "ENEMY_WALK_IN" });
-  }, []);
-
-  const triggerEnemyWalkOut = useCallback(() => {
-    setEnemyWalkOutTrigger((t) => t + 1);
-    dispatchAnim({ type: "ENEMY_WALK_OUT" });
-  }, []);
-
+  // --- player triggers ---
   const triggerWalkIn = useCallback(() => {
     setWalkInTrigger((t) => t + 1);
-    dispatchAnim({ type: "WALK_IN" });
+    dispatchPlayer({ type: "WALK_IN" });
   }, []);
 
   const triggerAttack = useCallback(() => {
     setAttackTrigger((t) => t + 1);
-    dispatchAnim({ type: "ATTACK" });
+    dispatchPlayer({ type: "ATTACK" });
   }, []);
+
   const triggerWalkOut = useCallback(() => {
     setWalkOutTrigger((t) => t + 1);
-    dispatchAnim({ type: "WALK_OUT" });
+    dispatchPlayer({ type: "WALK_OUT" });
   }, []);
 
   const triggerHurt = useCallback(() => {
     setHurtTrigger((t) => t + 1);
-    dispatchAnim({ type: "HURT" });
+    dispatchPlayer({ type: "HURT" });
   }, []);
 
   const triggerParry = useCallback(() => {
     setParryTrigger((t) => t + 1);
-    dispatchAnim({ type: "PARRY" });
+    dispatchPlayer({ type: "PARRY" });
   }, []);
 
   const triggerCounter = useCallback(() => {
     setCounterTrigger((t) => t + 1);
-    dispatchAnim({ type: "COUNTER" });
+    dispatchPlayer({ type: "COUNTER" });
+  }, []);
+  const triggerDie = useCallback(() => {
+    setPlayerDieTrigger((t) => t + 1);
+    dispatchPlayer({ type: "DIE" });
   }, []);
 
-  // const triggerEnemyAttack = useCallback((outcome: "parry" | "hurt") => {
-  //   pendingEnemyResult.current = outcome;
-  //   setEnemyAttackTrigger((t) => t + 1);
-  //   dispatchAnim({ type: "ENEMY_ATTACK" });
-  //   if (outcome === "parry") {
-  //     setTimeout(() => {
-  //       setParryTrigger((t) => t + 1);
-  //       dispatchAnim({ type: "PARRY" });
-  //     }, 300);
-  //   }
-  // }, []);
-  const triggerEnemyAttack = useCallback((outcome: "parry" | "hurt") => {
-    pendingEnemyResult.current = outcome;
+  const resetPlayer = useCallback(() => {
+    dispatchPlayer({ type: "RESET" });
+  }, []);
+
+  // --- enemy triggers ---
+  const triggerEnemyWalkIn = useCallback(() => {
     setEnemyWalkInTrigger((t) => t + 1);
-    dispatchAnim({ type: "ENEMY_WALK_IN" });
-    if (outcome === "parry") {
-      setTimeout(() => {
-        setParryTrigger((t) => t + 1);
-        dispatchAnim({ type: "PARRY" });
-      }, 560);
-    }
+    dispatchEnemy({ type: "WALK_IN" });
   }, []);
 
   const triggerEnemyAttackAnim = useCallback(() => {
     setEnemyAttackTrigger((t) => t + 1);
-    dispatchAnim({ type: "ENEMY_ATTACK" });
+    dispatchEnemy({ type: "ATTACK" });
+  }, []);
+
+  const triggerEnemyHurt = useCallback(() => {
+    setEnemyHurtTrigger((t) => t + 1);
+    dispatchEnemy({ type: "HURT" });
+  }, []);
+
+  const triggerEnemyWalkOut = useCallback(() => {
+    setEnemyWalkOutTrigger((t) => t + 1);
+    dispatchEnemy({ type: "WALK_OUT" });
+  }, []);
+
+  const triggerEnemyDie = useCallback(() => {
+    setEnemyDieTrigger((t) => t + 1);
+    dispatchEnemy({ type: "DIE" });
+  }, []);
+
+  const resetEnemy = useCallback(() => {
+    dispatchEnemy({ type: "RESET" });
+  }, []);
+
+  const triggerEnemyAttack = useCallback((outcome: "parry" | "hurt") => {
+    pendingEnemyResult.current = outcome;
+    setEnemyWalkInTrigger((t) => t + 1);
+    dispatchEnemy({ type: "WALK_IN" });
+    if (outcome === "parry") {
+      setTimeout(() => {
+        setParryTrigger((t) => t + 1);
+        dispatchPlayer({ type: "PARRY" });
+      }, 0);
+    }
   }, []);
 
   return {
-    animState,
-    dispatchAnim,
+    // states
+    playerAnim,
+    enemyAnim,
+    // player
     attackTrigger,
     walkInTrigger,
     walkOutTrigger,
@@ -129,13 +173,22 @@ export function useCombatAnimations() {
     triggerHurt,
     triggerParry,
     triggerCounter,
-    triggerEnemyAttack,
+    triggerDie,
+    playerDieTrigger,
+    resetPlayer,
+    // enemy
     enemyAttackTrigger,
-    pendingEnemyResult,
     enemyWalkInTrigger,
     enemyWalkOutTrigger,
+    pendingEnemyResult,
+    triggerEnemyAttack,
+    triggerEnemyHurt,
+    enemyHurtTrigger,
+    triggerEnemyAttackAnim,
     triggerEnemyWalkIn,
     triggerEnemyWalkOut,
-    triggerEnemyAttackAnim,
+    triggerEnemyDie,
+    enemyDieTrigger,
+    resetEnemy,
   };
 }

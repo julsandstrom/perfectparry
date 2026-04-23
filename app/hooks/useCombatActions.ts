@@ -38,13 +38,15 @@ export function useCombatActions({
       const result = engine.onAttack(pendingAttack.current);
       setResult(result);
       pendingAttack.current = null;
+      anim.triggerEnemyHurt();
     }
     if (pendingCounter.current !== null) {
       const result = engine.onCounter(pendingCounter.current);
       setResult(result);
       pendingCounter.current = null;
+      anim.triggerEnemyHurt();
     }
-  }, [phase, engine, setResult]);
+  }, [phase, engine, setResult, anim]);
 
   const handlePointerDown = useCallback(() => {
     if (phase === "player_attack") start();
@@ -66,7 +68,6 @@ export function useCombatActions({
       setResult(result);
       if (event.type === "HURT") anim.triggerEnemyAttack("hurt");
       else if (event.type === "PARRY") {
-        anim.triggerParry();
         anim.triggerEnemyAttack("parry");
       }
     }
