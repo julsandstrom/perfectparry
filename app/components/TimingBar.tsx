@@ -30,10 +30,10 @@ export const TimingBar = ({
   const visualProgress = releaseAt ?? progress;
 
   return (
-    <div className="relative h-10 w-full rounded-xs bg-[#CFCFCF] overflow-hidden">
+    <div className="relative h-16 w-full rounded-xs bg-[#CFCFCF] overflow-hidden">
       {/* GOOD ZONE (outer, darker) */}
       <div
-        className="absolute top-0 bottom-0 bg-red-600/40"
+        className="absolute top-0 bottom-0 bg-[#4EBA55]"
         style={{
           left: `${gMin * 100}%`,
           width: `${(gMax - gMin) * 100}%`,
@@ -51,7 +51,7 @@ export const TimingBar = ({
 
       {/* Fill */}
       <div
-        className="absolute top-0 bottom-0 left-0 bg-blue-500"
+        className="absolute top-0 bottom-0 left-0 bg-[#151515]"
         style={{ width: `${visualProgress * 100}%` }}
       />
 

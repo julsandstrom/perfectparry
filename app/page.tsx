@@ -95,12 +95,19 @@ export default function Home() {
         </div>
       )}
       <div className="flex flex-col flex-1 max-w-105 w-full mx-auto">
-        <div className="flex flex-col w-full max-w-105 flex-1">
+        {" "}
+        <h1 className="pt-2  font-girassol text-base text-[#FF1A1A] ">
+          Perfect Parry
+        </h1>
+        <span className="font-extralight text-xs text-white/70">
+          precision beats power
+        </span>
+        <div className="flex flex-col w-full max-w-105 flex-1 font-girassol mt-20">
           {label && (
-            <p className="text-center text-2xl font-bold text-yellow-400">
+            <p className="text-center text-4xl font-bold text-yellow-400">
               {label}
             </p>
-          )}
+          )}{" "}
           <div className="relative w-full h-50 overflow-hidden">
             {/* Player - anchored bottom-left */}
             <div
@@ -207,8 +214,7 @@ export default function Home() {
             result={result}
           />
         </div>
-        <div className="flex-1 flex items-end pb-[env(safe-area-inset-bottom)]">
-          {" "}
+        <div className="flex-1 font-girassol flex flex-col items-end pb-[env(safe-area-inset-bottom)]">
           <button
             className="w-full py-6 text-xl text-black font-semibold bg-[#CFCFCF] hover:bg-zinc-700 active:bg-zinc-600 rounded-xs transition-all active:scale-[0.985] select-none"
             onPointerDown={handlePointerDown}
@@ -217,7 +223,11 @@ export default function Home() {
           >
             {phase === "player_attack"
               ? "Hold to Charge Attack"
-              : "Tap to Parry!"}
+              : phase === "enemy_attack"
+                ? "Tap to parry"
+                : phase === "counter"
+                  ? "Tap to counter"
+                  : "Get ready to defend!"}
           </button>
         </div>
       </div>

@@ -4,6 +4,19 @@ import { Phase, ResolveFn, TimingGrade, TransitionFn } from "../types";
 export function useCombatPhase() {
   const [phase, setPhase] = useState<Phase>("player_attack");
   const [result, setResult] = useState<TimingGrade | null>(null);
+  const [resultContext, setResultContext] = useState<"attack" | "parry" | null>(
+    null,
+  );
+
+  const setAttackResult = (r: TimingGrade | null) => {
+    setResultContext(r ? "attack" : null);
+    setResult(r);
+  };
+
+  const setParryResult = (r: TimingGrade | null) => {
+    setResultContext(r ? "parry" : null);
+    setResult(r);
+  };
 
   const transition = useCallback<TransitionFn>((to, delayMs = 0) => {
     const go = () => {
@@ -31,5 +44,14 @@ export function useCombatPhase() {
     });
   }, []);
 
-  return { phase, result, setResult, transition, resolve };
+  return {
+    phase,
+    result,
+    setResult,
+    transition,
+    resolve,
+    setParryResult,
+    setAttackResult,
+    resultContext,
+  };
 }
