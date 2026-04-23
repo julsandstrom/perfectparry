@@ -81,11 +81,8 @@ export default function Home() {
       ? "right-16"
       : "right-0";
 
-  // if (phase === "victory") return <VictoryScreen />;
-  // if (phase === "defeat") return <DefeatScreen />;
-
   return (
-    <main className="relative flex min-h-screen bg-zinc-950 text-white ">
+    <main className="relative flex flex-col min-h-screen bg-[#151515] text-white">
       {phase === "victory" && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60">
           <VictoryScreen />
@@ -97,117 +94,123 @@ export default function Home() {
           <DefeatScreen />
         </div>
       )}
-      <div className="w-full max-w-105 space-y-8">
-        {label && (
-          <p className="text-center text-2xl font-bold text-yellow-400">
-            {label}
-          </p>
-        )}
-        <div className="relative w-full h-[200px] overflow-hidden">
-          {/* Player - anchored bottom-left */}
-          <div
-            className={`absolute bottom-0 transition-left duration-300 ${playerLeft}`}
-          >
-            {anim.playerAnim === "walk_in" ? (
-              <SpriteWalk
-                trigger={anim.walkInTrigger}
-                onComplete={() => anim.triggerAttack()}
-              />
-            ) : anim.playerAnim === "attack" ? (
-              <SpriteAttack
-                trigger={anim.attackTrigger}
-                onHitFrame={onHitFrame}
-                onComplete={() => anim.triggerWalkOut()}
-              />
-            ) : anim.playerAnim === "walk_out" ? (
-              <SpriteWalk
-                trigger={anim.walkOutTrigger}
-                flipped={true}
-                onComplete={() => anim.resetPlayer()}
-              />
-            ) : anim.playerAnim === "hurt" ? (
-              <SpriteHurt
-                trigger={anim.hurtTrigger}
-                onComplete={() => anim.resetPlayer()}
-              />
-            ) : anim.playerAnim === "parry" ? (
-              <SpriteParry
-                trigger={anim.parryTrigger}
-                onComplete={() => anim.resetPlayer()}
-              />
-            ) : anim.playerAnim === "counter" ? (
-              <SpriteCounterAttack
-                trigger={anim.counterTrigger}
-                onHitFrame={onHitFrame}
-                onComplete={() => anim.resetPlayer()}
-              />
-            ) : anim.playerAnim === "die" ? (
-              <SpriteDie
-                trigger={anim.playerDieTrigger}
-                onComplete={() => transition("defeat")}
-              />
-            ) : (
-              <SpriteIdle />
-            )}
-          </div>
+      <div className="flex flex-col flex-1 max-w-105 w-full mx-auto">
+        <div className="flex flex-col w-full max-w-105 flex-1">
+          {label && (
+            <p className="text-center text-2xl font-bold text-yellow-400">
+              {label}
+            </p>
+          )}
+          <div className="relative w-full h-50 overflow-hidden">
+            {/* Player - anchored bottom-left */}
+            <div
+              className={`absolute bottom-0 transition-left duration-300 ${playerLeft}`}
+            >
+              {anim.playerAnim === "walk_in" ? (
+                <SpriteWalk
+                  trigger={anim.walkInTrigger}
+                  onComplete={() => anim.triggerAttack()}
+                />
+              ) : anim.playerAnim === "attack" ? (
+                <SpriteAttack
+                  trigger={anim.attackTrigger}
+                  onHitFrame={onHitFrame}
+                  onComplete={() => anim.triggerWalkOut()}
+                />
+              ) : anim.playerAnim === "walk_out" ? (
+                <SpriteWalk
+                  trigger={anim.walkOutTrigger}
+                  flipped={true}
+                  onComplete={() => anim.resetPlayer()}
+                />
+              ) : anim.playerAnim === "hurt" ? (
+                <SpriteHurt
+                  trigger={anim.hurtTrigger}
+                  onComplete={() => anim.resetPlayer()}
+                />
+              ) : anim.playerAnim === "parry" ? (
+                <SpriteParry
+                  trigger={anim.parryTrigger}
+                  onComplete={() => anim.resetPlayer()}
+                />
+              ) : anim.playerAnim === "counter" ? (
+                <SpriteCounterAttack
+                  trigger={anim.counterTrigger}
+                  onHitFrame={onHitFrame}
+                  onComplete={() => anim.resetPlayer()}
+                />
+              ) : anim.playerAnim === "die" ? (
+                <SpriteDie
+                  trigger={anim.playerDieTrigger}
+                  onComplete={() => transition("defeat")}
+                />
+              ) : (
+                <SpriteIdle />
+              )}
+            </div>
 
-          <div
-            className={`absolute z-50 bottom-0 transition-all duration-300 ${enemyRight}`}
-          >
-            {anim.enemyAnim === "walk_in" ? (
-              <SpriteEnemyWalk
-                trigger={anim.enemyWalkInTrigger}
-                onComplete={() => anim.triggerEnemyAttackAnim()}
-              />
-            ) : anim.enemyAnim === "attack" ? (
-              <SpriteEnemyAttack
-                trigger={anim.enemyAttackTrigger}
-                onComplete={() => anim.triggerEnemyWalkOut()}
-              />
-            ) : anim.enemyAnim === "walk_out" ? (
-              <SpriteEnemyWalk
-                trigger={anim.enemyWalkOutTrigger}
-                flipped={true}
-                onComplete={() => {
-                  if (
-                    anim.pendingEnemyResult.current === "hurt" &&
-                    anim.playerAnim !== "die"
-                  )
-                    anim.triggerHurt();
-                  anim.resetEnemy();
-                }}
-              />
-            ) : anim.enemyAnim === "hurt" ? (
-              <SpriteEnemyHurt
-                trigger={anim.enemyHurtTrigger}
-                onComplete={() => anim.resetEnemy()}
-              />
-            ) : anim.enemyAnim === "die" ? (
-              <SpriteEnemyDie
-                trigger={anim.enemyDieTrigger}
-                onComplete={() => transition("victory")}
-              />
-            ) : (
-              <SpriteEnemyIdle />
-            )}
+            <div
+              className={`absolute z-50 bottom-0 transition-all duration-300 ${enemyRight}`}
+            >
+              {anim.enemyAnim === "walk_in" ? (
+                <SpriteEnemyWalk
+                  trigger={anim.enemyWalkInTrigger}
+                  onComplete={() => anim.triggerEnemyAttackAnim()}
+                />
+              ) : anim.enemyAnim === "attack" ? (
+                <SpriteEnemyAttack
+                  trigger={anim.enemyAttackTrigger}
+                  onComplete={() => anim.triggerEnemyWalkOut()}
+                />
+              ) : anim.enemyAnim === "walk_out" ? (
+                <SpriteEnemyWalk
+                  trigger={anim.enemyWalkOutTrigger}
+                  flipped={true}
+                  onComplete={() => {
+                    if (
+                      anim.pendingEnemyResult.current === "hurt" &&
+                      anim.playerAnim !== "die"
+                    )
+                      anim.triggerHurt();
+                    anim.resetEnemy();
+                  }}
+                />
+              ) : anim.enemyAnim === "hurt" ? (
+                <SpriteEnemyHurt
+                  trigger={anim.enemyHurtTrigger}
+                  onComplete={() => anim.resetEnemy()}
+                />
+              ) : anim.enemyAnim === "die" ? (
+                <SpriteEnemyDie
+                  trigger={anim.enemyDieTrigger}
+                  onComplete={() => transition("victory")}
+                />
+              ) : (
+                <SpriteEnemyIdle />
+              )}
+            </div>
           </div>
+          <div className="w-full grid grid-cols-2 gap-20 mb-32">
+            {" "}
+            <HpBar hp={engine.playerHp} max={100} colorClass="bg-[#FF1A1A]" />
+            <HpBar
+              hp={engine.enemyHp}
+              max={100}
+              colorClass="bg-[#FF1A1A]"
+            />{" "}
+          </div>
+          <TimingBar
+            progress={progress}
+            perfect={timingWindow.perfect}
+            good={timingWindow.good}
+            releaseAt={releaseAt}
+            result={result}
+          />
         </div>
-        <div className="w-full grid grid-cols-2 gap-10 mb-32">
-          {" "}
-          <HpBar hp={engine.playerHp} max={100} colorClass="bg-emerald-500" />
-          <HpBar hp={engine.enemyHp} max={100} colorClass="bg-red-500" />{" "}
-        </div>
-        <TimingBar
-          progress={progress}
-          perfect={timingWindow.perfect}
-          good={timingWindow.good}
-          releaseAt={releaseAt}
-          result={result}
-        />
-        <div className="flex-1">
+        <div className="flex-1 flex items-end pb-[env(safe-area-inset-bottom)]">
           {" "}
           <button
-            className="w-full py-6 text-xl font-semibold bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 rounded-xs transition-all active:scale-[0.985] select-none"
+            className="w-full py-6 text-xl text-black font-semibold bg-[#CFCFCF] hover:bg-zinc-700 active:bg-zinc-600 rounded-xs transition-all active:scale-[0.985] select-none"
             onPointerDown={handlePointerDown}
             onPointerUp={handlePointerUp}
             onClick={handleTap}

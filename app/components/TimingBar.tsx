@@ -30,10 +30,10 @@ export const TimingBar = ({
   const visualProgress = releaseAt ?? progress;
 
   return (
-    <div className="relative h-6 w-full rounded-xs bg-gray-800 overflow-hidden">
+    <div className="relative h-10 w-full rounded-xs bg-[#CFCFCF] overflow-hidden">
       {/* GOOD ZONE (outer, darker) */}
       <div
-        className="absolute top-0 bottom-0 bg-yellow-500/40"
+        className="absolute top-0 bottom-0 bg-red-600/40"
         style={{
           left: `${gMin * 100}%`,
           width: `${(gMax - gMin) * 100}%`,
@@ -42,7 +42,7 @@ export const TimingBar = ({
 
       {/* PERFECT ZONE (inner, lighter) */}
       <div
-        className="absolute top-0 bottom-0 bg-green-400/70"
+        className="absolute top-0 bottom-0 bg-green-700/70"
         style={{
           left: `${pMin * 100}%`,
           width: `${(pMax - pMin) * 100}%`,

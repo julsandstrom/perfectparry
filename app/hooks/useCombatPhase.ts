@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { Phase, TimingGrade, TransitionFn } from "../types";
+import { Phase, ResolveFn, TimingGrade, TransitionFn } from "../types";
 
 export function useCombatPhase() {
   const [phase, setPhase] = useState<Phase>("player_attack");
@@ -7,20 +7,28 @@ export function useCombatPhase() {
 
   const transition = useCallback<TransitionFn>((to, delayMs = 0) => {
     const go = () => {
-      setResult(null);
-      setPhase(to);
+      setPhase((current) => {
+        if (current === "victory" || current === "defeat") return current; // ← locked
+        setResult(null);
+        return to;
+      });
     };
     if (delayMs > 0) setTimeout(go, delayMs);
     else go();
   }, []);
 
-  // Use this instead of transition when you want a freeze frame first
-  const resolve = useCallback((to: Phase, holdMs = 800) => {
-    setPhase("resolving");
-    setTimeout(() => {
-      setResult(null);
-      setPhase(to);
-    }, holdMs);
+  const resolve = useCallback<ResolveFn>((to, holdMs = 800) => {
+    setPhase((current) => {
+      if (current === "victory" || current === "defeat") return current; // ← locked
+      setTimeout(() => {
+        setPhase((c) => {
+          if (c === "victory" || c === "defeat") return c;
+          setResult(null);
+          return to;
+        });
+      }, holdMs);
+      return "resolving";
+    });
   }, []);
 
   return { phase, result, setResult, transition, resolve };

@@ -45,16 +45,26 @@ export function useCombatEngine(
       else resolve("player_attack");
       return { event: { type: counter > 0 ? "PARRY" : "NONE" }, result };
     }
+
     let gameOver = false;
+
+    setTimeout(() => {
+      setPlayerHp((prev) => {
+        const next = applyDamage(prev, ENEMY_ATTACK_DAMAGE);
+        if (next <= 0) return 0;
+        return next;
+      });
+    }, 500);
+
     setPlayerHp((prev) => {
       const next = applyDamage(prev, ENEMY_ATTACK_DAMAGE);
       if (next <= 0) {
         gameOver = true;
         onPlayerDie();
-        return 0;
       }
-      return next;
+      return prev;
     });
+
     if (!gameOver) resolve("player_attack");
     return { event: { type: "HURT" }, result };
   };
