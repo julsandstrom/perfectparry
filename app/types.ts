@@ -20,7 +20,12 @@ export interface TimingConfig {
   arrow: [number, number];
 }
 
-// --- Combat Events ---
+export interface CombatDisplayEvent {
+  label: string;
+  playerDamage: number | null;
+  enemyDamage: number | null;
+}
+
 export type CombatEvent =
   | { type: "ATTACK" }
   | { type: "HURT" }
@@ -35,14 +40,12 @@ export interface ParryOutcome {
 export interface CombatEngineState {
   playerHp: number;
   enemyHp: number;
-  lastPlayerDamage: number | null;
-  lastEnemyDamage: number | null;
   onAttack: (progress: number) => TimingGrade;
+  lastCombatEvent: CombatDisplayEvent | null;
   onParry: (progress: number) => ParryOutcome;
   onCounter: (progress: number) => TimingGrade;
 }
 
-// --- Animations ---
 export type PlayerAnimState =
   | "idle"
   | "walk_in"

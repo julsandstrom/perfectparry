@@ -72,11 +72,7 @@ export default function Home() {
   useCombatController({ phase, start, stop, reset, resetUI });
 
   const isParry = phase === "enemy_attack";
-  const label =
-    result && resultContext
-      ? (RESULT_LABELS[resultContext] as Record<string, string>)[result]
-      : null;
-
+  const { lastCombatEvent } = engine;
   const playerLeft =
     anim.playerAnim === "walk_in" || anim.playerAnim === "attack"
       ? "left-5"
@@ -109,11 +105,6 @@ export default function Home() {
           Precision beats power
         </span>
         <div className="flex flex-col w-full max-w-105 flex-1  mt-20">
-          {/* {label && (
-            <p className="text-center text-4xl font-bold text-yellow-400">
-              {label}
-            </p>
-          )} */}
           <div className="flex justify-center pb-2 pt-20 font-girassol text-5xl text-[#FFEBDA]">
             {phase === "player_attack" ? (
               <span>Attack</span>
@@ -126,30 +117,22 @@ export default function Home() {
             )}
           </div>
           <div className="relative w-full h-50 ">
-            {engine.lastEnemyDamage && (
+            {lastCombatEvent && (
               <span
                 className="absolute z-50 text-3xl font-bold flex flex-col items-center"
-                style={{ bottom: "100px", left: "50px" }}
+                style={{
+                  bottom: "100px",
+                  right: lastCombatEvent.playerDamage ? undefined : "50px",
+                  left: lastCombatEvent.playerDamage ? "50px" : undefined,
+                }}
               >
-                {label && (
-                  <p className="text-center text-base font-bold text-yellow-400">
-                    {label}
-                  </p>
-                )}
-                -{engine.lastEnemyDamage}
-              </span>
-            )}
-            {engine.lastPlayerDamage && (
-              <span
-                className="absolute z-50 text-3xl font-bold flex flex-col items-center"
-                style={{ bottom: "100px", right: "50px" }}
-              >
-                {label && (
-                  <p className="text-center text-base font-bold text-yellow-400">
-                    {label}
-                  </p>
-                )}
-                -{engine.lastPlayerDamage}
+                <p className="text-center text-base font-bold text-yellow-400">
+                  {lastCombatEvent.label}
+                </p>
+                {lastCombatEvent.enemyDamage &&
+                  `-${lastCombatEvent.enemyDamage}`}
+                {lastCombatEvent.playerDamage &&
+                  `-${lastCombatEvent.playerDamage}`}
               </span>
             )}
             <div

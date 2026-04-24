@@ -6,7 +6,9 @@ import {
   ParryOutcome,
   TimingGrade,
   ResolveFn,
+  CombatDisplayEvent,
 } from "../types";
+import { RESULT_LABELS } from "../lib/resultOutput";
 
 const ENEMY_BASE_HP = 40;
 const PLAYER_BASE_HP = 20;
@@ -20,18 +22,17 @@ export function useCombatEngine(
 ): CombatEngineState {
   const [playerHp, setPlayerHp] = useState(PLAYER_BASE_HP);
   const [enemyHp, setEnemyHp] = useState(ENEMY_BASE_HP);
-  const [lastPlayerDamage, setLastPlayerDamage] = useState<number | null>(null);
-  const [lastEnemyDamage, setLastEnemyDamage] = useState<number | null>(null);
 
-  const clearDamage = () => {
-    setLastPlayerDamage(null);
-    setLastEnemyDamage(null);
-  };
+  const [lastCombatEvent, setLastCombatEvent] =
+    useState<CombatDisplayEvent | null>(null);
 
   const onAttack = (progress: number): TimingGrade => {
-    clearDamage();
     const { result, damage } = evaluateAttack(progress);
-    setLastPlayerDamage(damage > 0 ? damage : null);
+    setLastCombatEvent({
+      label: (RESULT_LABELS.attack as Record<string, string>)[result],
+      enemyDamage: damage > 0 ? damage : null,
+      playerDamage: null,
+    });
     let gameOver = false;
     setEnemyHp((prev) => {
       if (prev <= 0) return 0;
@@ -48,13 +49,13 @@ export function useCombatEngine(
   };
 
   const onParry = (progress: number): ParryOutcome => {
-    clearDamage();
     const { result, blocked, counter } = evaluateParry(progress);
-    if (!blocked) {
-      setLastEnemyDamage(ENEMY_ATTACK_DAMAGE);
-    } else {
-      setLastEnemyDamage(null);
-    }
+    setLastCombatEvent({
+      label: (RESULT_LABELS.parry as Record<string, string>)[result],
+      enemyDamage: null,
+      playerDamage: !blocked ? ENEMY_ATTACK_DAMAGE : null,
+    });
+
     if (blocked) {
       if (counter > 0) resolve("counter", 600);
       else resolve("player_attack");
@@ -85,9 +86,13 @@ export function useCombatEngine(
   };
 
   const onCounter = (progress: number): TimingGrade => {
-    clearDamage();
     const { result, damage } = evaluateAttack(progress);
-    setLastPlayerDamage(damage > 0 ? damage : null);
+    setLastCombatEvent({
+      label: (RESULT_LABELS.attack as Record<string, string>)[result],
+      enemyDamage: damage > 0 ? damage : null,
+      playerDamage: null,
+    });
+
     let gameOver = false;
     setEnemyHp((prev) => {
       if (prev <= 0) return 0;
@@ -108,7 +113,6 @@ export function useCombatEngine(
     onAttack,
     onParry,
     onCounter,
-    lastPlayerDamage,
-    lastEnemyDamage,
+    lastCombatEvent,
   };
 }
