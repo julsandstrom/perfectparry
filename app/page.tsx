@@ -4,25 +4,25 @@ import { useCombatEngine } from "./hooks/useCombatEngine";
 import { useCombatAnimations } from "./hooks/useCombatAnimations";
 import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatController } from "./hooks/useCombatController";
-import { TimingBar } from "./components/TimingBar";
-import { HpBar } from "./components/HpBar";
+import { TimingBar } from "./components/ui/TimingBar";
+import { HpBar } from "./components/ui/HpBar";
 import { ATTACK_WINDOW, PARRY_WINDOW } from "./lib/combatConfig";
 import { RESULT_LABELS } from "./lib/resultOutput";
-import { SpriteIdle } from "./components/SpriteIdle";
-import { SpriteAttack } from "./components/SpriteAttack";
-import { SpriteHurt } from "./components/SpriteHurt";
-import { SpriteParry } from "./components/SpriteParry";
-import { SpriteCounterAttack } from "./components/SpriteCounterAttack";
-import VictoryScreen from "./components/VictoryScreen";
-import { DefeatScreen } from "./components/DefeatScreen";
+import { SpriteIdle } from "./components/Sprites/player/SpriteIdle";
+import { SpriteAttack } from "./components/Sprites/player/SpriteAttack";
+import { SpriteHurt } from "./components/Sprites/player/SpriteHurt";
+import { SpriteParry } from "./components/Sprites/player/SpriteParry";
+import { SpriteCounterAttack } from "./components/Sprites/player/SpriteCounterAttack";
+import VictoryScreen from "./components/gameOver/VictoryScreen";
+import { DefeatScreen } from "./components/gameOver/DefeatScreen";
 import { useCallback } from "react";
-import { SpriteEnemyIdle } from "./components/SpriteEnemyIdle";
-import { SpriteWalk } from "./components/SpriteWalk";
-import { SpriteEnemyAttack } from "./components/SpriteEnemyAttack";
-import { SpriteEnemyWalk } from "./components/SpriteEnemyWalk";
-import { SpriteEnemyHurt } from "./components/SpriteEnemyHurt";
-import { SpriteEnemyDie } from "./components/SpriteEnemyDie";
-import { SpriteDie } from "./components/SpriteDie";
+import { SpriteEnemyIdle } from "./components/Sprites/enemy/SpriteEnemyIdle";
+import { SpriteWalk } from "./components/Sprites/player/SpriteWalk";
+import { SpriteEnemyAttack } from "./components/Sprites/enemy/SpriteEnemyAttack";
+import { SpriteEnemyWalk } from "./components/Sprites/enemy/SpriteEnemyWalk";
+import { SpriteEnemyHurt } from "./components/Sprites/enemy/SpriteEnemyHurt";
+import { SpriteEnemyDie } from "./components/Sprites/enemy/SpriteEnemyDie";
+import { SpriteDie } from "./components/Sprites/player/SpriteDie";
 
 export default function Home() {
   const {
@@ -125,7 +125,33 @@ export default function Home() {
               "..."
             )}
           </div>
-          <div className="relative w-full h-50 overflow-hidden">
+          <div className="relative w-full h-50 ">
+            {engine.lastEnemyDamage && (
+              <span
+                className="absolute z-50 text-3xl font-bold flex flex-col items-center"
+                style={{ bottom: "100px", left: "50px" }}
+              >
+                {label && (
+                  <p className="text-center text-base font-bold text-yellow-400">
+                    {label}
+                  </p>
+                )}
+                -{engine.lastEnemyDamage}
+              </span>
+            )}
+            {engine.lastPlayerDamage && (
+              <span
+                className="absolute z-50 text-3xl font-bold flex flex-col items-center"
+                style={{ bottom: "100px", right: "50px" }}
+              >
+                {label && (
+                  <p className="text-center text-base font-bold text-yellow-400">
+                    {label}
+                  </p>
+                )}
+                -{engine.lastPlayerDamage}
+              </span>
+            )}
             <div
               className={`absolute bottom-0 transition-left duration-600 ${playerLeft}`}
             >
@@ -177,7 +203,6 @@ export default function Home() {
                 <SpriteIdle />
               )}
             </div>
-
             <div
               className={`absolute z-50 bottom-0 transition-all duration-600 ${enemyRight}`}
             >
@@ -222,8 +247,8 @@ export default function Home() {
           <div className="w-full grid grid-cols-2 gap-20 mb-32">
             {" "}
             <div className="flex flex-col items-center w-full mt-4">
-              <span className="w-full text-center text-sm ">Zionath</span>
-              <HpBar hp={engine.playerHp} max={100} colorClass="bg-[#D23B3B]" />
+              <span className="w-full text-center text-sm ">You</span>
+              <HpBar hp={engine.playerHp} max={20} colorClass="bg-[#D23B3B]" />
             </div>
             <div className="flex flex-col items-center w-full mt-4">
               {" "}
@@ -232,7 +257,7 @@ export default function Home() {
               </span>
               <HpBar
                 hp={engine.enemyHp}
-                max={100}
+                max={40}
                 colorClass="bg-[#D23B3B]"
               />{" "}
             </div>

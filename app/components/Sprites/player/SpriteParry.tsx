@@ -36,7 +36,6 @@ export function SpriteParry({
 
       setFrame(nextFrame);
 
-      // 👉 HIT WINDOW TRIGGER
       if (!hitFired && nextFrame >= HIT_FRAME) {
         setHitFired(true);
         onHitFrame?.();

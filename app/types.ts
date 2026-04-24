@@ -35,6 +35,8 @@ export interface ParryOutcome {
 export interface CombatEngineState {
   playerHp: number;
   enemyHp: number;
+  lastPlayerDamage: number | null;
+  lastEnemyDamage: number | null;
   onAttack: (progress: number) => TimingGrade;
   onParry: (progress: number) => ParryOutcome;
   onCounter: (progress: number) => TimingGrade;

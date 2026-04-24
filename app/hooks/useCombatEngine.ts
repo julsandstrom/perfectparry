@@ -8,9 +8,9 @@ import {
   ResolveFn,
 } from "../types";
 
-const ENEMY_BASE_HP = 100;
-const PLAYER_BASE_HP = 100;
-const ENEMY_ATTACK_DAMAGE = 40;
+const ENEMY_BASE_HP = 40;
+const PLAYER_BASE_HP = 20;
+const ENEMY_ATTACK_DAMAGE = 6;
 
 export function useCombatEngine(
   transition: TransitionFn,
@@ -20,9 +20,18 @@ export function useCombatEngine(
 ): CombatEngineState {
   const [playerHp, setPlayerHp] = useState(PLAYER_BASE_HP);
   const [enemyHp, setEnemyHp] = useState(ENEMY_BASE_HP);
+  const [lastPlayerDamage, setLastPlayerDamage] = useState<number | null>(null);
+  const [lastEnemyDamage, setLastEnemyDamage] = useState<number | null>(null);
+
+  const clearDamage = () => {
+    setLastPlayerDamage(null);
+    setLastEnemyDamage(null);
+  };
 
   const onAttack = (progress: number): TimingGrade => {
+    clearDamage();
     const { result, damage } = evaluateAttack(progress);
+    setLastPlayerDamage(damage > 0 ? damage : null);
     let gameOver = false;
     setEnemyHp((prev) => {
       if (prev <= 0) return 0;
@@ -39,7 +48,13 @@ export function useCombatEngine(
   };
 
   const onParry = (progress: number): ParryOutcome => {
+    clearDamage();
     const { result, blocked, counter } = evaluateParry(progress);
+    if (!blocked) {
+      setLastEnemyDamage(ENEMY_ATTACK_DAMAGE);
+    } else {
+      setLastEnemyDamage(null);
+    }
     if (blocked) {
       if (counter > 0) resolve("counter", 600);
       else resolve("player_attack");
@@ -70,7 +85,9 @@ export function useCombatEngine(
   };
 
   const onCounter = (progress: number): TimingGrade => {
+    clearDamage();
     const { result, damage } = evaluateAttack(progress);
+    setLastPlayerDamage(damage > 0 ? damage : null);
     let gameOver = false;
     setEnemyHp((prev) => {
       if (prev <= 0) return 0;
@@ -85,5 +102,13 @@ export function useCombatEngine(
     if (!gameOver) resolve("player_attack");
     return result;
   };
-  return { playerHp, enemyHp, onAttack, onParry, onCounter };
+  return {
+    playerHp,
+    enemyHp,
+    onAttack,
+    onParry,
+    onCounter,
+    lastPlayerDamage,
+    lastEnemyDamage,
+  };
 }

@@ -21,7 +21,7 @@ export function useCombatPhase() {
   const transition = useCallback<TransitionFn>((to, delayMs = 0) => {
     const go = () => {
       setPhase((current) => {
-        if (current === "victory" || current === "defeat") return current; // ← locked
+        if (current === "victory" || current === "defeat") return current;
         setResult(null);
         return to;
       });
@@ -32,7 +32,7 @@ export function useCombatPhase() {
 
   const resolve = useCallback<ResolveFn>((to, holdMs = 800) => {
     setPhase((current) => {
-      if (current === "victory" || current === "defeat") return current; // ← locked
+      if (current === "victory" || current === "defeat") return current;
       setTimeout(() => {
         setPhase((c) => {
           if (c === "victory" || c === "defeat") return c;

@@ -7,9 +7,9 @@ export function evaluateAttack(progress: number): {
 } {
   const { sword, arrow } = ATTACK_WINDOW;
   if (progress >= sword[0] && progress <= sword[1])
-    return { result: "sword", damage: 30 };
+    return { result: "sword", damage: 13 };
   if (progress >= arrow[0] && progress <= arrow[1])
-    return { result: "arrow", damage: 15 };
+    return { result: "arrow", damage: 7 };
   return { result: "miss", damage: 0 };
 }
 

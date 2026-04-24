@@ -1,4 +1,4 @@
-import { TimingGrade } from "../types";
+import { TimingGrade } from "@/app/types";
 import { BowArrow, Shield, Sword, Swords } from "lucide-react";
 import AttackSelectionBar from "./AttackSelectionBar";
 
@@ -34,7 +34,7 @@ export const TimingBar = ({
   const visualProgress = releaseAt ?? progress;
 
   return (
-    <div className="relative h-16 w-full rounded-xs bg-[#CBA788]">
+    <div className="relative h-16 w-full rounded-xs bg-[#CBA788] ">
       <AttackSelectionBar
         min={gMin}
         max={gMax}
