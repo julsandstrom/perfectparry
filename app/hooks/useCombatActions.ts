@@ -58,14 +58,15 @@ export function useCombatActions({
   const handlePointerUp = useCallback(() => {
     if (phase === "player_attack") {
       const snapshot = release();
+      setReleaseAt(snapshot);
       pendingAttack.current = snapshot;
-      // peek at what type this will be to decide animation
+
       const { result } = evaluateAttack(snapshot);
       pendingAttackType.current = result === "miss" ? null : result;
       if (result === "arrow") {
-        anim.triggerBowAttack(); // ← no walk, just fire arrow
+        anim.triggerBowAttack();
       } else {
-        anim.triggerWalkIn(); // ← sword walk as before
+        anim.triggerWalkIn();
       }
     }
   }, [phase, release, anim]);

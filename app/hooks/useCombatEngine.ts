@@ -22,16 +22,19 @@ export function useCombatEngine(
 ): CombatEngineState {
   const [playerHp, setPlayerHp] = useState(PLAYER_BASE_HP);
   const [enemyHp, setEnemyHp] = useState(ENEMY_BASE_HP);
-
+  const clearCombatEvent = () => setLastCombatEvent(null);
   const [lastCombatEvent, setLastCombatEvent] =
     useState<CombatDisplayEvent | null>(null);
 
   const onAttack = (progress: number): TimingGrade => {
+    clearCombatEvent();
     const { result, damage } = evaluateAttack(progress);
     setLastCombatEvent({
       label: (RESULT_LABELS.attack as Record<string, string>)[result],
       enemyDamage: damage > 0 ? damage : null,
       playerDamage: null,
+      hitZone:
+        result === "miss" ? "miss" : result === "arrow" ? "arrow" : "sword",
     });
     let gameOver = false;
     setEnemyHp((prev) => {
@@ -49,12 +52,17 @@ export function useCombatEngine(
   };
 
   const onParry = (progress: number): ParryOutcome => {
+    clearCombatEvent();
     const { result, blocked, counter } = evaluateParry(progress);
-    setLastCombatEvent({
-      label: (RESULT_LABELS.parry as Record<string, string>)[result],
-      enemyDamage: null,
-      playerDamage: !blocked ? ENEMY_ATTACK_DAMAGE : null,
-    });
+    setTimeout(() => {
+      setLastCombatEvent({
+        label: (RESULT_LABELS.parry as Record<string, string>)[result],
+        enemyDamage: null,
+        playerDamage: !blocked ? ENEMY_ATTACK_DAMAGE : null,
+        hitZone:
+          result === "miss" ? "miss" : result === "perfect" ? "sword" : "arrow",
+      });
+    }, 600);
 
     if (blocked) {
       if (counter > 0) resolve("counter", 600);
@@ -86,11 +94,14 @@ export function useCombatEngine(
   };
 
   const onCounter = (progress: number): TimingGrade => {
+    clearCombatEvent();
     const { result, damage } = evaluateAttack(progress);
     setLastCombatEvent({
       label: (RESULT_LABELS.attack as Record<string, string>)[result],
       enemyDamage: damage > 0 ? damage : null,
       playerDamage: null,
+      hitZone:
+        result === "miss" ? "miss" : result === "arrow" ? "arrow" : "sword",
     });
 
     let gameOver = false;

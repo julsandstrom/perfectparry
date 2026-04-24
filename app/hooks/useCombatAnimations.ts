@@ -129,9 +129,12 @@ export function useCombatAnimations() {
   }, []);
 
   const triggerEnemyAttackAnim = useCallback(() => {
+    if (pendingEnemyResult.current === "hurt") {
+      triggerHurt();
+    }
     setEnemyAttackTrigger((t) => t + 1);
     dispatchEnemy({ type: "ATTACK" });
-  }, []);
+  }, [triggerHurt]);
 
   const triggerEnemyHurt = useCallback(() => {
     setEnemyHurtTrigger((t) => t + 1);

@@ -24,6 +24,7 @@ export interface CombatDisplayEvent {
   label: string;
   playerDamage: number | null;
   enemyDamage: number | null;
+  hitZone: "sword" | "arrow" | "miss";
 }
 
 export type CombatEvent =

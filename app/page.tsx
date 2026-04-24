@@ -33,6 +33,7 @@ export default function Home() {
     setParryResult,
     setAttackResult,
     resultContext,
+    frozen,
   } = useCombatPhase();
   const anim = useCombatAnimations();
 
@@ -71,7 +72,9 @@ export default function Home() {
   const resetUI = useCallback(() => setReleaseAt(null), [setReleaseAt]);
   useCombatController({ phase, start, stop, reset, resetUI });
 
+  const isAttacking = phase === "player_attack";
   const isParry = phase === "enemy_attack";
+  const isCounter = phase === "counter";
   const { lastCombatEvent } = engine;
   const playerLeft =
     anim.playerAnim === "walk_in" || anim.playerAnim === "attack"
@@ -85,12 +88,15 @@ export default function Home() {
 
   return (
     <main className="relative flex flex-col min-h-screen bg-[#151515] text-white">
+      {" "}
+      {frozen && (
+        <div className="absolute inset-0 bg-white/10 pointer-events-none animate-pulse z-40" />
+      )}
       {phase === "victory" && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60">
           <VictoryScreen />
         </div>
       )}
-
       {phase === "defeat" && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60">
           <DefeatScreen />
@@ -116,6 +122,7 @@ export default function Home() {
               "..."
             )}
           </div>
+
           <div className="relative w-full h-50 ">
             {lastCombatEvent && (
               <span
@@ -204,11 +211,6 @@ export default function Home() {
                   trigger={anim.enemyWalkOutTrigger}
                   flipped={true}
                   onComplete={() => {
-                    if (
-                      anim.pendingEnemyResult.current === "hurt" &&
-                      anim.playerAnim !== "die"
-                    )
-                      anim.triggerHurt();
                     anim.resetEnemy();
                   }}
                 />
@@ -251,12 +253,17 @@ export default function Home() {
             arrow={isParry ? PARRY_WINDOW.block : ATTACK_WINDOW.arrow}
             releaseAt={releaseAt}
             result={result}
+            isAttacking={isAttacking}
             isParry={isParry}
+            isCounter={isCounter}
+            lastCombatEvent={engine.lastCombatEvent}
+            frozen={frozen}
           />
         </div>
         <div className="flex-1 font-girassol flex flex-col items-end pb-[env(safe-area-inset-bottom)] m-2">
           <button
-            className="w-full py-6 text-xl text-black font-semibold bg-[#CDB9A8] hover:bg-zinc-700 active:bg-zinc-600 rounded-xs transition-all active:scale-[0.985] select-none"
+            disabled={frozen || phase === "resolving"}
+            className="w-full py-6 text-xl text-black font-semibold bg-[#CDB9A8] hover:bg-zinc-700 active:bg-zinc-600 rounded-xs transition-all active:scale-[0.985] select-none disabled:opacity-50"
             onPointerDown={handlePointerDown}
             onPointerUp={handlePointerUp}
             onClick={handleTap}

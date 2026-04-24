@@ -7,6 +7,7 @@ export function useCombatPhase() {
   const [resultContext, setResultContext] = useState<"attack" | "parry" | null>(
     null,
   );
+  const [frozen, setFrozen] = useState(false);
 
   const setAttackResult = (r: TimingGrade | null) => {
     setResultContext(r ? "attack" : null);
@@ -30,10 +31,12 @@ export function useCombatPhase() {
     else go();
   }, []);
 
-  const resolve = useCallback<ResolveFn>((to, holdMs = 800) => {
+  const resolve = useCallback<ResolveFn>((to, holdMs = 2000) => {
     setPhase((current) => {
       if (current === "victory" || current === "defeat") return current;
+      setFrozen(true);
       setTimeout(() => {
+        setFrozen(false);
         setPhase((c) => {
           if (c === "victory" || c === "defeat") return c;
           setResult(null);
@@ -53,5 +56,6 @@ export function useCombatPhase() {
     setParryResult,
     setAttackResult,
     resultContext,
+    frozen,
   };
 }

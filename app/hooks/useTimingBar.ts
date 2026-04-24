@@ -23,7 +23,6 @@ export function useTimingBar({
   const startRef = useRef<number | null>(null);
   const activeRef = useRef(false);
 
-  // ✅ Stable ref for onComplete — never causes runLoop to recreate
   const onCompleteRef = useRef(onComplete);
   useEffect(() => {
     onCompleteRef.current = onComplete;
@@ -37,7 +36,6 @@ export function useTimingBar({
     }
   }, []);
 
-  // ✅ onComplete removed from deps — uses ref instead
   const runLoop = useCallback(() => {
     const tick = (now: number) => {
       if (!activeRef.current) return;
@@ -52,7 +50,7 @@ export function useTimingBar({
       }
     };
     rafRef.current = requestAnimationFrame(tick);
-  }, [durationMs]); // ✅ stable — durationMs never changes mid-fight
+  }, [durationMs]);
 
   const start = useCallback(() => {
     console.log("TimingBar start() called");
