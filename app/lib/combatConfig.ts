@@ -1,11 +1,11 @@
 export const ATTACK_WINDOW = {
-  perfect: [0.7, 0.8],
-  good: [0.3, 0.36],
+  sword: [0.7, 0.8],
+  arrow: [0.3, 0.42],
 } as const;
 
 export const PARRY_WINDOW = {
-  perfect: [0.85, 0.92],
-  good: [0.3, 0.36],
+  perfect: [0.7, 0.8],
+  block: [0.3, 0.42],
 } as const;
 
 export const ATTACK_META = {

@@ -1,80 +1,76 @@
 import { TimingGrade } from "../types";
-import { BowArrow, Sword } from "lucide-react";
+import { BowArrow, Shield, Sword, Swords } from "lucide-react";
+import AttackSelectionBar from "./AttackSelectionBar";
+
 interface TimingBarProps {
   progress: number;
-  perfect: readonly [number, number];
-  good: readonly [number, number];
+  sword: readonly [number, number];
+  arrow: readonly [number, number];
   releaseAt?: number | null;
   result?: TimingGrade | null;
+  isParry: boolean;
 }
 
 export const TimingBar = ({
   progress,
-  perfect,
-  good,
+  sword,
+  arrow,
+  isParry,
   releaseAt = null,
-  result = null,
+  // result = null,
 }: TimingBarProps) => {
-  const [pMin, pMax] = perfect;
-  const [gMin, gMax] = good;
+  const [pMin, pMax] = sword;
+  const [gMin, gMax] = arrow;
 
-  const markerColor =
-    result === "perfect"
-      ? "bg-green-400"
-      : result === "good"
-        ? "bg-yellow-400"
-        : result === "miss"
-          ? "bg-red-500"
-          : "";
+  // const markerColor =
+  //   result === "sword" || result === "perfect"
+  //     ? "bg-green-400"
+  //     : result === "arrow" || result === "block"
+  //       ? "bg-yellow-400"
+  //       : result === "miss"
+  //         ? "bg-red-500"
+  //         : "";
 
   const visualProgress = releaseAt ?? progress;
 
   return (
-    <div className="relative h-16 w-full rounded-xs bg-[#CFCFCF] ">
-      {/* Bow Attack */}
-      <div
-        className="absolute top-0 bottom-0 bg-[#924EBA]"
-        style={{
-          left: `${gMin * 100}%`,
-          width: `${(gMax - gMin) * 100}%`,
-        }}
+    <div className="relative h-16 w-full rounded-xs bg-[#CBA788]">
+      <AttackSelectionBar
+        min={gMin}
+        max={gMax}
+        icon={
+          isParry ? (
+            <Shield size={20} fill="black" />
+          ) : (
+            <BowArrow size={20} fill="black" />
+          )
+        }
+        damage={7}
       />
-
-      <div
-        className="absolute -top-6 text-[#C068F3] z-50"
-        style={{ left: `${gMin * 102}%` }}
-      >
-        <BowArrow size={20} />
-      </div>
-
-      {/* Sword Attack */}
-      <div
-        className="absolute top-0 bottom-0 bg-[#4A5A96]"
-        style={{
-          left: `${pMin * 100}%`,
-          width: `${(pMax - pMin) * 100}%`,
-        }}
+      <AttackSelectionBar
+        min={pMin}
+        max={pMax}
+        icon={
+          isParry ? (
+            <Swords size={20} fill="black" />
+          ) : (
+            <Sword size={20} fill="black" />
+          )
+        }
+        damage={13}
       />
-
-      <div
-        className="absolute -top-6 text-[#96ACFF]"
-        style={{ left: `${pMin * 104}%` }}
-      >
-        <Sword size={20} />
-      </div>
       {/* Fill */}
       <div
         className="absolute top-0 bottom-0 left-0 bg-[#151515]"
         style={{ width: `${visualProgress * 100}%` }}
       />
-
       {/* Marker */}
-      {releaseAt !== null && (
+      {/* {releaseAt !== null && (
         <div
           className={`absolute top-0 bottom-0 w-0.5 z-50 ${markerColor}`}
           style={{ left: `${releaseAt * 100}%` }}
         />
-      )}
+      )} */}
     </div>
   );
 };

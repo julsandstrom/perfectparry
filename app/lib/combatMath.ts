@@ -1,55 +1,29 @@
-import { TimingGrade } from "../types";
+import { AttackGrade, ParryGrade } from "../types";
 import { ATTACK_WINDOW, PARRY_WINDOW } from "./combatConfig";
 
-type Range = readonly [number, number];
-
-interface TimingWindow {
-  perfect: Range;
-  good: Range;
+export function evaluateAttack(progress: number): {
+  result: AttackGrade;
+  damage: number;
+} {
+  const { sword, arrow } = ATTACK_WINDOW;
+  if (progress >= sword[0] && progress <= sword[1])
+    return { result: "sword", damage: 30 };
+  if (progress >= arrow[0] && progress <= arrow[1])
+    return { result: "arrow", damage: 15 };
+  return { result: "miss", damage: 0 };
 }
 
-function evaluateTiming(progress: number, window: TimingWindow): TimingGrade {
-  const EPSILON = 0.01;
-
-  const [pMin, pMax] = window.perfect;
-  const [gMin, gMax] = window.good;
-
-  if (progress >= pMin - EPSILON && progress <= pMax + EPSILON)
-    return "perfect";
-
-  if (progress >= gMin - EPSILON && progress <= gMax + EPSILON) return "good";
-
-  return "miss";
-}
-
-export function evaluateAttack(progress: number) {
-  const result = evaluateTiming(progress, ATTACK_WINDOW);
-
-  const damageMap = {
-    perfect: 30,
-    good: 15,
-    miss: 0,
-  };
-
-  return {
-    result,
-    damage: damageMap[result],
-  };
-}
-
-export function evaluateParry(progress: number) {
-  const result = evaluateTiming(progress, PARRY_WINDOW);
-
-  const outcome = {
-    perfect: { blocked: true, counter: 20 },
-    good: { blocked: true, counter: 0 },
-    miss: { blocked: false, counter: 0 },
-  };
-
-  return {
-    result,
-    ...outcome[result],
-  };
+export function evaluateParry(progress: number): {
+  result: ParryGrade;
+  blocked: boolean;
+  counter: number;
+} {
+  const { perfect, block } = PARRY_WINDOW;
+  if (progress >= perfect[0] && progress <= perfect[1])
+    return { result: "perfect", blocked: true, counter: 1 };
+  if (progress >= block[0] && progress <= block[1])
+    return { result: "block", blocked: true, counter: 0 };
+  return { result: "miss", blocked: false, counter: 0 };
 }
 
 export function applyDamage(hp: number, damage: number) {

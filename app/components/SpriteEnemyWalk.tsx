@@ -5,7 +5,7 @@ const FRAME_WIDTH = 96;
 const FRAME_HEIGHT = 64;
 const FRAME_COUNT = 10;
 const SCALE = 2;
-const WALK_DURATION_MS = 300;
+const WALK_DURATION_MS = 600;
 
 export function SpriteEnemyWalk({
   trigger,

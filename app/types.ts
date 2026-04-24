@@ -8,14 +8,16 @@ export type Phase =
 
 export type ResolveFn = (to: Phase, holdMs?: number) => void;
 
-export type TimingGrade = "perfect" | "good" | "miss";
+export type AttackGrade = "sword" | "arrow" | "miss";
+export type ParryGrade = "perfect" | "block" | "miss";
+export type TimingGrade = AttackGrade | ParryGrade;
 
 export type TransitionFn = (to: Phase, delayMs?: number) => void;
 
 export interface TimingConfig {
   durationMs: number;
-  perfect: [number, number];
-  good: [number, number];
+  sword: [number, number];
+  arrow: [number, number];
 }
 
 // --- Combat Events ---
@@ -43,6 +45,7 @@ export type PlayerAnimState =
   | "idle"
   | "walk_in"
   | "attack"
+  | "bow_attack"
   | "walk_out"
   | "hurt"
   | "parry"
@@ -60,6 +63,7 @@ export type EnemyAnimState =
 export type PlayerAnimAction =
   | { type: "WALK_IN" }
   | { type: "ATTACK" }
+  | { type: "BOW_ATTACK" }
   | { type: "WALK_OUT" }
   | { type: "HURT" }
   | { type: "PARRY" }
@@ -90,6 +94,7 @@ export interface CombatActionsOptions {
   anim: {
     triggerWalkIn: () => void;
     triggerAttack: () => void;
+    triggerBowAttack: () => void;
     triggerWalkOut: () => void;
     triggerHurt: () => void;
     triggerEnemyHurt: () => void;

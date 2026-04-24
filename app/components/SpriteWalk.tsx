@@ -5,7 +5,7 @@ const FRAME_WIDTH = 100;
 const FRAME_HEIGHT = 100;
 const FRAME_COUNT = 8;
 const SCALE = 4;
-const WALK_DURATION_MS = 300;
+const WALK_DURATION_MS = 600;
 
 export function SpriteWalk({
   trigger,

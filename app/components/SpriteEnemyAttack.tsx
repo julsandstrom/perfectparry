@@ -5,7 +5,7 @@ const FRAME_WIDTH = 96;
 const FRAME_HEIGHT = 64;
 const FRAME_COUNT = 9;
 const SCALE = 2;
-const ATTACK_DURATION_MS = 300;
+const ATTACK_DURATION_MS = 600;
 const HIT_FRAME = 7;
 
 export function SpriteEnemyAttack({

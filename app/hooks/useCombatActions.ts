@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from "react";
 import { useTimingBar } from "./useTimingBar";
 import { ATTACK_META, PARRY_META } from "../lib/combatConfig";
 import { CombatActionsOptions } from "../types";
+import { evaluateAttack } from "../lib/combatMath";
 
 export function useCombatActions({
   phase,
@@ -14,6 +15,7 @@ export function useCombatActions({
   const pendingAttack = useRef<number | null>(null);
   const pendingCounter = useRef<number | null>(null);
   const [releaseAt, setReleaseAt] = useState<number | null>(null);
+  const pendingAttackType = useRef<"sword" | "arrow" | null>(null);
 
   const isParry = phase === "enemy_attack";
   const durationMs = isParry ? PARRY_META.durationMs : ATTACK_META.durationMs;
@@ -39,7 +41,7 @@ export function useCombatActions({
       const result = engine.onAttack(pendingAttack.current);
       setAttackResult(result);
       pendingAttack.current = null;
-      anim.triggerEnemyHurt();
+      if (result !== "arrow") anim.triggerEnemyHurt();
     }
     if (pendingCounter.current !== null) {
       const result = engine.onCounter(pendingCounter.current);
@@ -55,8 +57,16 @@ export function useCombatActions({
 
   const handlePointerUp = useCallback(() => {
     if (phase === "player_attack") {
-      pendingAttack.current = release();
-      anim.triggerWalkIn();
+      const snapshot = release();
+      pendingAttack.current = snapshot;
+      // peek at what type this will be to decide animation
+      const { result } = evaluateAttack(snapshot);
+      pendingAttackType.current = result === "miss" ? null : result;
+      if (result === "arrow") {
+        anim.triggerBowAttack(); // ← no walk, just fire arrow
+      } else {
+        anim.triggerWalkIn(); // ← sword walk as before
+      }
     }
   }, [phase, release, anim]);
 

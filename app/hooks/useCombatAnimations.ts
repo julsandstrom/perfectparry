@@ -15,6 +15,8 @@ function playerReducer(
       return "walk_in";
     case "ATTACK":
       return "attack";
+    case "BOW_ATTACK":
+      return "bow_attack";
     case "WALK_OUT":
       return "walk_out";
     case "HURT":
@@ -72,6 +74,7 @@ export function useCombatAnimations() {
   const [enemyWalkOutTrigger, setEnemyWalkOutTrigger] = useState(0);
   const [enemyDieTrigger, setEnemyDieTrigger] = useState(0);
   const [playerDieTrigger, setPlayerDieTrigger] = useState(0);
+  const [bowAttackTrigger, setBowAttackTrigger] = useState(0);
 
   const pendingEnemyResult = useRef<"parry" | "hurt">("hurt");
 
@@ -84,6 +87,11 @@ export function useCombatAnimations() {
   const triggerAttack = useCallback(() => {
     setAttackTrigger((t) => t + 1);
     dispatchPlayer({ type: "ATTACK" });
+  }, []);
+
+  const triggerBowAttack = useCallback(() => {
+    setBowAttackTrigger((t) => t + 1);
+    dispatchPlayer({ type: "BOW_ATTACK" });
   }, []);
 
   const triggerWalkOut = useCallback(() => {
@@ -175,6 +183,8 @@ export function useCombatAnimations() {
     triggerCounter,
     triggerDie,
     playerDieTrigger,
+    triggerBowAttack,
+    bowAttackTrigger,
     resetPlayer,
     // enemy
     enemyAttackTrigger,

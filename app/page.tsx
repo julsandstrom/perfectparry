@@ -72,19 +72,19 @@ export default function Home() {
   useCombatController({ phase, start, stop, reset, resetUI });
 
   const isParry = phase === "enemy_attack";
-  const timingWindow = isParry ? PARRY_WINDOW : ATTACK_WINDOW;
-
   const label =
-    result && resultContext ? RESULT_LABELS[resultContext][result] : null;
+    result && resultContext
+      ? (RESULT_LABELS[resultContext] as Record<string, string>)[result]
+      : null;
 
   const playerLeft =
     anim.playerAnim === "walk_in" || anim.playerAnim === "attack"
-      ? "-left-8"
-      : "-left-35";
+      ? "left-5"
+      : "-left-28";
 
   const enemyRight =
     anim.enemyAnim === "walk_in" || anim.enemyAnim === "attack"
-      ? "right-16"
+      ? "right-32"
       : "right-0";
 
   return (
@@ -102,21 +102,32 @@ export default function Home() {
       )}
       <div className="flex flex-col flex-1 max-w-105 w-full mx-auto">
         {" "}
-        <h1 className="pt-2  font-girassol text-base text-[#FF1A1A] ">
+        <h1 className="pt-2  font-girassol text-base text-[#FFEBDA] ">
           Perfect Parry
         </h1>
         <span className="font-extralight text-xs text-white/70">
-          precision beats power
+          Precision beats power
         </span>
-        <div className="flex flex-col w-full max-w-105 flex-1 font-girassol mt-20">
-          {label && (
+        <div className="flex flex-col w-full max-w-105 flex-1  mt-20">
+          {/* {label && (
             <p className="text-center text-4xl font-bold text-yellow-400">
               {label}
             </p>
-          )}{" "}
+          )} */}
+          <div className="flex justify-center pb-2 pt-20 font-girassol text-5xl text-[#FFEBDA]">
+            {phase === "player_attack" ? (
+              <span>Attack</span>
+            ) : phase === "enemy_attack" ? (
+              <span>Defend</span>
+            ) : phase === "counter" ? (
+              <span>Counter attack</span>
+            ) : (
+              "..."
+            )}
+          </div>
           <div className="relative w-full h-50 overflow-hidden">
             <div
-              className={`absolute bottom-0 transition-left duration-300 ${playerLeft}`}
+              className={`absolute bottom-0 transition-left duration-600 ${playerLeft}`}
             >
               {anim.playerAnim === "walk_in" ? (
                 <SpriteWalk
@@ -128,6 +139,12 @@ export default function Home() {
                   trigger={anim.attackTrigger}
                   onHitFrame={onHitFrame}
                   onComplete={() => anim.triggerWalkOut()}
+                />
+              ) : anim.playerAnim === "bow_attack" ? (
+                <SpriteCounterAttack
+                  trigger={anim.bowAttackTrigger}
+                  onHitFrame={onHitFrame}
+                  onComplete={() => anim.resetPlayer()}
                 />
               ) : anim.playerAnim === "walk_out" ? (
                 <SpriteWalk
@@ -162,7 +179,7 @@ export default function Home() {
             </div>
 
             <div
-              className={`absolute z-50 bottom-0 transition-all duration-300 ${enemyRight}`}
+              className={`absolute z-50 bottom-0 transition-all duration-600 ${enemyRight}`}
             >
               {anim.enemyAnim === "walk_in" ? (
                 <SpriteEnemyWalk
@@ -204,24 +221,34 @@ export default function Home() {
           </div>
           <div className="w-full grid grid-cols-2 gap-20 mb-32">
             {" "}
-            <HpBar hp={engine.playerHp} max={100} colorClass="bg-[#FF1A1A]" />
-            <HpBar
-              hp={engine.enemyHp}
-              max={100}
-              colorClass="bg-[#FF1A1A]"
-            />{" "}
+            <div className="flex flex-col items-center w-full mt-4">
+              <span className="w-full text-center text-sm ">Zionath</span>
+              <HpBar hp={engine.playerHp} max={100} colorClass="bg-[#D23B3B]" />
+            </div>
+            <div className="flex flex-col items-center w-full mt-4">
+              {" "}
+              <span className="w-full text-center text-sm ">
+                Confused Skeleton
+              </span>
+              <HpBar
+                hp={engine.enemyHp}
+                max={100}
+                colorClass="bg-[#D23B3B]"
+              />{" "}
+            </div>
           </div>
           <TimingBar
             progress={progress}
-            perfect={timingWindow.perfect}
-            good={timingWindow.good}
+            sword={isParry ? PARRY_WINDOW.perfect : ATTACK_WINDOW.sword}
+            arrow={isParry ? PARRY_WINDOW.block : ATTACK_WINDOW.arrow}
             releaseAt={releaseAt}
             result={result}
+            isParry={isParry}
           />
         </div>
-        <div className="flex-1 font-girassol flex flex-col items-end pb-[env(safe-area-inset-bottom)]">
+        <div className="flex-1 font-girassol flex flex-col items-end pb-[env(safe-area-inset-bottom)] m-2">
           <button
-            className="w-full py-6 text-xl text-black font-semibold bg-[#CFCFCF] hover:bg-zinc-700 active:bg-zinc-600 rounded-xs transition-all active:scale-[0.985] select-none"
+            className="w-full py-6 text-xl text-black font-semibold bg-[#CDB9A8] hover:bg-zinc-700 active:bg-zinc-600 rounded-xs transition-all active:scale-[0.985] select-none"
             onPointerDown={handlePointerDown}
             onPointerUp={handlePointerUp}
             onClick={handleTap}
