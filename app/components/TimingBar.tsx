@@ -1,5 +1,5 @@
 import { TimingGrade } from "../types";
-
+import { BowArrow, Sword } from "lucide-react";
 interface TimingBarProps {
   progress: number;
   perfect: readonly [number, number];
@@ -30,25 +30,38 @@ export const TimingBar = ({
   const visualProgress = releaseAt ?? progress;
 
   return (
-    <div className="relative h-16 w-full rounded-xs bg-[#CFCFCF] overflow-hidden">
-      {/* GOOD ZONE (outer, darker) */}
+    <div className="relative h-16 w-full rounded-xs bg-[#CFCFCF] ">
+      {/* Bow Attack */}
       <div
-        className="absolute top-0 bottom-0 bg-[#4EBA55]"
+        className="absolute top-0 bottom-0 bg-[#924EBA]"
         style={{
           left: `${gMin * 100}%`,
           width: `${(gMax - gMin) * 100}%`,
         }}
       />
 
-      {/* PERFECT ZONE (inner, lighter) */}
       <div
-        className="absolute top-0 bottom-0 bg-green-700/70"
+        className="absolute -top-6 text-[#C068F3] z-50"
+        style={{ left: `${gMin * 102}%` }}
+      >
+        <BowArrow size={20} />
+      </div>
+
+      {/* Sword Attack */}
+      <div
+        className="absolute top-0 bottom-0 bg-[#4A5A96]"
         style={{
           left: `${pMin * 100}%`,
           width: `${(pMax - pMin) * 100}%`,
         }}
       />
 
+      <div
+        className="absolute -top-6 text-[#96ACFF]"
+        style={{ left: `${pMin * 104}%` }}
+      >
+        <Sword size={20} />
+      </div>
       {/* Fill */}
       <div
         className="absolute top-0 bottom-0 left-0 bg-[#151515]"

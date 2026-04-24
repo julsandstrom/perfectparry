@@ -99,6 +99,7 @@ export interface CombatActionsOptions {
     resetPlayer: () => void;
     resetEnemy: () => void;
   };
-  setResult: (r: TimingGrade | null) => void;
+  setAttackResult: (r: TimingGrade | null) => void;
+  setParryResult: (r: TimingGrade | null) => void;
   onParryTimeout: (progress: number) => void;
 }

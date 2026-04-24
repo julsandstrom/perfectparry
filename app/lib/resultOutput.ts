@@ -1,11 +1,11 @@
 export const RESULT_LABELS = {
   attack: {
-    perfect: "Perfect!",
-    good: "Good",
+    perfect: "Perfect strike!",
+    good: "Decent strike",
     miss: "You missed...",
   },
   parry: {
-    perfect: "Perfect Parry",
+    perfect: "Nice, strike back!",
     good: "Good Block",
     miss: "You've been hit!",
   },

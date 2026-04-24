@@ -25,7 +25,15 @@ import { SpriteEnemyDie } from "./components/SpriteEnemyDie";
 import { SpriteDie } from "./components/SpriteDie";
 
 export default function Home() {
-  const { phase, result, setResult, transition, resolve } = useCombatPhase();
+  const {
+    phase,
+    result,
+    transition,
+    resolve,
+    setParryResult,
+    setAttackResult,
+    resultContext,
+  } = useCombatPhase();
   const anim = useCombatAnimations();
 
   const engine = useCombatEngine(
@@ -50,10 +58,11 @@ export default function Home() {
     phase,
     engine,
     anim,
-    setResult,
+    setAttackResult,
+    setParryResult,
     onParryTimeout: (p) => {
       const { event, result } = engine.onParry(p);
-      setResult(result);
+      setParryResult(result);
       if (event.type === "HURT") anim.triggerEnemyAttack("hurt");
       else if (event.type === "PARRY") anim.triggerEnemyAttack("parry");
     },
@@ -65,11 +74,8 @@ export default function Home() {
   const isParry = phase === "enemy_attack";
   const timingWindow = isParry ? PARRY_WINDOW : ATTACK_WINDOW;
 
-  const label = result
-    ? isParry
-      ? RESULT_LABELS.parry[result]
-      : RESULT_LABELS.attack[result]
-    : null;
+  const label =
+    result && resultContext ? RESULT_LABELS[resultContext][result] : null;
 
   const playerLeft =
     anim.playerAnim === "walk_in" || anim.playerAnim === "attack"
@@ -109,7 +115,6 @@ export default function Home() {
             </p>
           )}{" "}
           <div className="relative w-full h-50 overflow-hidden">
-            {/* Player - anchored bottom-left */}
             <div
               className={`absolute bottom-0 transition-left duration-300 ${playerLeft}`}
             >

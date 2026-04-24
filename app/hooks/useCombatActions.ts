@@ -7,7 +7,8 @@ export function useCombatActions({
   phase,
   engine,
   anim,
-  setResult,
+  setAttackResult,
+  setParryResult,
   onParryTimeout,
 }: CombatActionsOptions) {
   const pendingAttack = useRef<number | null>(null);
@@ -22,12 +23,12 @@ export function useCombatActions({
     onComplete: () => {
       if (phase === "player_attack") {
         const result = engine.onAttack(1.0);
-        setResult(result);
+        setAttackResult(result);
       }
       if (phase === "enemy_attack") onParryTimeout(1.0);
       if (phase === "counter") {
         const result = engine.onCounter(1.0);
-        setResult(result);
+        setAttackResult(result);
       }
     },
   });
@@ -36,17 +37,17 @@ export function useCombatActions({
     if (phase === "victory" || phase === "defeat") return;
     if (pendingAttack.current !== null) {
       const result = engine.onAttack(pendingAttack.current);
-      setResult(result);
+      setAttackResult(result);
       pendingAttack.current = null;
       anim.triggerEnemyHurt();
     }
     if (pendingCounter.current !== null) {
       const result = engine.onCounter(pendingCounter.current);
-      setResult(result);
+      setAttackResult(result);
       pendingCounter.current = null;
       anim.triggerEnemyHurt();
     }
-  }, [phase, engine, setResult, anim]);
+  }, [phase, engine, setAttackResult, anim]);
 
   const handlePointerDown = useCallback(() => {
     if (phase === "player_attack") start();
@@ -65,11 +66,9 @@ export function useCombatActions({
       const snapshot = release();
       setReleaseAt(snapshot);
       const { event, result } = engine.onParry(snapshot);
-      setResult(result);
+      setParryResult(result);
       if (event.type === "HURT") anim.triggerEnemyAttack("hurt");
-      else if (event.type === "PARRY") {
-        anim.triggerEnemyAttack("parry");
-      }
+      else if (event.type === "PARRY") anim.triggerEnemyAttack("parry");
     }
     if (phase === "counter") {
       const snapshot = release();
@@ -77,7 +76,7 @@ export function useCombatActions({
       pendingCounter.current = snapshot;
       anim.triggerCounter();
     }
-  }, [phase, release, engine, anim, setResult]);
+  }, [phase, release, engine, anim, setParryResult]);
 
   return {
     progress,
