@@ -35,12 +35,12 @@ export function useCombatActions({
     if (pendingAttack.current !== null) {
       const result = engine.onAttack(pendingAttack.current);
       pendingAttack.current = null;
-      if (result !== "secondary") anim.triggerEnemyHurt();
+      anim.triggerEnemyHurt();
     }
     if (pendingCounter.current !== null) {
-      engine.onCounter(pendingCounter.current);
+      const result = engine.onCounter(pendingCounter.current);
       pendingCounter.current = null;
-      anim.triggerEnemyHurt();
+      if (result !== "secondary") anim.triggerEnemyHurt();
     }
   }, [phase, engine, anim]);
 
@@ -74,8 +74,13 @@ export function useCombatActions({
     if (phase === "counter") {
       const snapshot = release();
       setReleaseAt(snapshot);
-      pendingCounter.current = snapshot;
-      anim.triggerCounter();
+      const { hitResult } = evaluateZones(snapshot, COUNTER_BAR.zones);
+      if (hitResult === "secondary") {
+        engine.onCounter(snapshot);
+      } else {
+        pendingCounter.current = snapshot;
+        anim.triggerCounter();
+      }
     }
   }, [phase, release, engine, anim]);
 

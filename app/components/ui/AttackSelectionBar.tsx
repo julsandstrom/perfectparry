@@ -17,7 +17,7 @@ const AttackSelectionBar = ({
 }: AttackSelectionBarProps) => {
   return (
     <>
-      {/* Background bar */}
+      {/* BACKGROUND BAR */}
       <div
         className="absolute top-0 bottom-0 z-10"
         style={{
@@ -29,8 +29,7 @@ const AttackSelectionBar = ({
             : "0px 0px 5px rgba(0,0,0,0.25)",
         }}
       />
-
-      {/* Icon + label container, same position as bar */}
+      {/* ICON and LABEL */}
       <div
         className="absolute top-0 bottom-0 z-50 flex flex-col items-center justify-center"
         style={{
