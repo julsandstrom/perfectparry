@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { applyDamage, evaluateZones } from "../lib/combatMath";
 import {
   CombatEngineState,
@@ -8,12 +8,11 @@ import {
   CombatDisplayEvent,
   HitResult,
 } from "../types";
-
 import { ATTACK_BAR, COUNTER_BAR, PARRY_BAR } from "../lib/combatConfig";
 
 const ENEMY_BASE_HP = 40;
 const PLAYER_BASE_HP = 20;
-const ENEMY_ATTACK_DAMAGE = 6;
+const ENEMY_ATTACK_DAMAGE = 20;
 
 export function useCombatEngine(
   transition: TransitionFn,
@@ -23,9 +22,10 @@ export function useCombatEngine(
 ): CombatEngineState {
   const [playerHp, setPlayerHp] = useState(PLAYER_BASE_HP);
   const [enemyHp, setEnemyHp] = useState(ENEMY_BASE_HP);
-  const clearCombatEvent = () => setLastCombatEvent(null);
   const [lastCombatEvent, setLastCombatEvent] =
     useState<CombatDisplayEvent | null>(null);
+  const playerHpRef = useRef(PLAYER_BASE_HP);
+  const enemyHpRef = useRef(ENEMY_BASE_HP);
 
   const onAttack = (progress: number): HitResult => {
     const { hitResult, zone } = evaluateZones(progress, ATTACK_BAR.zones);
@@ -39,18 +39,14 @@ export function useCombatEngine(
       activeConfig: ATTACK_BAR,
     });
     const damage = zone?.damage ?? 0;
-    let gameOver = false;
-    setEnemyHp((prev) => {
-      if (prev <= 0) return 0;
-      const next = applyDamage(prev, damage);
-      if (next <= 0) {
-        gameOver = true;
-        onEnemyDie();
-        return 0;
-      }
-      return next;
-    });
-    if (!gameOver) resolve("enemy_attack");
+    const nextEnemyHp = applyDamage(enemyHpRef.current, damage);
+    enemyHpRef.current = nextEnemyHp;
+    setEnemyHp(nextEnemyHp);
+    if (nextEnemyHp <= 0) {
+      onEnemyDie();
+    } else {
+      resolve("enemy_attack");
+    }
     return hitResult;
   };
 
@@ -79,27 +75,19 @@ export function useCombatEngine(
         result: hitResult,
       };
     }
-    let gameOver = false;
-    setTimeout(() => {
-      setPlayerHp((prev) => {
-        const next = applyDamage(prev, ENEMY_ATTACK_DAMAGE);
-        return next <= 0 ? 0 : next;
-      });
-    }, 500);
-    setPlayerHp((prev) => {
-      const next = applyDamage(prev, ENEMY_ATTACK_DAMAGE);
-      if (next <= 0) {
-        gameOver = true;
-        onPlayerDie();
-      }
-      return prev;
-    });
-    if (!gameOver) resolve("player_attack");
+    const nextHp = applyDamage(playerHpRef.current, ENEMY_ATTACK_DAMAGE);
+    playerHpRef.current = nextHp;
+    if (nextHp <= 0) {
+      setPlayerHp(0);
+      onPlayerDie();
+    } else {
+      setTimeout(() => setPlayerHp(nextHp), 500);
+      resolve("player_attack");
+    }
     return { event: { type: "HURT" }, result: hitResult };
   };
 
   const onCounter = (progress: number): HitResult => {
-    clearCombatEvent();
     const { hitResult, zone } = evaluateZones(progress, COUNTER_BAR.zones);
     setLastCombatEvent({
       label:
@@ -116,29 +104,21 @@ export function useCombatEngine(
       activeConfig: COUNTER_BAR,
     });
     if (zone?.heal) {
-      setPlayerHp((prev) => Math.min(PLAYER_BASE_HP, prev + zone.heal));
+      const nextHp = Math.min(PLAYER_BASE_HP, playerHpRef.current + zone.heal);
+      playerHpRef.current = nextHp;
+      setPlayerHp(nextHp);
     }
     const damage = zone?.damage ?? 0;
-    let gameOver = false;
-    setEnemyHp((prev) => {
-      if (prev <= 0) return 0;
-      const next = applyDamage(prev, damage);
-      if (next <= 0) {
-        gameOver = true;
-        onEnemyDie();
-        return 0;
-      }
-      return next;
-    });
-    if (!gameOver) resolve("player_attack");
+    const nextEnemyHp = applyDamage(enemyHpRef.current, damage);
+    enemyHpRef.current = nextEnemyHp;
+    setEnemyHp(nextEnemyHp);
+    if (nextEnemyHp <= 0) {
+      onEnemyDie();
+    } else {
+      resolve("player_attack");
+    }
     return hitResult;
   };
-  return {
-    playerHp,
-    enemyHp,
-    onAttack,
-    onParry,
-    onCounter,
-    lastCombatEvent,
-  };
+
+  return { playerHp, enemyHp, onAttack, onParry, onCounter, lastCombatEvent };
 }

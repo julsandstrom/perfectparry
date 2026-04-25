@@ -17,9 +17,25 @@ const AttackSelectionBar = ({
 }: AttackSelectionBarProps) => {
   return (
     <>
-      {/* BACKGROUND BAR */}
+      <style>{`
+        @keyframes barShake {
+          0%   { transform: translateX(0); }
+          15%  { transform: translateX(-6px); }
+          30%  { transform: translateX(6px); }
+          45%  { transform: translateX(-4px); }
+          60%  { transform: translateX(4px); }
+          75%  { transform: translateX(-2px); }
+          90%  { transform: translateX(2px); }
+          100% { transform: translateX(0); }
+        }
+        .bar-shake {
+          animation: barShake 0.5s ease-out forwards;
+        }
+      `}</style>
+
       <div
-        className="absolute top-0 bottom-0 z-10"
+        key={highlight ? "highlighted" : "normal"}
+        className={`absolute top-0 bottom-0 z-10 ${highlight ? "bar-shake" : ""}`}
         style={{
           left: `${min * 100}%`,
           width: `${(max - min) * 100}%`,
@@ -29,9 +45,10 @@ const AttackSelectionBar = ({
             : "0px 0px 5px rgba(0,0,0,0.25)",
         }}
       />
-      {/* ICON and LABEL */}
+
       <div
-        className="absolute top-0 bottom-0 z-50 flex flex-col items-center justify-center"
+        key={highlight ? "icon-highlighted" : "icon-normal"}
+        className={`absolute top-0 bottom-0 z-50 flex flex-col items-center justify-center ${highlight ? "bar-shake" : ""}`}
         style={{
           left: `${min * 100}%`,
           width: `${(max - min) * 100}%`,
@@ -39,7 +56,7 @@ const AttackSelectionBar = ({
       >
         <div
           style={{ transform: "translateY(-5px)" }}
-          className="flex flex-col items-center "
+          className="flex flex-col items-center"
         >
           <span className="text-black text-sm leading-none">{label}</span>
           <div className="text-black">{icon}</div>

@@ -70,6 +70,7 @@ export function useCombatActions({
       const { event } = engine.onParry(snapshot);
       if (event.type === "HURT") anim.triggerEnemyAttack("hurt");
       else if (event.type === "PARRY") anim.triggerEnemyAttack("parry");
+      else if (event.type === "NONE") anim.triggerEnemyAttack("hurt");
     }
     if (phase === "counter") {
       const snapshot = release();
@@ -79,6 +80,7 @@ export function useCombatActions({
         engine.onCounter(snapshot);
       } else {
         pendingCounter.current = snapshot;
+
         anim.triggerCounter();
       }
     }

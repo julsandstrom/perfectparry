@@ -28,7 +28,7 @@ function playerReducer(
     case "DIE":
       return "die";
     case "RESET":
-    case "RESET":
+      if (state === "die") return state;
       return "idle";
     default:
       return state;
@@ -77,6 +77,7 @@ export function useCombatAnimations() {
   const [bowAttackTrigger, setBowAttackTrigger] = useState(0);
 
   const pendingEnemyResult = useRef<"parry" | "hurt">("hurt");
+  const playerDeadRef = useRef(false);
 
   // --- player triggers ---
   const triggerWalkIn = useCallback(() => {
@@ -100,6 +101,7 @@ export function useCombatAnimations() {
   }, []);
 
   const triggerHurt = useCallback(() => {
+    if (playerDeadRef.current) return;
     setHurtTrigger((t) => t + 1);
     dispatchPlayer({ type: "HURT" });
   }, []);
@@ -114,14 +116,15 @@ export function useCombatAnimations() {
     dispatchPlayer({ type: "COUNTER" });
   }, []);
   const triggerDie = useCallback(() => {
-    setPlayerDieTrigger((t) => t + 1);
-    dispatchPlayer({ type: "DIE" });
+    playerDeadRef.current = true;
+    setTimeout(() => {
+      setPlayerDieTrigger((t) => t + 1);
+      dispatchPlayer({ type: "DIE" });
+    }, 800);
   }, []);
-
   const resetPlayer = useCallback(() => {
     dispatchPlayer({ type: "RESET" });
   }, []);
-
   // --- enemy triggers ---
   const triggerEnemyWalkIn = useCallback(() => {
     setEnemyWalkInTrigger((t) => t + 1);
@@ -163,7 +166,7 @@ export function useCombatAnimations() {
       setTimeout(() => {
         setParryTrigger((t) => t + 1);
         dispatchPlayer({ type: "PARRY" });
-      }, 0);
+      }, 500);
     }
   }, []);
 
