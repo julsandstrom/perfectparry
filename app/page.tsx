@@ -6,7 +6,7 @@ import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatController } from "./hooks/useCombatController";
 import { TimingBar } from "./components/ui/TimingBar";
 import { HpBar } from "./components/ui/HpBar";
-import { ATTACK_WINDOW, PARRY_WINDOW } from "./lib/combatConfig";
+import { ATTACK_BAR, COUNTER_BAR, PARRY_BAR } from "./lib/combatConfig";
 import { RESULT_LABELS } from "./lib/resultOutput";
 import { SpriteIdle } from "./components/Sprites/player/SpriteIdle";
 import { SpriteAttack } from "./components/Sprites/player/SpriteAttack";
@@ -27,12 +27,11 @@ import { SpriteDie } from "./components/Sprites/player/SpriteDie";
 export default function Home() {
   const {
     phase,
-    result,
+
     transition,
     resolve,
     setParryResult,
-    setAttackResult,
-    resultContext,
+
     frozen,
   } = useCombatPhase();
   const anim = useCombatAnimations();
@@ -59,8 +58,7 @@ export default function Home() {
     phase,
     engine,
     anim,
-    setAttackResult,
-    setParryResult,
+
     onParryTimeout: (p) => {
       const { event, result } = engine.onParry(p);
       setParryResult(result);
@@ -75,6 +73,9 @@ export default function Home() {
   const isAttacking = phase === "player_attack";
   const isParry = phase === "enemy_attack";
   const isCounter = phase === "counter";
+
+  const barConfig = isParry ? PARRY_BAR : isCounter ? COUNTER_BAR : ATTACK_BAR;
+
   const { lastCombatEvent } = engine;
   const playerLeft =
     anim.playerAnim === "walk_in" || anim.playerAnim === "attack"
@@ -249,13 +250,8 @@ export default function Home() {
           </div>
           <TimingBar
             progress={progress}
-            sword={isParry ? PARRY_WINDOW.perfect : ATTACK_WINDOW.sword}
-            arrow={isParry ? PARRY_WINDOW.block : ATTACK_WINDOW.arrow}
+            config={barConfig}
             releaseAt={releaseAt}
-            result={result}
-            isAttacking={isAttacking}
-            isParry={isParry}
-            isCounter={isCounter}
             lastCombatEvent={engine.lastCombatEvent}
             frozen={frozen}
           />

@@ -4,7 +4,7 @@ interface AttackSelectionBarProps {
   min: number;
   max: number;
   icon: ReactNode;
-  damage: number;
+  label: string;
   highlight?: boolean;
 }
 
@@ -12,7 +12,7 @@ const AttackSelectionBar = ({
   min,
   max,
   icon,
-  damage,
+  label,
   highlight = false,
 }: AttackSelectionBarProps) => {
   return (
@@ -30,7 +30,7 @@ const AttackSelectionBar = ({
         }}
       />
 
-      {/* Icon + damage container, same position as bar */}
+      {/* Icon + label container, same position as bar */}
       <div
         className="absolute top-0 bottom-0 z-50 flex flex-col items-center justify-center"
         style={{
@@ -42,7 +42,7 @@ const AttackSelectionBar = ({
           style={{ transform: "translateY(-5px)" }}
           className="flex flex-col items-center "
         >
-          <span className="text-black text-sm leading-none">{damage}</span>
+          <span className="text-black text-sm leading-none">{label}</span>
           <div className="text-black">{icon}</div>
         </div>
       </div>

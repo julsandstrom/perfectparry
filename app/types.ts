@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export type Phase =
   | "player_attack"
   | "resolving"
@@ -5,14 +7,26 @@ export type Phase =
   | "counter"
   | "victory"
   | "defeat";
-
+export type ZoneId = "primary" | "secondary";
+export type HitResult = "primary" | "secondary" | "miss";
 export type ResolveFn = (to: Phase, holdMs?: number) => void;
 
-export type AttackGrade = "sword" | "arrow" | "miss";
-export type ParryGrade = "perfect" | "block" | "miss";
-export type TimingGrade = AttackGrade | ParryGrade;
-
 export type TransitionFn = (to: Phase, delayMs?: number) => void;
+
+export interface ZoneConfig {
+  id: ZoneId;
+  min: number;
+  max: number;
+  icon: ReactNode;
+  label: string;
+  damage: number;
+  heal: number;
+}
+
+export interface PhaseBarConfig {
+  durationMs: number;
+  zones: [ZoneConfig, ZoneConfig];
+}
 
 export interface TimingConfig {
   durationMs: number;
@@ -24,7 +38,10 @@ export interface CombatDisplayEvent {
   label: string;
   playerDamage: number | null;
   enemyDamage: number | null;
-  hitZone: "sword" | "arrow" | "miss";
+  playerHeal: number | null;
+  hitZoneMin: number | null;
+  hitZoneMax: number | null;
+  activeConfig: PhaseBarConfig;
 }
 
 export type CombatEvent =
@@ -35,16 +52,16 @@ export type CombatEvent =
 
 export interface ParryOutcome {
   event: CombatEvent;
-  result: TimingGrade;
+  result: HitResult;
 }
 
 export interface CombatEngineState {
   playerHp: number;
   enemyHp: number;
-  onAttack: (progress: number) => TimingGrade;
-  lastCombatEvent: CombatDisplayEvent | null;
+  onAttack: (progress: number) => HitResult;
   onParry: (progress: number) => ParryOutcome;
-  onCounter: (progress: number) => TimingGrade;
+  onCounter: (progress: number) => HitResult;
+  lastCombatEvent: CombatDisplayEvent | null;
 }
 
 export type PlayerAnimState =
@@ -110,7 +127,5 @@ export interface CombatActionsOptions {
     resetPlayer: () => void;
     resetEnemy: () => void;
   };
-  setAttackResult: (r: TimingGrade | null) => void;
-  setParryResult: (r: TimingGrade | null) => void;
   onParryTimeout: (progress: number) => void;
 }

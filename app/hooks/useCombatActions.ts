@@ -1,37 +1,32 @@
 import { useCallback, useRef, useState } from "react";
 import { useTimingBar } from "./useTimingBar";
-import { ATTACK_META, PARRY_META } from "../lib/combatConfig";
+import { ATTACK_BAR, COUNTER_BAR, PARRY_BAR } from "../lib/combatConfig";
 import { CombatActionsOptions } from "../types";
-import { evaluateAttack } from "../lib/combatMath";
+import { evaluateZones } from "../lib/combatMath";
 
 export function useCombatActions({
   phase,
   engine,
   anim,
-  setAttackResult,
-  setParryResult,
   onParryTimeout,
 }: CombatActionsOptions) {
   const pendingAttack = useRef<number | null>(null);
   const pendingCounter = useRef<number | null>(null);
   const [releaseAt, setReleaseAt] = useState<number | null>(null);
-  const pendingAttackType = useRef<"sword" | "arrow" | null>(null);
 
   const isParry = phase === "enemy_attack";
-  const durationMs = isParry ? PARRY_META.durationMs : ATTACK_META.durationMs;
+  const durationMs = isParry
+    ? PARRY_BAR.durationMs
+    : phase === "counter"
+      ? COUNTER_BAR.durationMs
+      : ATTACK_BAR.durationMs;
 
   const { progress, start, release, reset, stop } = useTimingBar({
     durationMs,
     onComplete: () => {
-      if (phase === "player_attack") {
-        const result = engine.onAttack(1.0);
-        setAttackResult(result);
-      }
+      if (phase === "player_attack") engine.onAttack(1.0);
       if (phase === "enemy_attack") onParryTimeout(1.0);
-      if (phase === "counter") {
-        const result = engine.onCounter(1.0);
-        setAttackResult(result);
-      }
+      if (phase === "counter") engine.onCounter(1.0);
     },
   });
 
@@ -39,17 +34,15 @@ export function useCombatActions({
     if (phase === "victory" || phase === "defeat") return;
     if (pendingAttack.current !== null) {
       const result = engine.onAttack(pendingAttack.current);
-      setAttackResult(result);
       pendingAttack.current = null;
-      if (result !== "arrow") anim.triggerEnemyHurt();
+      if (result !== "secondary") anim.triggerEnemyHurt();
     }
     if (pendingCounter.current !== null) {
-      const result = engine.onCounter(pendingCounter.current);
-      setAttackResult(result);
+      engine.onCounter(pendingCounter.current);
       pendingCounter.current = null;
       anim.triggerEnemyHurt();
     }
-  }, [phase, engine, setAttackResult, anim]);
+  }, [phase, engine, anim]);
 
   const handlePointerDown = useCallback(() => {
     if (phase === "player_attack") start();
@@ -60,24 +53,21 @@ export function useCombatActions({
       const snapshot = release();
       setReleaseAt(snapshot);
       pendingAttack.current = snapshot;
-
-      const { result } = evaluateAttack(snapshot);
-      pendingAttackType.current = result === "miss" ? null : result;
-      if (result === "arrow") {
+      const { hitResult } = evaluateZones(snapshot, ATTACK_BAR.zones);
+      if (hitResult === "secondary") {
         anim.triggerBowAttack();
       } else {
         anim.triggerWalkIn();
       }
     }
-  }, [phase, release, anim]);
+  }, [phase, release, anim, setReleaseAt]);
 
   const handleTap = useCallback(() => {
     if (phase === "resolving") return;
     if (phase === "enemy_attack") {
       const snapshot = release();
       setReleaseAt(snapshot);
-      const { event, result } = engine.onParry(snapshot);
-      setParryResult(result);
+      const { event } = engine.onParry(snapshot);
       if (event.type === "HURT") anim.triggerEnemyAttack("hurt");
       else if (event.type === "PARRY") anim.triggerEnemyAttack("parry");
     }
@@ -87,7 +77,7 @@ export function useCombatActions({
       pendingCounter.current = snapshot;
       anim.triggerCounter();
     }
-  }, [phase, release, engine, anim, setParryResult]);
+  }, [phase, release, engine, anim]);
 
   return {
     progress,

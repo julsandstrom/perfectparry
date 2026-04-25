@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { applyDamage, evaluateAttack, evaluateParry } from "../lib/combatMath";
+import { applyDamage, evaluateZones } from "../lib/combatMath";
 import {
   CombatEngineState,
   TransitionFn,
   ParryOutcome,
-  TimingGrade,
   ResolveFn,
   CombatDisplayEvent,
+  HitResult,
 } from "../types";
-import { RESULT_LABELS } from "../lib/resultOutput";
+
+import { ATTACK_BAR, COUNTER_BAR, PARRY_BAR } from "../lib/combatConfig";
 
 const ENEMY_BASE_HP = 40;
 const PLAYER_BASE_HP = 20;
@@ -26,16 +27,18 @@ export function useCombatEngine(
   const [lastCombatEvent, setLastCombatEvent] =
     useState<CombatDisplayEvent | null>(null);
 
-  const onAttack = (progress: number): TimingGrade => {
-    clearCombatEvent();
-    const { result, damage } = evaluateAttack(progress);
+  const onAttack = (progress: number): HitResult => {
+    const { hitResult, zone } = evaluateZones(progress, ATTACK_BAR.zones);
     setLastCombatEvent({
-      label: (RESULT_LABELS.attack as Record<string, string>)[result],
-      enemyDamage: damage > 0 ? damage : null,
+      label: hitResult === "miss" ? "Missed!" : `+${zone!.damage} dmg`,
+      enemyDamage: zone?.damage ?? null,
       playerDamage: null,
-      hitZone:
-        result === "miss" ? "miss" : result === "arrow" ? "arrow" : "sword",
+      playerHeal: null,
+      hitZoneMin: zone?.min ?? null,
+      hitZoneMax: zone?.max ?? null,
+      activeConfig: ATTACK_BAR,
     });
+    const damage = zone?.damage ?? 0;
     let gameOver = false;
     setEnemyHp((prev) => {
       if (prev <= 0) return 0;
@@ -48,38 +51,41 @@ export function useCombatEngine(
       return next;
     });
     if (!gameOver) resolve("enemy_attack");
-    return result;
+    return hitResult;
   };
 
   const onParry = (progress: number): ParryOutcome => {
-    clearCombatEvent();
-    const { result, blocked, counter } = evaluateParry(progress);
-    setTimeout(() => {
-      setLastCombatEvent({
-        label: (RESULT_LABELS.parry as Record<string, string>)[result],
-        enemyDamage: null,
-        playerDamage: !blocked ? ENEMY_ATTACK_DAMAGE : null,
-        hitZone:
-          result === "miss" ? "miss" : result === "perfect" ? "sword" : "arrow",
-      });
-    }, 600);
-
+    const { hitResult, zone } = evaluateZones(progress, PARRY_BAR.zones);
+    const blocked = hitResult !== "miss";
+    const counter = hitResult === "primary" ? 1 : 0;
+    setLastCombatEvent({
+      label: blocked
+        ? counter
+          ? "Perfect Parry!"
+          : "Blocked!"
+        : "You've been hit!",
+      enemyDamage: null,
+      playerDamage: !blocked ? ENEMY_ATTACK_DAMAGE : null,
+      playerHeal: null,
+      hitZoneMin: zone?.min ?? null,
+      hitZoneMax: zone?.max ?? null,
+      activeConfig: PARRY_BAR,
+    });
     if (blocked) {
       if (counter > 0) resolve("counter", 600);
       else resolve("player_attack");
-      return { event: { type: counter > 0 ? "PARRY" : "NONE" }, result };
+      return {
+        event: { type: counter > 0 ? "PARRY" : "NONE" },
+        result: hitResult,
+      };
     }
-
     let gameOver = false;
-
     setTimeout(() => {
       setPlayerHp((prev) => {
         const next = applyDamage(prev, ENEMY_ATTACK_DAMAGE);
-        if (next <= 0) return 0;
-        return next;
+        return next <= 0 ? 0 : next;
       });
     }, 500);
-
     setPlayerHp((prev) => {
       const next = applyDamage(prev, ENEMY_ATTACK_DAMAGE);
       if (next <= 0) {
@@ -88,22 +94,31 @@ export function useCombatEngine(
       }
       return prev;
     });
-
     if (!gameOver) resolve("player_attack");
-    return { event: { type: "HURT" }, result };
+    return { event: { type: "HURT" }, result: hitResult };
   };
 
-  const onCounter = (progress: number): TimingGrade => {
+  const onCounter = (progress: number): HitResult => {
     clearCombatEvent();
-    const { result, damage } = evaluateAttack(progress);
+    const { hitResult, zone } = evaluateZones(progress, COUNTER_BAR.zones);
     setLastCombatEvent({
-      label: (RESULT_LABELS.attack as Record<string, string>)[result],
-      enemyDamage: damage > 0 ? damage : null,
+      label:
+        hitResult === "miss"
+          ? "Missed!"
+          : zone!.heal > 0
+            ? `+${zone!.heal} hp`
+            : `+${zone!.damage} dmg`,
+      enemyDamage: zone?.damage ?? null,
       playerDamage: null,
-      hitZone:
-        result === "miss" ? "miss" : result === "arrow" ? "arrow" : "sword",
+      playerHeal: zone?.heal ?? null,
+      hitZoneMin: zone?.min ?? null,
+      hitZoneMax: zone?.max ?? null,
+      activeConfig: COUNTER_BAR,
     });
-
+    if (zone?.heal) {
+      setPlayerHp((prev) => Math.min(PLAYER_BASE_HP, prev + zone.heal));
+    }
+    const damage = zone?.damage ?? 0;
     let gameOver = false;
     setEnemyHp((prev) => {
       if (prev <= 0) return 0;
@@ -116,7 +131,7 @@ export function useCombatEngine(
       return next;
     });
     if (!gameOver) resolve("player_attack");
-    return result;
+    return hitResult;
   };
   return {
     playerHp,
