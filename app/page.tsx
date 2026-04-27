@@ -21,7 +21,7 @@ import { SpriteParry } from "./components/Sprites/player/SpriteParry";
 import { SpriteCounterAttack } from "./components/Sprites/player/SpriteCounterAttack";
 import VictoryScreen from "./components/gameOver/VictoryScreen";
 import { DefeatScreen } from "./components/gameOver/DefeatScreen";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { SpriteEnemyIdle } from "./components/Sprites/enemy/SpriteEnemyIdle";
 import { SpriteWalk } from "./components/Sprites/player/SpriteWalk";
 import { SpriteEnemyAttack } from "./components/Sprites/enemy/SpriteEnemyAttack";
@@ -37,6 +37,8 @@ export default function Home() {
   const [parryBar, setParryBar] = useState<PhaseBarConfig>(DEFAULT_PARRY_BAR);
   const [counterBar, setCounterBar] =
     useState<PhaseBarConfig>(DEFAULT_COUNTER_BAR);
+  const [, startTransition] = useTransition();
+
   const {
     phase,
 
@@ -85,16 +87,13 @@ export default function Home() {
   });
 
   useEffect(() => {
-    setAttackBar(getAttackBar());
-    setParryBar(getParryBar());
-    setCounterBar(getCounterBar());
+    startTransition(() => {
+      setAttackBar(getAttackBar());
+      setParryBar(getParryBar());
+      setCounterBar(getCounterBar());
+    });
   }, []);
 
-  useEffect(() => {
-    if (phase === "player_attack") setAttackBar(getAttackBar());
-    else if (phase === "enemy_attack") setParryBar(getParryBar());
-    else if (phase === "counter") setCounterBar(getCounterBar());
-  }, [phase]);
   const resetUI = useCallback(() => setReleaseAt(null), [setReleaseAt]);
   useCombatController({ phase, start, stop, reset, resetUI });
 
@@ -119,9 +118,9 @@ export default function Home() {
   return (
     <main className="relative flex flex-col min-h-screen bg-[#151515] text-white">
       {" "}
-      {frozen && (
-        <div className="absolute inset-0 bg-white/10 pointer-events-none animate-pulse z-40" />
-      )}
+      {/* {frozen && (
+        <div className="absolute inset-0 bg-white/50 pointer-events-none animate-pulse z-40" />
+      )} */}
       {phase === "victory" && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60">
           <VictoryScreen />
@@ -149,7 +148,7 @@ export default function Home() {
             ) : phase === "counter" ? (
               <span>Counter attack</span>
             ) : (
-              "..."
+              ""
             )}
           </div>
 
@@ -157,7 +156,7 @@ export default function Home() {
             {lastCombatEvent?.playerLabel && (
               <span
                 className="absolute z-50 flex flex-col items-center"
-                style={{ bottom: "100px", left: "60px" }}
+                style={{ bottom: "100px", left: "50px" }}
               >
                 <p className="text-base font-bold ">
                   {lastCombatEvent.playerLabel}
@@ -308,10 +307,10 @@ export default function Home() {
             {phase === "player_attack"
               ? "Hold to Charge Attack"
               : phase === "enemy_attack"
-                ? "Tap to parry"
+                ? "Tap to defend"
                 : phase === "counter"
                   ? "Tap to counter"
-                  : "Get ready to defend!"}
+                  : "Get ready!"}
           </button>
         </div>
       </div>

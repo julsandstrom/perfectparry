@@ -75,7 +75,7 @@ const ATTACK_VARIANTS: PhaseBarConfig[] = [
 
 const PARRY_VARIANTS: PhaseBarConfig[] = [
   {
-    durationMs: 3000,
+    durationMs: 2000,
     zones: [
       {
         id: "secondary",
@@ -98,7 +98,7 @@ const PARRY_VARIANTS: PhaseBarConfig[] = [
     ],
   },
   {
-    durationMs: 3000,
+    durationMs: 2000,
     zones: [
       {
         id: "secondary",
@@ -121,7 +121,7 @@ const PARRY_VARIANTS: PhaseBarConfig[] = [
     ],
   },
   {
-    durationMs: 3000,
+    durationMs: 2000,
     zones: [
       {
         id: "secondary",
@@ -147,7 +147,7 @@ const PARRY_VARIANTS: PhaseBarConfig[] = [
 
 const COUNTER_VARIANTS: PhaseBarConfig[] = [
   {
-    durationMs: 3500,
+    durationMs: 3000,
     zones: [
       {
         id: "secondary",
@@ -170,7 +170,7 @@ const COUNTER_VARIANTS: PhaseBarConfig[] = [
     ],
   },
   {
-    durationMs: 3500,
+    durationMs: 3000,
     zones: [
       {
         id: "secondary",
@@ -193,7 +193,7 @@ const COUNTER_VARIANTS: PhaseBarConfig[] = [
     ],
   },
   {
-    durationMs: 3500,
+    durationMs: 3000,
     zones: [
       {
         id: "secondary",
