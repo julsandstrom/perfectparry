@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 import { useTimingBar } from "./useTimingBar";
-import { ATTACK_BAR, COUNTER_BAR, PARRY_BAR } from "../lib/combatConfig";
+
 import { CombatActionsOptions } from "../types";
 import { evaluateZones } from "../lib/combatMath";
 
@@ -9,6 +9,9 @@ export function useCombatActions({
   engine,
   anim,
   onParryTimeout,
+  attackBar,
+  parryBar,
+  counterBar,
 }: CombatActionsOptions) {
   const pendingAttack = useRef<number | null>(null);
   const pendingCounter = useRef<number | null>(null);
@@ -16,10 +19,10 @@ export function useCombatActions({
 
   const isParry = phase === "enemy_attack";
   const durationMs = isParry
-    ? PARRY_BAR.durationMs
+    ? parryBar.durationMs
     : phase === "counter"
-      ? COUNTER_BAR.durationMs
-      : ATTACK_BAR.durationMs;
+      ? counterBar.durationMs
+      : attackBar.durationMs;
 
   const { progress, start, release, reset, stop } = useTimingBar({
     durationMs,
@@ -53,14 +56,14 @@ export function useCombatActions({
       const snapshot = release();
       setReleaseAt(snapshot);
       pendingAttack.current = snapshot;
-      const { hitResult } = evaluateZones(snapshot, ATTACK_BAR.zones);
+      const { hitResult } = evaluateZones(snapshot, attackBar.zones);
       if (hitResult === "secondary") {
         anim.triggerBowAttack();
       } else {
         anim.triggerWalkIn();
       }
     }
-  }, [phase, release, anim, setReleaseAt]);
+  }, [phase, release, anim, setReleaseAt, attackBar]);
 
   const handleTap = useCallback(() => {
     if (phase === "resolving") return;
@@ -75,7 +78,7 @@ export function useCombatActions({
     if (phase === "counter") {
       const snapshot = release();
       setReleaseAt(snapshot);
-      const { hitResult } = evaluateZones(snapshot, COUNTER_BAR.zones);
+      const { hitResult } = evaluateZones(snapshot, counterBar.zones);
       if (hitResult === "secondary") {
         engine.onCounter(snapshot);
       } else {
@@ -84,7 +87,7 @@ export function useCombatActions({
         anim.triggerCounter();
       }
     }
-  }, [phase, release, engine, anim]);
+  }, [phase, release, engine, anim, counterBar]);
 
   return {
     progress,

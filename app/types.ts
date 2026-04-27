@@ -129,4 +129,7 @@ export interface CombatActionsOptions {
     resetEnemy: () => void;
   };
   onParryTimeout: (progress: number) => void;
+  attackBar: PhaseBarConfig;
+  parryBar: PhaseBarConfig;
+  counterBar: PhaseBarConfig;
 }

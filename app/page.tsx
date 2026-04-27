@@ -6,7 +6,14 @@ import { useCombatActions } from "./hooks/useCombatActions";
 import { useCombatController } from "./hooks/useCombatController";
 import { TimingBar } from "./components/ui/TimingBar";
 import { HpBar } from "./components/ui/HpBar";
-import { ATTACK_BAR, COUNTER_BAR, PARRY_BAR } from "./lib/combatConfig";
+import {
+  DEFAULT_ATTACK_BAR,
+  DEFAULT_COUNTER_BAR,
+  DEFAULT_PARRY_BAR,
+  getAttackBar,
+  getCounterBar,
+  getParryBar,
+} from "./lib/combatConfig";
 import { SpriteIdle } from "./components/Sprites/player/SpriteIdle";
 import { SpriteAttack } from "./components/Sprites/player/SpriteAttack";
 import { SpriteHurt } from "./components/Sprites/player/SpriteHurt";
@@ -14,7 +21,7 @@ import { SpriteParry } from "./components/Sprites/player/SpriteParry";
 import { SpriteCounterAttack } from "./components/Sprites/player/SpriteCounterAttack";
 import VictoryScreen from "./components/gameOver/VictoryScreen";
 import { DefeatScreen } from "./components/gameOver/DefeatScreen";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SpriteEnemyIdle } from "./components/Sprites/enemy/SpriteEnemyIdle";
 import { SpriteWalk } from "./components/Sprites/player/SpriteWalk";
 import { SpriteEnemyAttack } from "./components/Sprites/enemy/SpriteEnemyAttack";
@@ -22,8 +29,14 @@ import { SpriteEnemyWalk } from "./components/Sprites/enemy/SpriteEnemyWalk";
 import { SpriteEnemyHurt } from "./components/Sprites/enemy/SpriteEnemyHurt";
 import { SpriteEnemyDie } from "./components/Sprites/enemy/SpriteEnemyDie";
 import { SpriteDie } from "./components/Sprites/player/SpriteDie";
+import { PhaseBarConfig } from "./types";
 
 export default function Home() {
+  const [attackBar, setAttackBar] =
+    useState<PhaseBarConfig>(DEFAULT_ATTACK_BAR);
+  const [parryBar, setParryBar] = useState<PhaseBarConfig>(DEFAULT_PARRY_BAR);
+  const [counterBar, setCounterBar] =
+    useState<PhaseBarConfig>(DEFAULT_COUNTER_BAR);
   const {
     phase,
 
@@ -40,8 +53,10 @@ export default function Home() {
     resolve,
     () => anim.triggerEnemyDie(),
     () => anim.triggerDie(),
+    attackBar,
+    parryBar,
+    counterBar,
   );
-
   const {
     progress,
     start,
@@ -57,6 +72,9 @@ export default function Home() {
     phase,
     engine,
     anim,
+    attackBar,
+    parryBar,
+    counterBar,
 
     onParryTimeout: (p) => {
       const { event, result } = engine.onParry(p);
@@ -66,14 +84,26 @@ export default function Home() {
     },
   });
 
+  useEffect(() => {
+    setAttackBar(getAttackBar());
+    setParryBar(getParryBar());
+    setCounterBar(getCounterBar());
+  }, []);
+
+  useEffect(() => {
+    if (phase === "player_attack") setAttackBar(getAttackBar());
+    else if (phase === "enemy_attack") setParryBar(getParryBar());
+    else if (phase === "counter") setCounterBar(getCounterBar());
+  }, [phase]);
   const resetUI = useCallback(() => setReleaseAt(null), [setReleaseAt]);
   useCombatController({ phase, start, stop, reset, resetUI });
 
-  const isAttacking = phase === "player_attack";
-  const isParry = phase === "enemy_attack";
-  const isCounter = phase === "counter";
-
-  const barConfig = isParry ? PARRY_BAR : isCounter ? COUNTER_BAR : ATTACK_BAR;
+  const barConfig =
+    (phase === "enemy_attack"
+      ? parryBar
+      : phase === "counter"
+        ? counterBar
+        : attackBar) ?? getAttackBar();
 
   const { lastCombatEvent } = engine;
   const playerLeft =
@@ -152,11 +182,6 @@ export default function Home() {
                 <p className="text-3xl font-bold text-yellow-400">
                   {lastCombatEvent.enemyLabel}
                 </p>
-                {/* {lastCombatEvent.enemyDamage && (
-                  <p className="text-base font-bold text-yellow-400">
-                    -{lastCombatEvent.enemyDamage}
-                  </p>
-                )} */}
               </span>
             )}
             <div

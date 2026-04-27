@@ -7,8 +7,9 @@ import {
   ResolveFn,
   CombatDisplayEvent,
   HitResult,
+  PhaseBarConfig,
 } from "../types";
-import { ATTACK_BAR, COUNTER_BAR, PARRY_BAR } from "../lib/combatConfig";
+
 import {
   ATTACK_LABELS,
   COUNTER_LABELS,
@@ -24,6 +25,9 @@ export function useCombatEngine(
   resolve: ResolveFn,
   onEnemyDie: () => void,
   onPlayerDie: () => void,
+  attackBar: PhaseBarConfig,
+  parryBar: PhaseBarConfig,
+  counterBar: PhaseBarConfig,
 ): CombatEngineState {
   const [playerHp, setPlayerHp] = useState(PLAYER_BASE_HP);
   const [enemyHp, setEnemyHp] = useState(ENEMY_BASE_HP);
@@ -33,7 +37,7 @@ export function useCombatEngine(
   const enemyHpRef = useRef(ENEMY_BASE_HP);
 
   const onAttack = (progress: number): HitResult => {
-    const { hitResult, zone } = evaluateZones(progress, ATTACK_BAR.zones);
+    const { hitResult, zone } = evaluateZones(progress, attackBar.zones);
     setLastCombatEvent({
       playerLabel: ATTACK_LABELS[hitResult],
       enemyLabel: hitResult !== "miss" ? `-${zone!.damage}` : null,
@@ -42,7 +46,7 @@ export function useCombatEngine(
       playerHeal: null,
       hitZoneMin: zone?.min ?? null,
       hitZoneMax: zone?.max ?? null,
-      activeConfig: ATTACK_BAR,
+      activeConfig: attackBar,
     });
     const damage = zone?.damage ?? 0;
     const nextEnemyHp = applyDamage(enemyHpRef.current, damage);
@@ -57,7 +61,7 @@ export function useCombatEngine(
   };
 
   const onParry = (progress: number): ParryOutcome => {
-    const { hitResult, zone } = evaluateZones(progress, PARRY_BAR.zones);
+    const { hitResult, zone } = evaluateZones(progress, parryBar.zones);
     const blocked = hitResult !== "miss";
     const counter = hitResult === "primary" ? 1 : 0;
     setLastCombatEvent({
@@ -69,7 +73,7 @@ export function useCombatEngine(
       playerHeal: zone?.heal ? zone.heal : null,
       hitZoneMin: zone?.min ?? null,
       hitZoneMax: zone?.max ?? null,
-      activeConfig: PARRY_BAR,
+      activeConfig: parryBar,
     });
     if (blocked) {
       if (counter > 0) resolve("counter", 600);
@@ -92,7 +96,7 @@ export function useCombatEngine(
   };
 
   const onCounter = (progress: number): HitResult => {
-    const { hitResult, zone } = evaluateZones(progress, COUNTER_BAR.zones);
+    const { hitResult, zone } = evaluateZones(progress, counterBar.zones);
     setLastCombatEvent({
       playerLabel: COUNTER_LABELS[hitResult],
       enemyLabel: zone?.damage ? `-${zone.damage}` : null,
@@ -101,7 +105,7 @@ export function useCombatEngine(
       playerHeal: zone?.heal ?? null,
       hitZoneMin: zone?.min ?? null,
       hitZoneMax: zone?.max ?? null,
-      activeConfig: COUNTER_BAR,
+      activeConfig: counterBar,
     });
     if (zone?.heal) {
       const nextHp = Math.min(PLAYER_BASE_HP, playerHpRef.current + zone.heal);
