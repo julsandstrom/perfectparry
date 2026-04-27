@@ -15,14 +15,43 @@ const ActionButton = ({
   onPointerUp,
   onTap,
 }: ActionButtonProps) => {
+  const isHoldPhase = phase === "player_attack";
+  const isTapPhase = phase === "enemy_attack" || phase === "counter";
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (!isHoldPhase) return;
+
+    e.currentTarget.setPointerCapture(e.pointerId);
+    onPointerDown();
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (!isHoldPhase) return;
+    e.currentTarget.releasePointerCapture(e.pointerId);
+    onPointerUp();
+  };
+
+  const handlePointerCancel = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (!isHoldPhase) return;
+
+    e.currentTarget.releasePointerCapture(e.pointerId);
+    onPointerUp();
+  };
+
+  const handleClick = () => {
+    if (!isTapPhase) return;
+    onTap();
+  };
+
   return (
-    <div className=" font-girassol flex flex-col items-center pb-[env(safe-area-inset-bottom)] ">
+    <div className="font-girassol flex flex-col items-center pb-[env(safe-area-inset-bottom)]">
       <button
         disabled={frozen || phase === "resolving"}
-        className="w-40 h-40  flex items-center justify-center text-center text-base text-[#F1F1F1] font-semibold bg-[#1F1F1F] hover:bg-zinc-700 active:bg-zinc-600 rounded-full transition-all  select-none disabled:opacity-50"
-        onPointerDown={onPointerDown}
-        onPointerUp={onPointerUp}
-        onClick={onTap}
+        className="w-40 h-40 flex items-center justify-center text-center text-base text-[#F1F1F1] font-semibold bg-[#1F1F1F] hover:bg-zinc-700 active:bg-zinc-600 rounded-full transition-all select-none disabled:opacity-50 touch-none"
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
+        onClick={handleClick}
       >
         {phase === "player_attack"
           ? "Hold and release"
