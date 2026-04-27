@@ -134,7 +134,7 @@ export default function Home() {
           <DefeatScreen />
         </div>
       )}
-      <div className="flex flex-col flex-1 max-w-105 w-full mx-auto">
+      <div className="flex flex-col  max-w-105 w-full mx-auto">
         {" "}
         <h1 className="pt-2  font-girassol text-base text-[#FFEBDA] ">
           Perfect Parry
@@ -142,8 +142,8 @@ export default function Home() {
         <span className="font-extralight text-xs text-white/70">
           Precision beats power
         </span>
-        <div className="flex flex-col w-full max-w-105 flex-1  mt-20">
-          <div className="flex justify-center pb-2 pt-20 font-girassol text-5xl text-[#FFEBDA]">
+        <div className="flex flex-col w-full max-w-105 mt-10">
+          <div className="flex justify-center pb-2  font-girassol text-5xl text-[#FFEBDA]">
             {phase === "player_attack" ? (
               <span>Attack</span>
             ) : phase === "enemy_attack" ? (
@@ -155,7 +155,7 @@ export default function Home() {
             )}
           </div>
 
-          <div className="relative w-full h-50 ">
+          <div className="relative w-full h-40 ">
             {lastCombatEvent?.playerLabel && (
               <span
                 className="absolute z-50 flex flex-col items-center"
@@ -299,7 +299,7 @@ export default function Home() {
             frozen={frozen}
           />
         </div>
-        <div className="flex-1 font-girassol flex flex-col items-end pb-[env(safe-area-inset-bottom)] m-2">
+        <div className="flex-1 font-girassol flex flex-col items-end pb-[env(safe-area-inset-bottom)] m-2 mt-20">
           <button
             disabled={frozen || phase === "resolving"}
             className="w-full py-6 text-xl text-black font-semibold bg-[#CDB9A8] hover:bg-zinc-700 active:bg-zinc-600 rounded-xs transition-all active:scale-[0.985] select-none disabled:opacity-50"
