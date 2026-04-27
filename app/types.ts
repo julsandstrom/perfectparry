@@ -35,7 +35,8 @@ export interface TimingConfig {
 }
 
 export interface CombatDisplayEvent {
-  label: string;
+  playerLabel: string | null;
+  enemyLabel: string | null;
   playerDamage: number | null;
   enemyDamage: number | null;
   playerHeal: number | null;

@@ -7,7 +7,6 @@ import { useCombatController } from "./hooks/useCombatController";
 import { TimingBar } from "./components/ui/TimingBar";
 import { HpBar } from "./components/ui/HpBar";
 import { ATTACK_BAR, COUNTER_BAR, PARRY_BAR } from "./lib/combatConfig";
-import { RESULT_LABELS } from "./lib/resultOutput";
 import { SpriteIdle } from "./components/Sprites/player/SpriteIdle";
 import { SpriteAttack } from "./components/Sprites/player/SpriteAttack";
 import { SpriteHurt } from "./components/Sprites/player/SpriteHurt";
@@ -125,22 +124,39 @@ export default function Home() {
           </div>
 
           <div className="relative w-full h-50 ">
-            {lastCombatEvent && (
+            {lastCombatEvent?.playerLabel && (
               <span
-                className="absolute z-50 text-3xl font-bold flex flex-col items-center"
-                style={{
-                  bottom: "100px",
-                  right: lastCombatEvent.playerDamage ? undefined : "50px",
-                  left: lastCombatEvent.playerDamage ? "50px" : undefined,
-                }}
+                className="absolute z-50 flex flex-col items-center"
+                style={{ bottom: "100px", left: "60px" }}
               >
-                <p className="text-center text-base font-bold text-yellow-400">
-                  {lastCombatEvent.label}
+                <p className="text-base font-bold ">
+                  {lastCombatEvent.playerLabel}
                 </p>
-                {lastCombatEvent.enemyDamage &&
-                  `-${lastCombatEvent.enemyDamage}`}
-                {lastCombatEvent.playerDamage &&
-                  `-${lastCombatEvent.playerDamage}`}
+                {lastCombatEvent.playerDamage && (
+                  <p className="text-3xl font-bold text-yellow-400">
+                    -{lastCombatEvent.playerDamage}
+                  </p>
+                )}
+                {lastCombatEvent.playerHeal && (
+                  <p className="text-3xl font-bold text-green-400">
+                    +{lastCombatEvent.playerHeal}
+                  </p>
+                )}
+              </span>
+            )}
+            {lastCombatEvent?.enemyLabel && (
+              <span
+                className="absolute z-50 flex flex-col items-center"
+                style={{ bottom: "100px", right: "80px" }}
+              >
+                <p className="text-3xl font-bold text-yellow-400">
+                  {lastCombatEvent.enemyLabel}
+                </p>
+                {/* {lastCombatEvent.enemyDamage && (
+                  <p className="text-base font-bold text-yellow-400">
+                    -{lastCombatEvent.enemyDamage}
+                  </p>
+                )} */}
               </span>
             )}
             <div

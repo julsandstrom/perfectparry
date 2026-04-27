@@ -9,6 +9,11 @@ import {
   HitResult,
 } from "../types";
 import { ATTACK_BAR, COUNTER_BAR, PARRY_BAR } from "../lib/combatConfig";
+import {
+  ATTACK_LABELS,
+  COUNTER_LABELS,
+  PARRY_LABELS,
+} from "../lib/resultOutput";
 
 const ENEMY_BASE_HP = 40;
 const PLAYER_BASE_HP = 20;
@@ -30,7 +35,8 @@ export function useCombatEngine(
   const onAttack = (progress: number): HitResult => {
     const { hitResult, zone } = evaluateZones(progress, ATTACK_BAR.zones);
     setLastCombatEvent({
-      label: hitResult === "miss" ? "Missed!" : `+${zone!.damage} dmg`,
+      playerLabel: ATTACK_LABELS[hitResult],
+      enemyLabel: hitResult !== "miss" ? `-${zone!.damage}` : null,
       enemyDamage: zone?.damage ?? null,
       playerDamage: null,
       playerHeal: null,
@@ -55,14 +61,12 @@ export function useCombatEngine(
     const blocked = hitResult !== "miss";
     const counter = hitResult === "primary" ? 1 : 0;
     setLastCombatEvent({
-      label: blocked
-        ? counter
-          ? "Perfect Parry!"
-          : "Blocked!"
-        : "You've been hit!",
-      enemyDamage: null,
-      playerDamage: !blocked ? ENEMY_ATTACK_DAMAGE : null,
-      playerHeal: null,
+      playerLabel: PARRY_LABELS[hitResult],
+      enemyLabel: null,
+      enemyDamage: zone?.damage ? zone.damage : null,
+      playerDamage:
+        !blocked && ENEMY_ATTACK_DAMAGE > 0 ? ENEMY_ATTACK_DAMAGE : null,
+      playerHeal: zone?.heal ? zone.heal : null,
       hitZoneMin: zone?.min ?? null,
       hitZoneMax: zone?.max ?? null,
       activeConfig: PARRY_BAR,
@@ -90,12 +94,8 @@ export function useCombatEngine(
   const onCounter = (progress: number): HitResult => {
     const { hitResult, zone } = evaluateZones(progress, COUNTER_BAR.zones);
     setLastCombatEvent({
-      label:
-        hitResult === "miss"
-          ? "Missed!"
-          : zone!.heal > 0
-            ? `+${zone!.heal} hp`
-            : `+${zone!.damage} dmg`,
+      playerLabel: COUNTER_LABELS[hitResult],
+      enemyLabel: zone?.damage ? `-${zone.damage}` : null,
       enemyDamage: zone?.damage ?? null,
       playerDamage: null,
       playerHeal: zone?.heal ?? null,
