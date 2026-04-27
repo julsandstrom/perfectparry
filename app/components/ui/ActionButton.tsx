@@ -43,6 +43,10 @@ const ActionButton = ({
     onTap();
   };
 
+  const handleContextMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+  };
+
   return (
     <div className="font-girassol flex flex-col items-center pb-[env(safe-area-inset-bottom)]">
       <button
@@ -52,6 +56,7 @@ const ActionButton = ({
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerCancel}
         onClick={handleClick}
+        onContextMenu={handleContextMenu}
       >
         {phase === "player_attack"
           ? "Hold and release"
