@@ -19,7 +19,6 @@ import {
 import { CONFUSED_SKELETON } from "../lib/combatConfig";
 
 const PLAYER_BASE_HP = 20;
-const ENEMY_ATTACK_DAMAGE = 10;
 
 export function useCombatEngine(
   transition: TransitionFn,

@@ -3,6 +3,7 @@ import { Phase, ResolveFn, HitResult, TransitionFn } from "../types";
 
 export function useCombatPhase() {
   const [phase, setPhase] = useState<Phase>("player_attack");
+  const [showEndScreen, setShowEndScreen] = useState(false);
   const [result, setResult] = useState<HitResult | null>(null);
   const [resultContext, setResultContext] = useState<"attack" | "parry" | null>(
     null,
@@ -24,6 +25,9 @@ export function useCombatPhase() {
       setPhase((current) => {
         if (current === "victory" || current === "defeat") return current;
         setResult(null);
+        if (to === "victory" || to === "defeat") {
+          setTimeout(() => setShowEndScreen(true), 1000);
+        }
         return to;
       });
     };
@@ -49,6 +53,7 @@ export function useCombatPhase() {
 
   return {
     phase,
+    showEndScreen,
     result,
     setResult,
     transition,

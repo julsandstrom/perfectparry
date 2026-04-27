@@ -25,8 +25,8 @@ export const TimingBar = ({
 
   return (
     <div
-      className="relative h-16 w-full rounded-xs"
-      style={{ backgroundColor: frozen && missed ? "#ef4444" : "#CBA788" }}
+      className="relative h-24 w-full"
+      style={{ backgroundColor: frozen && missed ? "#DB3939" : "#414141" }}
     >
       {displayConfig.zones.map((zone) => (
         <AttackSelectionBar
@@ -43,7 +43,7 @@ export const TimingBar = ({
         />
       ))}
       <div
-        className="absolute top-0 bottom-0 left-0 bg-[#151515] z-50"
+        className="absolute top-0 bottom-0 left-0 bg-[#e2e2e2] z-50"
         style={{ width: `${visualProgress * 100}%` }}
       />
     </div>

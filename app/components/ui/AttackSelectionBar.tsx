@@ -35,14 +35,14 @@ const AttackSelectionBar = ({
 
       <div
         key={highlight ? "highlighted" : "normal"}
-        className={`absolute top-0 bottom-0 z-10 ${highlight ? "bar-shake" : ""}`}
+        className={` absolute top-0 bottom-0 z-10 ${highlight ? "bar-shake" : ""}`}
         style={{
           left: `${min * 100}%`,
           width: `${(max - min) * 100}%`,
-          backgroundColor: highlight ? "#0DBA39" : "#FFEBDA",
+          backgroundColor: highlight ? "#0DBA39" : "#D9D9D9",
           boxShadow: highlight
-            ? "0px 0px 8px rgba(74,222,128,0.6)"
-            : "0px 0px 5px rgba(0,0,0,0.25)",
+            ? "1px 0px 0px rgba(74,222,128,0.6)"
+            : "1px 0px 0px rgba(0,0,0,0.25)",
         }}
       />
 

@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 
-const FRAME_WIDTH = 96;
-const FRAME_HEIGHT = 64;
-const FRAME_COUNT = 8;
+const FRAME_WIDTH = 102;
+const FRAME_HEIGHT = 102;
+const FRAME_COUNT = 15;
 const SCALE = 2;
 
 export function SpriteEnemyIdle() {
@@ -21,12 +21,11 @@ export function SpriteEnemyIdle() {
       style={{
         width: FRAME_WIDTH * SCALE,
         height: FRAME_HEIGHT * SCALE,
-        backgroundImage: "url('/Skeleton_01_White_Idle.png')",
+        backgroundImage: "url('/Reveal.png')",
         backgroundRepeat: "no-repeat",
         backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * SCALE}px ${FRAME_HEIGHT * SCALE}px`,
         backgroundPosition: `-${frame * FRAME_WIDTH * SCALE}px 0px`,
         imageRendering: "pixelated",
-        filter: "brightness(0.6)",
         transform: "scaleX(-1)",
       }}
     />
