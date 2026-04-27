@@ -12,7 +12,7 @@ import { ATTACK_BAR, COUNTER_BAR, PARRY_BAR } from "../lib/combatConfig";
 
 const ENEMY_BASE_HP = 40;
 const PLAYER_BASE_HP = 20;
-const ENEMY_ATTACK_DAMAGE = 20;
+const ENEMY_ATTACK_DAMAGE = 10;
 
 export function useCombatEngine(
   transition: TransitionFn,

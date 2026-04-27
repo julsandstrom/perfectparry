@@ -51,6 +51,7 @@ function enemyReducer(
     case "DIE":
       return "die";
     case "RESET":
+      if (state === "die") return state;
       return "idle";
     default:
       return state;
@@ -78,6 +79,7 @@ export function useCombatAnimations() {
 
   const pendingEnemyResult = useRef<"parry" | "hurt">("hurt");
   const playerDeadRef = useRef(false);
+  const enemyDeadRef = useRef(false);
 
   // --- player triggers ---
   const triggerWalkIn = useCallback(() => {
@@ -140,16 +142,20 @@ export function useCombatAnimations() {
   }, [triggerHurt]);
 
   const triggerEnemyHurt = useCallback(() => {
+    if (enemyDeadRef.current) return;
     setEnemyHurtTrigger((t) => t + 1);
     dispatchEnemy({ type: "HURT" });
   }, []);
 
   const triggerEnemyWalkOut = useCallback(() => {
+    if (enemyDeadRef.current) return;
     setEnemyWalkOutTrigger((t) => t + 1);
     dispatchEnemy({ type: "WALK_OUT" });
   }, []);
 
   const triggerEnemyDie = useCallback(() => {
+    console.log("triggerEnemyDie called, enemyDeadRef:", enemyDeadRef.current);
+    enemyDeadRef.current = true;
     setEnemyDieTrigger((t) => t + 1);
     dispatchEnemy({ type: "DIE" });
   }, []);

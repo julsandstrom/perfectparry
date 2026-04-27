@@ -43,7 +43,7 @@ export const TimingBar = ({
         />
       ))}
       <div
-        className="absolute top-0 bottom-0 left-0 bg-[#151515] z-0"
+        className="absolute top-0 bottom-0 left-0 bg-[#151515] z-50"
         style={{ width: `${visualProgress * 100}%` }}
       />
     </div>
