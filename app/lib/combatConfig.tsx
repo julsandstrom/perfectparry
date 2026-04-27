@@ -1,5 +1,10 @@
 import { BowArrow, Fish, Shield, Sword, Swords } from "lucide-react";
-import { PhaseBarConfig } from "../types";
+import { EnemyConfig, PhaseBarConfig } from "../types";
+
+export const CONFUSED_SKELETON: EnemyConfig = {
+  baseHp: 40,
+  attackDamages: [6, 9, 7],
+};
 
 const ATTACK_VARIANTS: PhaseBarConfig[] = [
   {

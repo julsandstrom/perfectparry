@@ -8,6 +8,7 @@ import {
   CombatDisplayEvent,
   HitResult,
   PhaseBarConfig,
+  EnemyConfig,
 } from "../types";
 
 import {
@@ -15,8 +16,8 @@ import {
   COUNTER_LABELS,
   PARRY_LABELS,
 } from "../lib/resultOutput";
+import { CONFUSED_SKELETON } from "../lib/combatConfig";
 
-const ENEMY_BASE_HP = 40;
 const PLAYER_BASE_HP = 20;
 const ENEMY_ATTACK_DAMAGE = 10;
 
@@ -28,19 +29,49 @@ export function useCombatEngine(
   attackBar: PhaseBarConfig,
   parryBar: PhaseBarConfig,
   counterBar: PhaseBarConfig,
+  enemyConfig: EnemyConfig = CONFUSED_SKELETON,
 ): CombatEngineState {
   const [playerHp, setPlayerHp] = useState(PLAYER_BASE_HP);
-  const [enemyHp, setEnemyHp] = useState(ENEMY_BASE_HP);
+  const [enemyHp, setEnemyHp] = useState(enemyConfig.baseHp);
+  const enemyHpRef = useRef(enemyConfig.baseHp);
+
   const [lastCombatEvent, setLastCombatEvent] =
     useState<CombatDisplayEvent | null>(null);
   const playerHpRef = useRef(PLAYER_BASE_HP);
-  const enemyHpRef = useRef(ENEMY_BASE_HP);
+
+  const pickEnemyDamage = () => {
+    const damages = enemyConfig.attackDamages;
+    return damages[Math.floor(Math.random() * damages.length)];
+  };
 
   const onAttack = (progress: number): HitResult => {
     const { hitResult, zone } = evaluateZones(progress, attackBar.zones);
+    if (hitResult === "miss") {
+      const enemyDamageOnMiss = pickEnemyDamage();
+      setLastCombatEvent({
+        playerLabel: ATTACK_LABELS["miss"],
+        enemyLabel: null,
+        enemyDamage: null,
+        playerDamage: enemyDamageOnMiss,
+        playerHeal: null,
+        hitZoneMin: null,
+        hitZoneMax: null,
+        activeConfig: attackBar,
+      });
+      const nextHp = applyDamage(playerHpRef.current, enemyDamageOnMiss);
+      playerHpRef.current = nextHp;
+      if (nextHp <= 0) {
+        setPlayerHp(0);
+        onPlayerDie();
+      } else {
+        setTimeout(() => setPlayerHp(nextHp), 500);
+        resolve("enemy_attack");
+      }
+      return hitResult;
+    }
     setLastCombatEvent({
       playerLabel: ATTACK_LABELS[hitResult],
-      enemyLabel: hitResult !== "miss" ? `-${zone!.damage}` : null,
+      enemyLabel: `-${zone!.damage}`,
       enemyDamage: zone?.damage ?? null,
       playerDamage: null,
       playerHeal: null,
@@ -64,12 +95,13 @@ export function useCombatEngine(
     const { hitResult, zone } = evaluateZones(progress, parryBar.zones);
     const blocked = hitResult !== "miss";
     const counter = hitResult === "primary" ? 1 : 0;
+    const enemyDamageThisHit = blocked ? 0 : pickEnemyDamage();
+
     setLastCombatEvent({
       playerLabel: PARRY_LABELS[hitResult],
       enemyLabel: null,
       enemyDamage: zone?.damage ? zone.damage : null,
-      playerDamage:
-        !blocked && ENEMY_ATTACK_DAMAGE > 0 ? ENEMY_ATTACK_DAMAGE : null,
+      playerDamage: enemyDamageThisHit > 0 ? enemyDamageThisHit : null,
       playerHeal: zone?.heal ? zone.heal : null,
       hitZoneMin: zone?.min ?? null,
       hitZoneMax: zone?.max ?? null,
@@ -83,7 +115,7 @@ export function useCombatEngine(
         result: hitResult,
       };
     }
-    const nextHp = applyDamage(playerHpRef.current, ENEMY_ATTACK_DAMAGE);
+    const nextHp = applyDamage(playerHpRef.current, enemyDamageThisHit);
     playerHpRef.current = nextHp;
     if (nextHp <= 0) {
       setPlayerHp(0);

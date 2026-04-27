@@ -141,6 +141,12 @@ export function useCombatAnimations() {
     dispatchEnemy({ type: "ATTACK" });
   }, [triggerHurt]);
 
+  const triggerEnemyCounterAttack = useCallback(() => {
+    pendingEnemyResult.current = "parry";
+    setEnemyAttackTrigger((t) => t + 1);
+    dispatchEnemy({ type: "ATTACK" });
+  }, []);
+
   const triggerEnemyHurt = useCallback(() => {
     if (enemyDeadRef.current) return;
     setEnemyHurtTrigger((t) => t + 1);
@@ -211,6 +217,7 @@ export function useCombatAnimations() {
     triggerEnemyWalkOut,
     triggerEnemyDie,
     enemyDieTrigger,
+    triggerEnemyCounterAttack,
     resetEnemy,
   };
 }

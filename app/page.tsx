@@ -7,6 +7,7 @@ import { useCombatController } from "./hooks/useCombatController";
 import { TimingBar } from "./components/ui/TimingBar";
 import { HpBar } from "./components/ui/HpBar";
 import {
+  CONFUSED_SKELETON,
   DEFAULT_ATTACK_BAR,
   DEFAULT_COUNTER_BAR,
   DEFAULT_PARRY_BAR,
@@ -58,7 +59,9 @@ export default function Home() {
     attackBar,
     parryBar,
     counterBar,
+    CONFUSED_SKELETON,
   );
+
   const {
     progress,
     start,

@@ -13,6 +13,11 @@ export type ResolveFn = (to: Phase, holdMs?: number) => void;
 
 export type TransitionFn = (to: Phase, delayMs?: number) => void;
 
+export interface EnemyConfig {
+  baseHp: number;
+  attackDamages: [number, number, number];
+}
+
 export interface ZoneConfig {
   id: ZoneId;
   min: number;
@@ -122,6 +127,8 @@ export interface CombatActionsOptions {
     triggerWalkOut: () => void;
     triggerHurt: () => void;
     triggerEnemyHurt: () => void;
+    triggerEnemyAttackAnim: () => void;
+    triggerEnemyCounterAttack: () => void;
     triggerParry: () => void;
     triggerCounter: () => void;
     triggerEnemyAttack: (outcome: "parry" | "hurt") => void;

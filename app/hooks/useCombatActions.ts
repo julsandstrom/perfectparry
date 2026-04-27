@@ -16,6 +16,7 @@ export function useCombatActions({
   const pendingAttack = useRef<number | null>(null);
   const pendingCounter = useRef<number | null>(null);
   const [releaseAt, setReleaseAt] = useState<number | null>(null);
+  const suppressPlayerHurt = useRef(false);
 
   const isParry = phase === "enemy_attack";
   const durationMs = isParry
@@ -38,7 +39,11 @@ export function useCombatActions({
     if (pendingAttack.current !== null) {
       const result = engine.onAttack(pendingAttack.current);
       pendingAttack.current = null;
-      anim.triggerEnemyHurt();
+      if (result === "miss") {
+        anim.triggerEnemyCounterAttack();
+      } else {
+        anim.triggerEnemyHurt();
+      }
     }
     if (pendingCounter.current !== null) {
       const result = engine.onCounter(pendingCounter.current);
