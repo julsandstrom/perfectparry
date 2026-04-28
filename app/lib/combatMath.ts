@@ -2,7 +2,7 @@ import { ZoneConfig, HitResult } from "../types";
 
 export function evaluateZones(
   progress: number,
-  zones: [ZoneConfig, ZoneConfig],
+  zones: ZoneConfig[],
 ): {
   hitResult: HitResult;
   zone: ZoneConfig | null;

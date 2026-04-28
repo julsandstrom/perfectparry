@@ -47,12 +47,10 @@ export function BattleScene({
 
   return (
     <>
+      {" "}
       <div className="relative w-full h-32">
         {lastCombatEvent?.playerLabel && (
-          <span
-            className="absolute z-60 flex flex-col items-center"
-            style={{ bottom: "105px", left: "35px" }}
-          >
+          <span className="absolute z-60 flex flex-col items-center bottom-[82%] left-8">
             <p className="text-xl font-bold text-white">
               {lastCombatEvent.playerLabel}
             </p>
@@ -63,26 +61,17 @@ export function BattleScene({
           </span>
         )}
         {playerStatus === "critical" && (
-          <span
-            className="absolute z-60 flex flex-col items-center"
-            style={{ bottom: "80px", left: "30px" }}
-          >
-            <p className="text-base text-[#FF7373]">Critically wounded!</p>
+          <span className="absolute z-60 flex flex-col items-center bottom-[60%] left-8">
+            <p className="text-base text-[#ffffff] ">Critically wounded!</p>
           </span>
         )}
         {playerStatus === "low" && (
-          <span
-            className="absolute z-60 flex flex-col items-center"
-            style={{ bottom: "70px", left: "50px" }}
-          >
-            <p className="text-base  text-[#FF7373]">need healing</p>
+          <span className="absolute z-60 flex flex-col items-center bottom-[60%] left-8">
+            <p className="text-base  text-[#ffffff]">need healing</p>
           </span>
         )}
         {lastCombatEvent?.enemyLabel && (
-          <span
-            className="absolute z-50 flex flex-col items-center"
-            style={{ bottom: "90px", right: "80px" }}
-          >
+          <span className="absolute z-60 flex flex-col items-center bottom-[70%] right-20">
             <p className="text-xl font-bold text-[#fa7474]">
               {lastCombatEvent.enemyLabel}
             </p>

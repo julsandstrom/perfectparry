@@ -60,15 +60,18 @@ export function useCombatActions({
     if (phase === "player_attack") {
       const snapshot = release();
       setReleaseAt(snapshot);
-      pendingAttack.current = snapshot;
-      const { hitResult } = evaluateZones(snapshot, attackBar.zones);
-      if (hitResult === "secondary") {
+      const { zone } = evaluateZones(snapshot, attackBar.zones);
+      if (zone?.outcome === "arrow") {
+        pendingAttack.current = snapshot;
         anim.triggerBowAttack();
+      } else if (zone?.outcome === "heal") {
+        engine.onAttack(snapshot);
       } else {
+        pendingAttack.current = snapshot;
         anim.triggerWalkIn();
       }
     }
-  }, [phase, release, anim, setReleaseAt, attackBar]);
+  }, [phase, release, anim, setReleaseAt, attackBar, engine]);
 
   const handleTap = useCallback(() => {
     if (phase === "resolving") return;

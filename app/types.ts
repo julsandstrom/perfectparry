@@ -15,6 +15,14 @@ export type TransitionFn = (to: Phase, delayMs?: number) => void;
 
 export type PlayerStatus = "healthy" | "low" | "critical" | null;
 
+export type ZoneOutcome =
+  | "sword"
+  | "arrow"
+  | "heal"
+  | "block"
+  | "parry"
+  | "miss";
+
 export interface EnemyConfig {
   baseHp: number;
   attackDamages: [number, number, number];
@@ -23,6 +31,7 @@ export interface EnemyConfig {
 export interface ZoneConfig {
   id: ZoneId;
   min: number;
+  outcome: ZoneOutcome;
   max: number;
   icon: ReactNode;
   label: string;
@@ -32,7 +41,7 @@ export interface ZoneConfig {
 
 export interface PhaseBarConfig {
   durationMs: number;
-  zones: [ZoneConfig, ZoneConfig];
+  zones: ZoneConfig[];
 }
 
 export interface TimingConfig {

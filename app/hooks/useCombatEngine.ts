@@ -57,11 +57,16 @@ export function useCombatEngine(
     if (hitResult === "miss") {
       const enemyDamageOnMiss = pickEnemyDamage();
       setLastCombatEvent({
-        playerLabel: ATTACK_LABELS["miss"],
-        enemyLabel: null,
+        playerLabel:
+          hitResult === "miss"
+            ? ATTACK_LABELS["miss"]
+            : ATTACK_LABELS[zone!.outcome],
+        enemyLabel: zone?.damage ? `-${zone.damage}` : null,
+        playerHeal: zone?.heal ?? null,
+
         enemyDamage: null,
         playerDamage: enemyDamageOnMiss,
-        playerHeal: null,
+
         hitZoneMin: null,
         hitZoneMax: null,
         activeConfig: attackBar,
@@ -69,6 +74,7 @@ export function useCombatEngine(
       });
       const nextHp = applyDamage(playerHpRef.current, enemyDamageOnMiss);
       playerHpRef.current = nextHp;
+
       if (nextHp <= 0) {
         setPlayerHp(0);
         onPlayerDie();
@@ -79,16 +85,21 @@ export function useCombatEngine(
       return hitResult;
     }
     setLastCombatEvent({
-      playerLabel: ATTACK_LABELS[hitResult],
-      enemyLabel: `-${zone!.damage}`,
+      playerLabel: ATTACK_LABELS[zone!.outcome],
+      enemyLabel: zone?.damage ? `-${zone.damage}` : null,
       enemyDamage: zone?.damage ?? null,
       playerDamage: null,
-      playerHeal: null,
+      playerHeal: zone?.heal ?? null,
       hitZoneMin: zone?.min ?? null,
       hitZoneMax: zone?.max ?? null,
       activeConfig: attackBar,
       eventPhase: "player_attack",
     });
+    if (zone?.heal) {
+      const nextHp = Math.min(PLAYER_BASE_HP, playerHpRef.current + zone.heal);
+      playerHpRef.current = nextHp;
+      setPlayerHp(nextHp);
+    }
     const damage = zone?.damage ?? 0;
     const nextEnemyHp = applyDamage(enemyHpRef.current, damage);
     enemyHpRef.current = nextEnemyHp;

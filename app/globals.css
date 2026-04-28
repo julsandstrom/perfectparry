@@ -23,7 +23,41 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-neohellenic);
+  margin: 0;
+  padding: 0;
 }
 .font-girassol {
   font-family: var(--font-girassol);
+}
+@keyframes lightning-flash {
+  0% {
+    opacity: 0;
+  }
+  2% {
+    opacity: 1;
+  }
+  4% {
+    opacity: 0;
+  }
+  6% {
+    opacity: 0.85;
+  }
+  8% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@utility animate-lightning-flash {
+  animation: lightning-flash 2s ease-out forwards;
+}
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
 }
