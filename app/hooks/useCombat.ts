@@ -37,6 +37,18 @@ export function useCombat(enemyConfig: EnemyConfig) {
     enemyConfig,
   );
 
+  useEffect(() => {
+    if (
+      phase === "player_attack" ||
+      phase === "enemy_attack" ||
+      phase === "counter" ||
+      phase === "victory" ||
+      phase === "defeat"
+    ) {
+      engine.clearLastCombatEvent();
+    }
+  }, [phase]);
+
   const actions = useCombatActions({
     phase,
     engine,

@@ -1,5 +1,10 @@
 import { useCombatAnimations } from "@/app/hooks/useCombatAnimations";
-import { CombatDisplayEvent, TransitionFn } from "@/app/types";
+import {
+  CombatDisplayEvent,
+  Phase,
+  PlayerStatus,
+  TransitionFn,
+} from "@/app/types";
 import { SpriteWalk } from "../Sprites/player/SpriteWalk";
 import { SpriteAttack } from "../Sprites/player/SpriteAttack";
 import { SpriteCounterAttack } from "../Sprites/player/SpriteCounterAttack";
@@ -18,6 +23,8 @@ interface BattleSceneProps {
   lastCombatEvent: CombatDisplayEvent | null;
   onHitFrame: () => void;
   transition: TransitionFn;
+  playerStatus: PlayerStatus;
+  phase: Phase;
 }
 
 export function BattleScene({
@@ -25,6 +32,8 @@ export function BattleScene({
   lastCombatEvent,
   onHitFrame,
   transition,
+  playerStatus,
+  phase,
 }: BattleSceneProps) {
   const playerLeft =
     anim.playerAnim === "walk_in" || anim.playerAnim === "attack"
@@ -38,22 +47,35 @@ export function BattleScene({
 
   return (
     <>
-      <div className="relative w-full h-28">
+      <div className="relative w-full h-32">
         {lastCombatEvent?.playerLabel && (
+          <span
+            className="absolute z-60 flex flex-col items-center"
+            style={{ bottom: "105px", left: "35px" }}
+          >
+            <p className="text-xl font-bold text-white">
+              {lastCombatEvent.playerLabel}
+            </p>
+            {lastCombatEvent.playerHeal != null &&
+              lastCombatEvent.playerHeal > 0 && (
+                <p className="text-xl font-bold text-[#32c732]">Healed!</p>
+              )}
+          </span>
+        )}
+        {playerStatus === "critical" && (
+          <span
+            className="absolute z-60 flex flex-col items-center"
+            style={{ bottom: "80px", left: "30px" }}
+          >
+            <p className="text-base text-[#FF7373]">Critically wounded!</p>
+          </span>
+        )}
+        {playerStatus === "low" && (
           <span
             className="absolute z-60 flex flex-col items-center"
             style={{ bottom: "70px", left: "50px" }}
           >
-            <p className="text-base font-bold text-white">
-              {lastCombatEvent.playerLabel}
-            </p>
-
-            {lastCombatEvent.playerHeal != null &&
-              lastCombatEvent.playerHeal > 0 && (
-                <p className="text-xl font-bold text-[#32c732] ">
-                  {/* {lastCombatEvent.playerHeal} */} Healed!
-                </p>
-              )}
+            <p className="text-base  text-[#FF7373]">need healing</p>
           </span>
         )}
         {lastCombatEvent?.enemyLabel && (
@@ -156,9 +178,3 @@ export function BattleScene({
     </>
   );
 }
-// {lastCombatEvent.playerDamage != null &&
-//         lastCombatEvent.playerDamage > 0 && (
-//           <p className="text-xl font-bold text-[#ffffff]">
-//             {/* -{lastCombatEvent.playerDamage} */} I've been hit!
-//           </p>
-//         )}

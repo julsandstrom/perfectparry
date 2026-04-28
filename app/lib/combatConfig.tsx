@@ -3,7 +3,7 @@ import { EnemyConfig, PhaseBarConfig } from "../types";
 
 export const CONFUSED_SKELETON: EnemyConfig = {
   baseHp: 30,
-  attackDamages: [6, 9, 7],
+  attackDamages: [6, 6, 6],
 };
 
 const ATTACK_VARIANTS: PhaseBarConfig[] = [
@@ -159,9 +159,9 @@ const COUNTER_VARIANTS: PhaseBarConfig[] = [
         min: 0.35,
         max: 0.46,
         icon: <Fish size={20} fill="black" />,
-        label: "+13hp",
+        label: "heal",
         damage: 0,
-        heal: 13,
+        heal: 20,
       },
       {
         id: "primary",
@@ -182,9 +182,9 @@ const COUNTER_VARIANTS: PhaseBarConfig[] = [
         min: 0.1,
         max: 0.22,
         icon: <Fish size={20} fill="black" />,
-        label: "+10hp",
+        label: "heal",
         damage: 0,
-        heal: 10,
+        heal: 20,
       },
       {
         id: "primary",
@@ -205,9 +205,9 @@ const COUNTER_VARIANTS: PhaseBarConfig[] = [
         min: 0.5,
         max: 0.61,
         icon: <Fish size={20} fill="black" />,
-        label: "+12hp",
+        label: "heal",
         damage: 0,
-        heal: 12,
+        heal: 20,
       },
       {
         id: "primary",

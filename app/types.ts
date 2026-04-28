@@ -13,6 +13,8 @@ export type ResolveFn = (to: Phase, holdMs?: number) => void;
 
 export type TransitionFn = (to: Phase, delayMs?: number) => void;
 
+export type PlayerStatus = "healthy" | "low" | "critical" | null;
+
 export interface EnemyConfig {
   baseHp: number;
   attackDamages: [number, number, number];
@@ -48,6 +50,7 @@ export interface CombatDisplayEvent {
   hitZoneMin: number | null;
   hitZoneMax: number | null;
   activeConfig: PhaseBarConfig;
+  eventPhase: Phase;
 }
 
 export type CombatEvent =
@@ -63,11 +66,13 @@ export interface ParryOutcome {
 
 export interface CombatEngineState {
   playerHp: number;
+  playerStatus: PlayerStatus;
   enemyHp: number;
   onAttack: (progress: number) => HitResult;
   onParry: (progress: number) => ParryOutcome;
   onCounter: (progress: number) => HitResult;
   lastCombatEvent: CombatDisplayEvent | null;
+  clearLastCombatEvent: () => void;
 }
 
 export type PlayerAnimState =

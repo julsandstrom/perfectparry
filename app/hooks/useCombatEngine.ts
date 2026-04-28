@@ -9,6 +9,7 @@ import {
   HitResult,
   PhaseBarConfig,
   EnemyConfig,
+  PlayerStatus,
 } from "../types";
 
 import {
@@ -18,7 +19,7 @@ import {
 } from "../lib/resultOutput";
 import { CONFUSED_SKELETON } from "../lib/combatConfig";
 
-const PLAYER_BASE_HP = 20;
+const PLAYER_BASE_HP = 25;
 
 export function useCombatEngine(
   transition: TransitionFn,
@@ -33,6 +34,7 @@ export function useCombatEngine(
   const [playerHp, setPlayerHp] = useState(PLAYER_BASE_HP);
   const [enemyHp, setEnemyHp] = useState(enemyConfig.baseHp);
   const enemyHpRef = useRef(enemyConfig.baseHp);
+  const clearLastCombatEvent = () => setLastCombatEvent(null);
 
   const [lastCombatEvent, setLastCombatEvent] =
     useState<CombatDisplayEvent | null>(null);
@@ -41,6 +43,13 @@ export function useCombatEngine(
   const pickEnemyDamage = () => {
     const damages = enemyConfig.attackDamages;
     return damages[Math.floor(Math.random() * damages.length)];
+  };
+
+  const getPlayerStatus = (hp: number): PlayerStatus => {
+    const ratio = hp / PLAYER_BASE_HP;
+    if (ratio <= 0.4) return "critical";
+    if (ratio <= 0.8) return "low";
+    return "healthy";
   };
 
   const onAttack = (progress: number): HitResult => {
@@ -56,6 +65,7 @@ export function useCombatEngine(
         hitZoneMin: null,
         hitZoneMax: null,
         activeConfig: attackBar,
+        eventPhase: "player_attack",
       });
       const nextHp = applyDamage(playerHpRef.current, enemyDamageOnMiss);
       playerHpRef.current = nextHp;
@@ -77,6 +87,7 @@ export function useCombatEngine(
       hitZoneMin: zone?.min ?? null,
       hitZoneMax: zone?.max ?? null,
       activeConfig: attackBar,
+      eventPhase: "player_attack",
     });
     const damage = zone?.damage ?? 0;
     const nextEnemyHp = applyDamage(enemyHpRef.current, damage);
@@ -105,9 +116,10 @@ export function useCombatEngine(
       hitZoneMin: zone?.min ?? null,
       hitZoneMax: zone?.max ?? null,
       activeConfig: parryBar,
+      eventPhase: "enemy_attack",
     });
     if (blocked) {
-      if (counter > 0) resolve("counter", 600);
+      if (counter > 0) resolve("counter", 2500);
       else resolve("player_attack");
       return {
         event: { type: counter > 0 ? "PARRY" : "NONE" },
@@ -137,6 +149,7 @@ export function useCombatEngine(
       hitZoneMin: zone?.min ?? null,
       hitZoneMax: zone?.max ?? null,
       activeConfig: counterBar,
+      eventPhase: "counter",
     });
     if (zone?.heal) {
       const nextHp = Math.min(PLAYER_BASE_HP, playerHpRef.current + zone.heal);
@@ -155,5 +168,14 @@ export function useCombatEngine(
     return hitResult;
   };
 
-  return { playerHp, enemyHp, onAttack, onParry, onCounter, lastCombatEvent };
+  return {
+    playerHp,
+    enemyHp,
+    onAttack,
+    onParry,
+    onCounter,
+    lastCombatEvent,
+    playerStatus: getPlayerStatus(playerHp),
+    clearLastCombatEvent,
+  };
 }

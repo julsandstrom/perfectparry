@@ -57,6 +57,8 @@ export default function Game({ onRestart }: { onRestart: () => void }) {
               lastCombatEvent={engine.lastCombatEvent}
               onHitFrame={actions.onHitFrame}
               transition={transition}
+              phase={phase}
+              playerStatus={engine.playerStatus}
             />
           </div>
           <div className=" w-full   pt-2">

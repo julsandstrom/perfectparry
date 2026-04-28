@@ -3,7 +3,7 @@ import { HitResult } from "../types";
 export const ATTACK_LABELS: Record<HitResult, string> = {
   primary: "Sword attack!",
   secondary: "Arrow shot!",
-  miss: "Missed!",
+  miss: "I missed!",
 };
 
 export const PARRY_LABELS: Record<HitResult, string> = {
@@ -15,5 +15,5 @@ export const PARRY_LABELS: Record<HitResult, string> = {
 export const COUNTER_LABELS: Record<HitResult, string> = {
   primary: "Counter!",
   secondary: "Healed!",
-  miss: "Missed!",
+  miss: "I missed!",
 };
