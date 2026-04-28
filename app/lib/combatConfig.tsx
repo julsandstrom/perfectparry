@@ -8,7 +8,7 @@ export const CONFUSED_SKELETON: EnemyConfig = {
 
 const ATTACK_VARIANTS: PhaseBarConfig[] = [
   {
-    durationMs: 900,
+    durationMs: 1500,
     zones: [
       {
         id: "secondary",
@@ -31,7 +31,7 @@ const ATTACK_VARIANTS: PhaseBarConfig[] = [
     ],
   },
   {
-    durationMs: 900,
+    durationMs: 1500,
     zones: [
       {
         id: "secondary",
@@ -54,7 +54,7 @@ const ATTACK_VARIANTS: PhaseBarConfig[] = [
     ],
   },
   {
-    durationMs: 900,
+    durationMs: 1500,
     zones: [
       {
         id: "secondary",

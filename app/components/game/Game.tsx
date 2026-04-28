@@ -25,7 +25,10 @@ export default function Game({ onRestart }: { onRestart: () => void }) {
   } = useCombat(CONFUSED_SKELETON);
 
   return (
-    <main className="relative flex flex-col items-center min-h-screen bg-[#e2e2e2] text-white pb-0">
+    <main
+      className="relative flex flex-col items-center min-h-screen text-white pb-0
+  bg-[url('/bg-01.png')] bg-top bg-no-repeat bg-[length:100%_auto] bg-[#120C0C]"
+    >
       {showEndScreen && phase === "victory" && (
         <div className="absolute inset-0 z-60 flex items-center justify-center bg-black/90">
           <VictoryScreen onRestart={onRestart} />
@@ -45,9 +48,9 @@ export default function Game({ onRestart }: { onRestart: () => void }) {
           <DefeatScreen onRestart={onRestart} />
         </div>
       )}
-      <div className="flex flex-col gap-10 w-full ">
+      <div className="flex flex-col gap-0 w-full ">
         <Logo />
-        <div>
+        <div className="mt-72">
           <div className="relative  w-full mx-auto min-h-28 overflow-hidden">
             <BattleScene
               anim={anim}
@@ -57,10 +60,10 @@ export default function Game({ onRestart }: { onRestart: () => void }) {
             />
           </div>
           <div className=" w-full   pt-2">
-            <HpBars playerHp={engine.playerHp} enemyHp={engine.enemyHp} />
+            <HpBars enemyHp={engine.enemyHp} />
           </div>
         </div>
-        <div className="mt-10">
+        <div className="my-10">
           <TimingBar
             progress={actions.progress}
             config={barConfig}

@@ -38,25 +38,20 @@ export function BattleScene({
 
   return (
     <>
-      <div className="relative w-full h-32">
+      <div className="relative w-full h-28">
         {lastCombatEvent?.playerLabel && (
           <span
-            className="absolute z-50 flex flex-col items-center"
-            style={{ bottom: "90px", left: "50px" }}
+            className="absolute z-60 flex flex-col items-center"
+            style={{ bottom: "70px", left: "50px" }}
           >
-            <p className="text-base font-bold text-black">
+            <p className="text-base font-bold text-white">
               {lastCombatEvent.playerLabel}
             </p>
-            {lastCombatEvent.playerDamage != null &&
-              lastCombatEvent.playerDamage > 0 && (
-                <p className="text-3xl font-bold text-[#DB3939]">
-                  -{lastCombatEvent.playerDamage}
-                </p>
-              )}
+
             {lastCombatEvent.playerHeal != null &&
               lastCombatEvent.playerHeal > 0 && (
-                <p className="text-3xl font-bold text-[#1da01d]">
-                  {lastCombatEvent.playerHeal}
+                <p className="text-xl font-bold text-[#32c732] ">
+                  {/* {lastCombatEvent.playerHeal} */} Healed!
                 </p>
               )}
           </span>
@@ -66,7 +61,7 @@ export function BattleScene({
             className="absolute z-50 flex flex-col items-center"
             style={{ bottom: "90px", right: "80px" }}
           >
-            <p className="text-3xl font-bold text-[#DB3939]">
+            <p className="text-xl font-bold text-[#fa7474]">
               {lastCombatEvent.enemyLabel}
             </p>
           </span>
@@ -161,3 +156,9 @@ export function BattleScene({
     </>
   );
 }
+// {lastCombatEvent.playerDamage != null &&
+//         lastCombatEvent.playerDamage > 0 && (
+//           <p className="text-xl font-bold text-[#ffffff]">
+//             {/* -{lastCombatEvent.playerDamage} */} I've been hit!
+//           </p>
+//         )}

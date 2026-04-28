@@ -51,7 +51,7 @@ const ActionButton = ({
     <div className="font-girassol flex flex-col items-center pb-[env(safe-area-inset-bottom)]">
       <button
         disabled={frozen || phase === "resolving"}
-        className="w-40 h-40 flex items-center justify-center text-center text-base text-[#F1F1F1] font-semibold bg-[#1F1F1F] hover:bg-zinc-700 active:bg-zinc-600 rounded-full transition-all select-none disabled:opacity-50 touch-none"
+        className="w-full h-24 flex items-center justify-center text-center text-3xl   text-[#120C0C] font-semibold bg-[#969E90] hover:bg-zinc-700 active:bg-zinc-600 transition-all select-none disabled:opacity-50 touch-none"
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerCancel}
@@ -65,6 +65,7 @@ const ActionButton = ({
             : phase === "counter"
               ? "Tap to counter"
               : "Get ready!"}
+        {/* Tap! */}
       </button>
     </div>
   );

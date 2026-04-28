@@ -26,7 +26,7 @@ export function SpriteEnemyIdle() {
         backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * SCALE}px ${FRAME_HEIGHT * SCALE}px`,
         backgroundPosition: `-${frame * FRAME_WIDTH * SCALE}px 0px`,
         imageRendering: "pixelated",
-        filter: "brightness(0.6)",
+
         transform: "scaleX(-1)",
       }}
     />

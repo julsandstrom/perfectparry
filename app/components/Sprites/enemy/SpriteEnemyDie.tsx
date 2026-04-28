@@ -55,7 +55,7 @@ export function SpriteEnemyDie({
         backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * SCALE}px ${FRAME_HEIGHT * SCALE}px`,
         backgroundPosition: `0px 0px`,
         imageRendering: "pixelated",
-        filter: "brightness(0.6)",
+
         transform: "scaleX(-1)",
       }}
     />
