@@ -10,14 +10,23 @@ import { useCombat } from "@/app/hooks/useCombat";
 import { TimingBar } from "../ui/TimingBar";
 import Lightning from "../ui/Lightning";
 import { CONFUSED_SKELETON } from "@/app/lib/combatConfig";
+import { useEffect } from "react";
 
 interface GameProps {
   onRestart: () => void;
   lightning: boolean;
   onMiss: () => void;
+  audioRef: React.RefObject<HTMLAudioElement | null>;
+  endAudioRef: React.RefObject<HTMLAudioElement | null>;
 }
 
-export default function Game({ onRestart, lightning, onMiss }: GameProps) {
+export default function Game({
+  onRestart,
+  lightning,
+  onMiss,
+  audioRef,
+  endAudioRef,
+}: GameProps) {
   const {
     phase,
     transition,
@@ -28,6 +37,33 @@ export default function Game({ onRestart, lightning, onMiss }: GameProps) {
     barConfig,
     showEndScreen,
   } = useCombat(CONFUSED_SKELETON, onMiss);
+
+  useEffect(() => {
+    if (!showEndScreen) return;
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const FADE_MS = 500;
+    const STEPS = 40;
+    const startVolume = audio.volume;
+    let step = 0;
+
+    const interval = setInterval(() => {
+      step++;
+      audio.volume = Math.max(0, startVolume * (1 - step / STEPS));
+      if (step >= STEPS) {
+        clearInterval(interval);
+        audio.pause();
+        const endAudio = new Audio("/music/Title-Theme.mp3");
+        endAudio.volume = 0.5;
+        endAudio.play();
+        endAudioRef.current = endAudio;
+      }
+    }, FADE_MS / STEPS);
+
+    return () => clearInterval(interval);
+  }, [showEndScreen, audioRef, endAudioRef]);
+
   return (
     <main
       className="relative flex flex-col h-dvh text-white
@@ -64,9 +100,9 @@ export default function Game({ onRestart, lightning, onMiss }: GameProps) {
       </div>
       {/* Bottom */}
       <div className="flex-1" />
-      <div className="shrink-0 pb-[env(safe-area-inset-bottom)]">
+      <div className="shrink-0 ">
         {" "}
-        <div className="mb-10">
+        <div className="mb-10 ">
           <TimingBar
             progress={actions.progress}
             config={barConfig}

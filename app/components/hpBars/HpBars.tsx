@@ -12,7 +12,7 @@ const HpBars = ({ enemyHp }: HpbarProps) => {
         <span className="text-end text-base ">{enemyHp}hp</span>
       </div>
       <div className="w-full justify-center">
-        <HpBar hp={enemyHp} max={30} colorClass="bg-[#D23B3B]" />
+        <HpBar hp={enemyHp} max={30} colorClass="bg-[#FF2020]" />
       </div>
     </div>
   );
