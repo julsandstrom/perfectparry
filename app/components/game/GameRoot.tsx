@@ -16,7 +16,9 @@ export default function GameRoot() {
     audio.volume = 0.5;
     audio.play();
     audioRef.current = audio;
-
+    audio.play().catch((err) => {
+      console.error("Audio play failed:", err);
+    });
     setTimeout(() => setScreen("game"), 1500);
   };
   const restart = () => {
