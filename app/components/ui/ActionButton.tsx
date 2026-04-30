@@ -1,4 +1,5 @@
 import { Phase } from "@/app/types";
+import { useState } from "react";
 
 interface ActionButtonProps {
   phase: Phase;
@@ -15,26 +16,28 @@ const ActionButton = ({
   onPointerUp,
   onTap,
 }: ActionButtonProps) => {
+  const [isHolding, setIsHolding] = useState(false);
   const isHoldPhase = phase === "player_attack";
   const isTapPhase = phase === "enemy_attack" || phase === "counter";
 
   const handlePointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
     if (!isHoldPhase) return;
-
     e.currentTarget.setPointerCapture(e.pointerId);
+    setIsHolding(true);
     onPointerDown();
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLButtonElement>) => {
     if (!isHoldPhase) return;
     e.currentTarget.releasePointerCapture(e.pointerId);
+    setIsHolding(false);
     onPointerUp();
   };
 
   const handlePointerCancel = (e: React.PointerEvent<HTMLButtonElement>) => {
     if (!isHoldPhase) return;
-
     e.currentTarget.releasePointerCapture(e.pointerId);
+    setIsHolding(false);
     onPointerUp();
   };
 
@@ -48,11 +51,11 @@ const ActionButton = ({
   };
 
   return (
-    <div className="font-girassol flex flex-col items-center pb-[env(safe-area-inset-bottom)]">
+    <div className=" flex flex-col items-center pb-[env(safe-area-inset-bottom)]">
       <div className="flex flex-col gap-0 w-full h-full">
         <button
           disabled={frozen || phase === "resolving"}
-          className="w-full h-16 flex items-center justify-center text-center text-xl   text-[#120C0C] font-semibold bg-[#969E90] hover:bg-zinc-700 active:bg-zinc-600 transition-all select-none disabled:opacity-50 touch-none"
+          className="w-full h-16 flex items-center justify-center text-center text-xl  rounded-sm text-[#AFD5D2] border-[#AFD5D2] border-2 font-bold bg-none hover:bg-zinc-700 active:bg-zinc-600 transition-all select-none disabled:opacity-50 touch-none"
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerCancel}
@@ -60,13 +63,14 @@ const ActionButton = ({
           onContextMenu={handleContextMenu}
         >
           {phase === "player_attack"
-            ? "Hold and release"
+            ? isHolding
+              ? "Release!"
+              : "Hold to strike"
             : phase === "enemy_attack"
-              ? "Tap to defend"
+              ? "Tap to block"
               : phase === "counter"
                 ? "Tap to counter"
-                : "Get ready!"}
-          {/* Tap! */}
+                : "Get ready"}
         </button>
       </div>
     </div>

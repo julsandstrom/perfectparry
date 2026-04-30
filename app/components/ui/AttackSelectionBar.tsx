@@ -39,7 +39,7 @@ const AttackSelectionBar = ({
         style={{
           left: `${min * 100}%`,
           width: `${(max - min) * 100}%`,
-          backgroundColor: highlight ? "#0DBA39" : "#969E90",
+          backgroundColor: highlight ? "#0DBA39" : "#AFD5D2",
           boxShadow: highlight
             ? "1px 0px 0px rgba(74,222,128,0.6)"
             : "1px 0px 0px rgba(0,0,0,0.25)",

@@ -48,7 +48,7 @@ export default function Game({ onRestart, lightning, onMiss }: GameProps) {
         <div className="self-center ">
           <Logo />
         </div>
-        <div className="mt-[35dvh] ">
+        <div className="mt-[23dvh] ">
           <div className="relative  w-full mx-auto min-h-28 overflow-hidden">
             <BattleScene
               anim={anim}
@@ -65,7 +65,7 @@ export default function Game({ onRestart, lightning, onMiss }: GameProps) {
         </div>
 
         <div className="mt-auto w-full">
-          <div className="mb-3">
+          <div className="mb-10">
             <TimingBar
               progress={actions.progress}
               config={barConfig}
