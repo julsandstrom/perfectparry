@@ -153,4 +153,5 @@ export interface CombatActionsOptions {
   attackBar: PhaseBarConfig;
   parryBar: PhaseBarConfig;
   counterBar: PhaseBarConfig;
+  onMiss?: () => void;
 }

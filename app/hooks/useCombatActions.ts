@@ -12,6 +12,7 @@ export function useCombatActions({
   attackBar,
   parryBar,
   counterBar,
+  onMiss,
 }: CombatActionsOptions) {
   const pendingAttack = useRef<number | null>(null);
   const pendingCounter = useRef<number | null>(null);
@@ -68,10 +69,12 @@ export function useCombatActions({
         engine.onAttack(snapshot);
       } else {
         pendingAttack.current = snapshot;
+        const isMiss = !zone || zone.outcome === "miss";
+        if (isMiss) onMiss?.();
         anim.triggerWalkIn();
       }
     }
-  }, [phase, release, anim, setReleaseAt, attackBar, engine]);
+  }, [phase, release, anim, setReleaseAt, attackBar, engine, onMiss]);
 
   const handleTap = useCallback(() => {
     if (phase === "resolving") return;

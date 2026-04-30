@@ -4,17 +4,19 @@ import { useEffect, useRef } from "react";
 const FRAME_WIDTH = 100;
 const FRAME_HEIGHT = 100;
 const FRAME_COUNT = 8;
-const SCALE = 4;
-const WALK_DURATION_MS = 600;
+
+const WALK_DURATION_MS = 800;
 
 export function SpriteWalk({
   trigger,
   onComplete,
   flipped = false,
+  scale = 4,
 }: {
   trigger: number;
   onComplete?: () => void;
   flipped?: boolean;
+  scale?: number;
 }) {
   const divRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
@@ -31,7 +33,7 @@ export function SpriteWalk({
         Math.floor((progress / WALK_DURATION_MS) * FRAME_COUNT),
       );
       if (divRef.current) {
-        divRef.current.style.backgroundPosition = `-${frame * FRAME_WIDTH * SCALE}px 0px`;
+        divRef.current.style.backgroundPosition = `-${frame * FRAME_WIDTH * scale}px 0px`;
       }
       if (progress < WALK_DURATION_MS) {
         rafRef.current = requestAnimationFrame(step);
@@ -50,11 +52,11 @@ export function SpriteWalk({
     <div
       ref={divRef}
       style={{
-        width: FRAME_WIDTH * SCALE,
-        height: FRAME_HEIGHT * SCALE,
+        width: FRAME_WIDTH * scale,
+        height: FRAME_HEIGHT * scale,
         backgroundImage: "url('/Soldier-Walk.png')",
         backgroundRepeat: "no-repeat",
-        backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * SCALE}px ${FRAME_HEIGHT * SCALE}px`,
+        backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * scale}px ${FRAME_HEIGHT * scale}px`,
         backgroundPosition: `0px 0px`,
         imageRendering: "pixelated",
         marginBottom: -170,

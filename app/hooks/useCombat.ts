@@ -15,7 +15,7 @@ import { useCombatEngine } from "./useCombatEngine";
 import { useCombatActions } from "./useCombatActions";
 import { useCombatController } from "./useCombatController";
 
-export function useCombat(enemyConfig: EnemyConfig) {
+export function useCombat(enemyConfig: EnemyConfig, onMiss?: () => void) {
   const [attackBar, setAttackBar] =
     useState<PhaseBarConfig>(DEFAULT_ATTACK_BAR);
   const [parryBar, setParryBar] = useState<PhaseBarConfig>(DEFAULT_PARRY_BAR);
@@ -56,6 +56,7 @@ export function useCombat(enemyConfig: EnemyConfig) {
     attackBar,
     parryBar,
     counterBar,
+    onMiss,
     onParryTimeout: (p) => {
       const { event } = engine.onParry(p);
       if (event.type === "HURT") anim.triggerEnemyAttack("hurt");
