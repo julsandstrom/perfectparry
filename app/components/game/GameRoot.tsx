@@ -16,7 +16,8 @@ export default function GameRoot() {
     audio.volume = 0.5;
     audio.play();
     audioRef.current = audio;
-    setScreen("game");
+
+    setTimeout(() => setScreen("game"), 1500);
   };
   const restart = () => {
     endAudioRef.current?.pause();

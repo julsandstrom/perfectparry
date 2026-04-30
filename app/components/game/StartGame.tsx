@@ -8,7 +8,7 @@ export default function StartScreen({ onStart }: { onStart: () => void }) {
 
   const handleStart = () => {
     anim.triggerWalkIn();
-    setTimeout(onStart, 1500);
+    onStart();
   };
 
   return (
