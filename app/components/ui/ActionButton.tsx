@@ -51,7 +51,7 @@ const ActionButton = ({
   };
 
   return (
-    <div className=" flex flex-col items-center pb-[env(safe-area-inset-bottom)]">
+    <div className=" flex flex-col items-center pb-safe">
       <div className="flex flex-col gap-0 w-full h-full">
         <button
           disabled={frozen || phase === "resolving"}
