@@ -59,7 +59,7 @@ export function SpriteWalk({
         backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * scale}px ${FRAME_HEIGHT * scale}px`,
         backgroundPosition: `0px 0px`,
         imageRendering: "pixelated",
-        marginBottom: -170,
+
         transform: flipped ? "scaleX(-1)" : undefined,
       }}
     />

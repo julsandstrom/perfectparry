@@ -55,7 +55,6 @@ export function SpriteDie({
         backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * SCALE}px ${FRAME_HEIGHT * SCALE}px`,
         backgroundPosition: `0px 0px`,
         imageRendering: "pixelated",
-        marginBottom: -170,
       }}
     />
   );

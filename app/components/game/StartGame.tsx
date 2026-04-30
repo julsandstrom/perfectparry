@@ -35,7 +35,7 @@ export default function StartScreen({ onStart }: { onStart: () => void }) {
           </p>
         </div>
         <div className="relative w-full min-h-10">
-          <div className="absolute bottom-10 -right-10">
+          <div className="absolute bottom-26 -right-18">
             {anim.playerAnim === "walk_in" && (
               <SpriteWalk
                 trigger={anim.walkInTrigger}

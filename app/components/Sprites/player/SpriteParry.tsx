@@ -69,7 +69,6 @@ export function SpriteParry({
         }px`,
         backgroundPosition: `-${frame * FRAME_WIDTH * SCALE}px 0px`,
         imageRendering: "pixelated",
-        marginBottom: -170,
       }}
     />
   );

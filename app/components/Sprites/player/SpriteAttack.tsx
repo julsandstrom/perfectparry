@@ -60,7 +60,6 @@ export function SpriteAttack({
         backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * SCALE}px ${FRAME_HEIGHT * SCALE}px`,
         backgroundPosition: `-${frame * FRAME_WIDTH * SCALE}px 0px`,
         imageRendering: "pixelated",
-        marginBottom: -170,
       }}
     />
   );

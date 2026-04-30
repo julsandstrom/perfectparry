@@ -30,9 +30,20 @@ export default function Game({ onRestart, lightning, onMiss }: GameProps) {
   } = useCombat(CONFUSED_SKELETON, onMiss);
   return (
     <main
-      className="relative flex flex-col items-center h-dvh text-white pb-0
+      className="relative flex flex-col h-dvh text-white
   bg-[url('/bg-01.png')] bg-top bg-no-repeat bg-size-[100%_auto] bg-[#120C0C]"
     >
+      {" "}
+      <div className="absolute w-full top-[70vw]">
+        <BattleScene
+          anim={anim}
+          lastCombatEvent={engine.lastCombatEvent}
+          onHitFrame={actions.onHitFrame}
+          transition={transition}
+          phase={phase}
+          playerStatus={engine.playerStatus}
+        />
+      </div>
       {lightning && <Lightning />}
       {showEndScreen && phase === "victory" && (
         <div className="absolute inset-0 z-70 flex items-center justify-center bg-black/90">
@@ -44,44 +55,33 @@ export default function Game({ onRestart, lightning, onMiss }: GameProps) {
           <DefeatScreen onRestart={onRestart} />
         </div>
       )}
-      <div className="flex flex-col gap-5 w-full flex-1">
-        <div className="self-center ">
-          <Logo />
-        </div>
-        <div className="mt-[23dvh] ">
-          <div className="relative  w-full mx-auto min-h-28 overflow-hidden">
-            <BattleScene
-              anim={anim}
-              lastCombatEvent={engine.lastCombatEvent}
-              onHitFrame={actions.onHitFrame}
-              transition={transition}
-              phase={phase}
-              playerStatus={engine.playerStatus}
-            />
-          </div>
-          <div className=" w-full flex justify-center   pt-2">
-            <HpBars enemyHp={engine.enemyHp} />
-          </div>
-        </div>
-
-        <div className="mt-auto w-full">
-          <div className="mb-10">
-            <TimingBar
-              progress={actions.progress}
-              config={barConfig}
-              releaseAt={actions.releaseAt}
-              lastCombatEvent={engine.lastCombatEvent}
-              frozen={frozen}
-            />
-          </div>
-          <ActionButton
-            phase={phase}
+      {/* Top */}
+      <div className="flex justify-center shrink-0">
+        <Logo />
+      </div>{" "}
+      <div className="w-full flex justify-center mt-20">
+        <HpBars enemyHp={engine.enemyHp} />
+      </div>
+      {/* Bottom */}
+      <div className="flex-1" />
+      <div className="shrink-0 pb-[env(safe-area-inset-bottom)]">
+        {" "}
+        <div className="mb-10">
+          <TimingBar
+            progress={actions.progress}
+            config={barConfig}
+            releaseAt={actions.releaseAt}
+            lastCombatEvent={engine.lastCombatEvent}
             frozen={frozen}
-            onPointerDown={actions.handlePointerDown}
-            onPointerUp={actions.handlePointerUp}
-            onTap={actions.handleTap}
           />
         </div>
+        <ActionButton
+          phase={phase}
+          frozen={frozen}
+          onPointerDown={actions.handlePointerDown}
+          onPointerUp={actions.handlePointerUp}
+          onTap={actions.handleTap}
+        />
       </div>
     </main>
   );

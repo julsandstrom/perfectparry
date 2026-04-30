@@ -38,50 +38,46 @@ export function BattleScene({
   const playerLeft =
     anim.playerAnim === "walk_in" || anim.playerAnim === "attack"
       ? "left-[5%]"
-      : "-left-[40%]";
+      : "-left-[30%]";
 
   const enemyRight =
     (anim.enemyAnim === "walk_in" || anim.enemyAnim === "attack") &&
     !anim.isMissRetaliation
       ? "right-[40%]"
-      : "-right-[10%]";
+      : "-right-[0%]";
   return (
     <>
       {" "}
       <div className="relative w-full h-32">
-        {lastCombatEvent?.playerLabel && (
-          <span className="absolute z-60 flex flex-col items-center bottom-[82%] left-8">
-            <p className="text-xl font-bold text-white">
-              {lastCombatEvent.playerLabel}
-            </p>
-            {lastCombatEvent.playerHeal != null &&
-              lastCombatEvent.playerHeal > 0 && (
-                <p className="text-xl font-bold text-[#32c732]">
-                  Feeling better!
-                </p>
-              )}
-          </span>
-        )}
-        {playerStatus === "critical" && (
-          <span className="absolute z-60 flex flex-col items-center bottom-[60%] left-8">
-            <p className="text-base text-[#FF2020] ">Critically wounded!</p>
-          </span>
-        )}
-        {playerStatus === "low" && (
-          <span className="absolute z-60 flex flex-col items-center bottom-[60%] left-8">
-            <p className="text-base  text-[#FF2020]">need healing</p>
-          </span>
-        )}
-        {lastCombatEvent?.enemyLabel && (
-          <span className="absolute z-60 flex flex-col items-center bottom-[70%] right-20">
-            <p className="text-xl font-bold text-[#FF2020]">
-              {lastCombatEvent.enemyLabel}
-            </p>
-          </span>
-        )}{" "}
+        <div className="absolute inset-0">
+          {lastCombatEvent?.playerLabel && (
+            <span className="absolute z-60 flex flex-col items-center bottom-[82%] left-8">
+              <p className="text-xl font-bold text-white">
+                {lastCombatEvent.playerLabel}
+              </p>
+            </span>
+          )}
+          {playerStatus === "critical" && (
+            <span className="absolute z-60 flex flex-col items-center bottom-[60%] left-10">
+              <p className="text-base text-[#FF2020] ">Critically wounded!</p>
+            </span>
+          )}
+          {playerStatus === "low" && (
+            <span className="absolute z-60 flex flex-col items-center bottom-[60%] left-10">
+              <p className="text-base  text-[#FF2020]">need healing</p>
+            </span>
+          )}
+          {lastCombatEvent?.enemyLabel && (
+            <span className="absolute z-60 flex flex-col items-center bottom-[70%] right-20">
+              <p className="text-xl font-bold text-[#FF2020]">
+                {lastCombatEvent.enemyLabel}
+              </p>
+            </span>
+          )}{" "}
+        </div>
       </div>
       <div
-        className={`absolute bottom-0 z-50 transition-left duration-600 ${playerLeft}`}
+        className={`absolute -top-25 z-50 transition-left duration-600 ${playerLeft}`}
       >
         {anim.playerAnim === "walk_in" ? (
           <SpriteWalk
@@ -132,7 +128,7 @@ export function BattleScene({
         )}
       </div>
       <div
-        className={`absolute z-50 bottom-0 transition-all duration-600 ${enemyRight}`}
+        className={`absolute top-0 z-50 transition-all duration-600 ${enemyRight}`}
       >
         {anim.enemyAnim === "walk_in" ? (
           <SpriteEnemyWalk

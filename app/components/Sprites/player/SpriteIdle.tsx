@@ -28,7 +28,7 @@ export function SpriteIdle() {
         backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * SCALE}px ${
           FRAME_HEIGHT * SCALE
         }px`,
-        marginBottom: -170,
+
         backgroundPosition: `-${frame * FRAME_WIDTH * SCALE}px 0px`,
         imageRendering: "pixelated",
       }}
