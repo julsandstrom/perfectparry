@@ -111,7 +111,7 @@ export default function Game({ onRestart }: { onRestart: () => void }) {
               playerStatus={engine.playerStatus}
             />
           </div>
-          <div className=" w-full   pt-2">
+          <div className=" w-full flex justify-center   pt-2">
             <HpBars enemyHp={engine.enemyHp} />
           </div>
         </div>

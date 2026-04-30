@@ -37,14 +37,14 @@ export function BattleScene({
 }: BattleSceneProps) {
   const playerLeft =
     anim.playerAnim === "walk_in" || anim.playerAnim === "attack"
-      ? "left-0"
-      : "-left-32";
+      ? "left-[5%]"
+      : "-left-[40%]";
 
   const enemyRight =
-    anim.enemyAnim === "walk_in" || anim.enemyAnim === "attack"
-      ? "right-32"
-      : "-right-5";
-
+    (anim.enemyAnim === "walk_in" || anim.enemyAnim === "attack") &&
+    !anim.isMissRetaliation
+      ? "right-[40%]"
+      : "-right-[10%]";
   return (
     <>
       {" "}
@@ -56,23 +56,25 @@ export function BattleScene({
             </p>
             {lastCombatEvent.playerHeal != null &&
               lastCombatEvent.playerHeal > 0 && (
-                <p className="text-xl font-bold text-[#32c732]">Healed!</p>
+                <p className="text-xl font-bold text-[#32c732]">
+                  Feeling better!
+                </p>
               )}
           </span>
         )}
         {playerStatus === "critical" && (
           <span className="absolute z-60 flex flex-col items-center bottom-[60%] left-8">
-            <p className="text-base text-[#ffffff] ">Critically wounded!</p>
+            <p className="text-base text-[#FF2020] ">Critically wounded!</p>
           </span>
         )}
         {playerStatus === "low" && (
           <span className="absolute z-60 flex flex-col items-center bottom-[60%] left-8">
-            <p className="text-base  text-[#ffffff]">need healing</p>
+            <p className="text-base  text-[#FF2020]">need healing</p>
           </span>
         )}
         {lastCombatEvent?.enemyLabel && (
           <span className="absolute z-60 flex flex-col items-center bottom-[70%] right-20">
-            <p className="text-xl font-bold text-[#fa7474]">
+            <p className="text-xl font-bold text-[#FF2020]">
               {lastCombatEvent.enemyLabel}
             </p>
           </span>
@@ -140,7 +142,14 @@ export function BattleScene({
         ) : anim.enemyAnim === "attack" ? (
           <SpriteEnemyAttack
             trigger={anim.enemyAttackTrigger}
-            onComplete={() => anim.triggerEnemyWalkOut()}
+            onComplete={() => {
+              if (anim.isMissRetaliation) {
+                anim.clearMissRetaliation();
+                anim.resetEnemy();
+              } else {
+                anim.triggerEnemyWalkOut();
+              }
+            }}
           />
         ) : anim.enemyAnim === "walk_out" ? (
           <SpriteEnemyWalk

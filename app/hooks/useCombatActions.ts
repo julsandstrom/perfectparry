@@ -40,7 +40,7 @@ export function useCombatActions({
       const result = engine.onAttack(pendingAttack.current);
       pendingAttack.current = null;
       if (result === "miss") {
-        anim.triggerEnemyCounterAttack();
+        anim.triggerEnemyAttack("miss");
       } else {
         anim.triggerEnemyHurt();
       }

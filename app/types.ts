@@ -145,7 +145,7 @@ export interface CombatActionsOptions {
     triggerEnemyCounterAttack: () => void;
     triggerParry: () => void;
     triggerCounter: () => void;
-    triggerEnemyAttack: (outcome: "parry" | "hurt") => void;
+    triggerEnemyAttack: (outcome: "parry" | "hurt" | "miss") => void;
     resetPlayer: () => void;
     resetEnemy: () => void;
   };

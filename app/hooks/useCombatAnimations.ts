@@ -77,9 +77,11 @@ export function useCombatAnimations() {
   const [playerDieTrigger, setPlayerDieTrigger] = useState(0);
   const [bowAttackTrigger, setBowAttackTrigger] = useState(0);
 
-  const pendingEnemyResult = useRef<"parry" | "hurt">("hurt");
+  const pendingEnemyResult = useRef<"parry" | "hurt" | "miss">("hurt");
   const playerDeadRef = useRef(false);
   const enemyDeadRef = useRef(false);
+  const isMissRetaliationRef = useRef(false);
+  const [isMissRetaliation, setIsMissRetaliation] = useState(false);
 
   // --- player triggers ---
   const triggerWalkIn = useCallback(() => {
@@ -90,6 +92,10 @@ export function useCombatAnimations() {
   const triggerAttack = useCallback(() => {
     setAttackTrigger((t) => t + 1);
     dispatchPlayer({ type: "ATTACK" });
+  }, []);
+
+  const clearMissRetaliation = useCallback(() => {
+    setIsMissRetaliation(false);
   }, []);
 
   const triggerBowAttack = useCallback(() => {
@@ -170,17 +176,30 @@ export function useCombatAnimations() {
     dispatchEnemy({ type: "RESET" });
   }, []);
 
-  const triggerEnemyAttack = useCallback((outcome: "parry" | "hurt") => {
-    pendingEnemyResult.current = outcome;
-    setEnemyWalkInTrigger((t) => t + 1);
-    dispatchEnemy({ type: "WALK_IN" });
-    if (outcome === "parry") {
-      setTimeout(() => {
-        setParryTrigger((t) => t + 1);
-        dispatchPlayer({ type: "PARRY" });
-      }, 500);
-    }
-  }, []);
+  const triggerEnemyAttack = useCallback(
+    (outcome: "parry" | "hurt" | "miss") => {
+      pendingEnemyResult.current = outcome === "miss" ? "hurt" : outcome;
+      setIsMissRetaliation(outcome === "miss");
+
+      if (outcome === "miss") {
+        console.log("TRIGGERING MISS");
+        setEnemyAttackTrigger((t) => t + 1);
+        dispatchEnemy({ type: "ATTACK" });
+        return;
+      }
+
+      setEnemyWalkInTrigger((t) => t + 1);
+      dispatchEnemy({ type: "WALK_IN" });
+
+      if (outcome === "parry") {
+        setTimeout(() => {
+          setParryTrigger((t) => t + 1);
+          dispatchPlayer({ type: "PARRY" });
+        }, 500);
+      }
+    },
+    [],
+  );
 
   return {
     // states
@@ -204,8 +223,12 @@ export function useCombatAnimations() {
     triggerBowAttack,
     bowAttackTrigger,
     resetPlayer,
+    clearMissRetaliation,
+    isMissRetaliation,
+
     // enemy
     enemyAttackTrigger,
+    isMissRetaliationRef,
     enemyWalkInTrigger,
     enemyWalkOutTrigger,
     pendingEnemyResult,
