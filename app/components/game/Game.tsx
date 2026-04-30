@@ -45,7 +45,9 @@ export default function Game({ onRestart, lightning, onMiss }: GameProps) {
         </div>
       )}
       <div className="flex flex-col gap-5 w-full flex-1">
-        <Logo />
+        <div className="self-center ">
+          <Logo />
+        </div>
         <div className="mt-[35dvh] ">
           <div className="relative  w-full mx-auto min-h-28 overflow-hidden">
             <BattleScene

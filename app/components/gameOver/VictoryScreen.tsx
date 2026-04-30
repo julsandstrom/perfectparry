@@ -7,7 +7,7 @@ const VictoryScreen = ({ onRestart }: { onRestart: () => void }) => {
           onClick={onRestart}
           className="bg-white text-black rounded-xs px-6 py-2"
         >
-          Try again
+          Restart
         </button>
         <a
           href="https://www.linkedin.com/in/juliansandstrom"
