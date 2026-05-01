@@ -26,8 +26,8 @@ export const TimingBar = ({
 
   return (
     <div
-      className="relative h-20 w-full "
-      style={{ backgroundColor: frozen && missed ? "#951C1C" : "#4D555A" }}
+      className="relative h-20 w-full   "
+      style={{ backgroundColor: frozen && missed ? "" : "" }}
     >
       {displayConfig.zones.map((zone) => (
         <AttackSelectionBar

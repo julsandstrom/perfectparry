@@ -39,16 +39,16 @@ const AttackSelectionBar = ({
         style={{
           left: `${min * 100}%`,
           width: `${(max - min) * 100}%`,
-          backgroundColor: highlight ? "#3CA03E" : "#969E90",
-          boxShadow: highlight
-            ? "1px 0px 0px rgba(74,222,128,0.6)"
-            : "1px 0px 0px rgba(0,0,0,0.25)",
+          backgroundColor: highlight ? "#A251FF" : "#B4B4B4",
+          // boxShadow: highlight
+          //   ? "1px 0px 0px rgba(74,222,128,0.6)"
+          //   : "1px 0px 0px rgba(0,0,0,0.25)",
         }}
       />
 
       <div
         key={highlight ? "icon-highlighted" : "icon-normal"}
-        className={`absolute top-6 bottom-0 z-50 flex flex-col h-[40px]    items-center justify-center ${highlight ? "bar-shake" : ""}`}
+        className={`absolute top-6 bottom-0 z-50 flex flex-col h-10    items-center justify-center ${highlight ? "bar-shake" : ""}`}
         style={{
           left: `${min * 100}%`,
           width: `${(max - min) * 100}%`,

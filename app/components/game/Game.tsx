@@ -72,9 +72,17 @@ bg-[url('/bg-01.png')] bg-top bg-no-repeat bg-size-[100%_auto] bg-[#120C0C]"
       style={
         engine.playerStatus === "critical"
           ? {
-              backgroundImage: `url('/bg-01.png'), linear-gradient(to top, #550808 0%, transparent 15%)`,
+              backgroundImage: `url('/bg-01.png'), linear-gradient(to top, #550808 0%, #120C0C 15%, transparent 20%`,
             }
-          : undefined
+          : engine.playerStatus === "healthy"
+            ? {
+                backgroundImage: `url('/bg-01.png'), linear-gradient(to top, #09380A 0%, #120C0C 15%, transparent 20%`,
+              }
+            : engine.playerStatus === "low"
+              ? {
+                  backgroundImage: `url('/bg-01.png'), linear-gradient(to top, #573A00 0%, #120C0C 15%, transparent 20%`,
+                }
+              : undefined
       }
     >
       {" "}
@@ -108,17 +116,8 @@ bg-[url('/bg-01.png')] bg-top bg-no-repeat bg-size-[100%_auto] bg-[#120C0C]"
       </div>
       {/* Bottom */}
       <div className="flex-1" />
-      <div className="shrink-0 ">
+      <div className="relative z-50 ">
         {" "}
-        <div className="mb-10 ">
-          <TimingBar
-            progress={actions.progress}
-            config={barConfig}
-            releaseAt={actions.releaseAt}
-            lastCombatEvent={engine.lastCombatEvent}
-            frozen={frozen}
-          />
-        </div>
         <HealthStatus playerStatus={engine.playerStatus} />
         <ActionButton
           phase={phase}
@@ -126,6 +125,15 @@ bg-[url('/bg-01.png')] bg-top bg-no-repeat bg-size-[100%_auto] bg-[#120C0C]"
           onPointerDown={actions.handlePointerDown}
           onPointerUp={actions.handlePointerUp}
           onTap={actions.handleTap}
+        />
+      </div>
+      <div className=" mt-10">
+        <TimingBar
+          progress={actions.progress}
+          config={barConfig}
+          releaseAt={actions.releaseAt}
+          lastCombatEvent={engine.lastCombatEvent}
+          frozen={frozen}
         />
       </div>
     </main>

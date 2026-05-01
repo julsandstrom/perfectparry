@@ -5,7 +5,7 @@ const FRAME_WIDTH = 96;
 const FRAME_HEIGHT = 64;
 const FRAME_COUNT = 5;
 const SCALE = 2;
-const HURT_DURATION_MS = 600;
+const HURT_DURATION_MS = 800;
 
 export function SpriteEnemyHurt({
   trigger,

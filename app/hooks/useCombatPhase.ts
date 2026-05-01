@@ -35,7 +35,7 @@ export function useCombatPhase() {
     else go();
   }, []);
 
-  const resolve = useCallback<ResolveFn>((to, holdMs = 2500) => {
+  const resolve = useCallback<ResolveFn>((to, holdMs = 3000) => {
     setPhase((current) => {
       if (current === "victory" || current === "defeat") return current;
       setFrozen(true);

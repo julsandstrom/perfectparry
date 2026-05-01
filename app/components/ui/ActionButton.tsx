@@ -51,11 +51,11 @@ const ActionButton = ({
   };
 
   return (
-    <div className=" flex flex-col items-center pb-safe">
-      <div className="flex flex-col gap-0 w-full h-full px-10">
+    <div className=" flex flex-col items-center ">
+      <div className="flex flex-col gap-0 w-full h-full px-10 items-center">
         <button
           disabled={frozen || phase === "resolving"}
-          className="w-full h-20 flex items-center justify-center text-center text-xl  rounded-sm text-[#120C0C] bg-[#969E90] border-2 bg-none  active:bg-zinc-900 transition-all select-none disabled:opacity-50 touch-none"
+          className=" h-14 w-48 px-5 flex items-center justify-center text-center text-xl  rounded-xl text-[#120C0C] bg-[#DDDDDD]   active:bg-zinc-200 transition-all select-none disabled:opacity-50 touch-none"
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerCancel}
