@@ -56,15 +56,15 @@ export function BattleScene({
                 {lastCombatEvent.playerLabel}
               </p>
             </span>
+          )}{" "}
+          {playerStatus === "low" && (
+            <span className="absolute z-60 flex flex-col items-center bottom-[60%] left-10">
+              <p className="text-base  text-[#FF2020]">I need healing</p>
+            </span>
           )}
           {playerStatus === "critical" && (
             <span className="absolute z-60 flex flex-col items-center bottom-[60%] left-10">
               <p className="text-base text-[#FF2020] ">Critically wounded!</p>
-            </span>
-          )}
-          {playerStatus === "low" && (
-            <span className="absolute z-60 flex flex-col items-center bottom-[60%] left-10">
-              <p className="text-base  text-[#FF2020]">need healing</p>
             </span>
           )}
           {lastCombatEvent?.enemyLabel && (

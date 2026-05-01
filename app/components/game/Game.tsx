@@ -11,6 +11,7 @@ import { TimingBar } from "../ui/TimingBar";
 import Lightning from "../ui/Lightning";
 import { CONFUSED_SKELETON } from "@/app/lib/combatConfig";
 import { useEffect } from "react";
+import HealthStatus from "../statusLabel/HealthStatus";
 
 interface GameProps {
   onRestart: () => void;
@@ -67,7 +68,14 @@ export default function Game({
   return (
     <main
       className="relative flex flex-col h-dvh text-white
-  bg-[url('/bg-01.png')] bg-top bg-no-repeat bg-size-[100%_auto] bg-[#120C0C]"
+bg-[url('/bg-01.png')] bg-top bg-no-repeat bg-size-[100%_auto] bg-[#120C0C]"
+      style={
+        engine.playerStatus === "critical"
+          ? {
+              backgroundImage: `url('/bg-01.png'), linear-gradient(to top, #550808 0%, transparent 15%)`,
+            }
+          : undefined
+      }
     >
       {" "}
       <div className="absolute w-full top-[70vw]">
@@ -111,6 +119,7 @@ export default function Game({
             frozen={frozen}
           />
         </div>
+        <HealthStatus playerStatus={engine.playerStatus} />
         <ActionButton
           phase={phase}
           frozen={frozen}

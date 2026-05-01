@@ -18,6 +18,8 @@ const neohellenic = localFont({
     },
   ],
   variable: "--font-neohellenic",
+  preload: false,
+  display: "swap",
 });
 
 const girassol = Girassol({
@@ -31,6 +33,9 @@ const girassol = Girassol({
 export const metadata: Metadata = {
   title: "Perfect Parry",
   description: "A timing based combat game",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({

@@ -3,7 +3,7 @@ import { HitResult, ZoneOutcome } from "../types";
 export const ATTACK_LABELS: Record<ZoneOutcome | "miss", string> = {
   sword: "Sword Strike!",
   arrow: "Arrow Shot!",
-  heal: "Feeling better!",
+  heal: "Healed up!",
   block: "",
   parry: "",
   miss: "Missed!",
@@ -17,6 +17,6 @@ export const PARRY_LABELS: Record<HitResult, string> = {
 
 export const COUNTER_LABELS: Record<HitResult, string> = {
   primary: "Counter!",
-  secondary: "Feeling better!",
+  secondary: "Healed up!",
   miss: "I missed!",
 };
