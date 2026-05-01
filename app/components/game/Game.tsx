@@ -99,7 +99,7 @@ bg-[url('/bg-01.png')] bg-top bg-no-repeat bg-size-[100%_auto] bg-[#120C0C]"
       {lightning && <Lightning />}
       {showEndScreen && phase === "victory" && (
         <div className="absolute inset-0 z-70 flex items-center justify-center bg-black/90">
-          <VictoryScreen onRestart={onRestart} />
+          <VictoryScreen onRestart={onRestart} stats={engine.combatStats} />
         </div>
       )}
       {showEndScreen && phase === "defeat" && (

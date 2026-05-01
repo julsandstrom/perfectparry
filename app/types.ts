@@ -15,6 +15,14 @@ export type TransitionFn = (to: Phase, delayMs?: number) => void;
 
 export type PlayerStatus = "healthy" | "low" | "critical" | null;
 
+export interface CombatStats {
+  swordHits: number;
+  arrowHits: number;
+  blocks: number;
+  heals: number;
+  misses: number;
+}
+
 export type ZoneOutcome =
   | "sword"
   | "arrow"
@@ -82,6 +90,7 @@ export interface CombatEngineState {
   onCounter: (progress: number) => HitResult;
   lastCombatEvent: CombatDisplayEvent | null;
   clearLastCombatEvent: () => void;
+  combatStats: CombatStats;
 }
 
 export type PlayerAnimState =

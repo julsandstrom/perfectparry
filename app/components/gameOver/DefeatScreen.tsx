@@ -5,7 +5,7 @@ export const DefeatScreen = ({ onRestart }: { onRestart: () => void }) => {
       <div className="flex flex-col items-center justify-center gap-10">
         <button
           onClick={onRestart}
-          className="bg-white text-black rounded-xs px-6 py-2"
+          className="bg-white text-black rounded-xs px-6 py-2 w-40"
         >
           Try Again
         </button>
@@ -13,7 +13,7 @@ export const DefeatScreen = ({ onRestart }: { onRestart: () => void }) => {
           href="https://www.linkedin.com/in/juliansandstrom"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-white border-[0.3px] rounded-xs px-6 py-2 inline-block text-center"
+          className="text-white border-[0.3px] border-white/20 rounded-xs px-6 py-2 inline-block text-center w-40"
         >
           Contact developer
         </a>

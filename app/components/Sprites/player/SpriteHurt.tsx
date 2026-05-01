@@ -45,7 +45,7 @@ export function SpriteHurt({
       setFrame(0);
       play();
     }
-  }, [trigger, play]);
+  }, [trigger]);
 
   return (
     <div

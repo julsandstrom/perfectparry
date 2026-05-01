@@ -46,7 +46,7 @@ export function SpriteWalk({
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [trigger, onComplete]);
+  }, [trigger]);
 
   return (
     <div

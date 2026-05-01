@@ -10,6 +10,7 @@ import {
   PhaseBarConfig,
   EnemyConfig,
   PlayerStatus,
+  CombatStats,
 } from "../types";
 
 import {
@@ -35,6 +36,13 @@ export function useCombatEngine(
   const [enemyHp, setEnemyHp] = useState(enemyConfig.baseHp);
   const enemyHpRef = useRef(enemyConfig.baseHp);
   const clearLastCombatEvent = () => setLastCombatEvent(null);
+  const [combatStats, setCombatStats] = useState<CombatStats>({
+    swordHits: 0,
+    arrowHits: 0,
+    blocks: 0,
+    heals: 0,
+    misses: 0,
+  });
 
   const [lastCombatEvent, setLastCombatEvent] =
     useState<CombatDisplayEvent | null>(null);
@@ -55,6 +63,7 @@ export function useCombatEngine(
   const onAttack = (progress: number): HitResult => {
     const { hitResult, zone } = evaluateZones(progress, attackBar.zones);
     if (hitResult === "miss") {
+      setCombatStats((s) => ({ ...s, misses: s.misses + 1 }));
       const enemyDamageOnMiss = pickEnemyDamage();
       setLastCombatEvent({
         playerLabel:
@@ -96,11 +105,16 @@ export function useCombatEngine(
       eventPhase: "player_attack",
     });
     if (zone?.heal) {
+      setCombatStats((s) => ({ ...s, heals: s.heals + 1 }));
       const nextHp = Math.min(PLAYER_BASE_HP, playerHpRef.current + zone.heal);
       playerHpRef.current = nextHp;
       setPlayerHp(nextHp);
     }
     const damage = zone?.damage ?? 0;
+    if (zone?.outcome === "sword")
+      setCombatStats((s) => ({ ...s, swordHits: s.swordHits + 1 }));
+    if (zone?.outcome === "arrow")
+      setCombatStats((s) => ({ ...s, arrowHits: s.arrowHits + 1 }));
     const nextEnemyHp = applyDamage(enemyHpRef.current, damage);
     enemyHpRef.current = nextEnemyHp;
     setEnemyHp(nextEnemyHp);
@@ -129,7 +143,9 @@ export function useCombatEngine(
       activeConfig: parryBar,
       eventPhase: "enemy_attack",
     });
+
     if (blocked) {
+      setCombatStats((s) => ({ ...s, blocks: s.blocks + 1 }));
       if (counter > 0) resolve("counter", 2500);
       else resolve("player_attack");
       return {
@@ -188,5 +204,6 @@ export function useCombatEngine(
     lastCombatEvent,
     playerStatus: getPlayerStatus(playerHp),
     clearLastCombatEvent,
+    combatStats,
   };
 }

@@ -58,7 +58,7 @@ function enemyReducer(
   }
 }
 
-export function useCombatAnimations() {
+export function useCombatAnimations(onEnemyHitFrame?: () => void) {
   const [playerAnim, dispatchPlayer] = useReducer(playerReducer, "idle");
   const [enemyAnim, dispatchEnemy] = useReducer(enemyReducer, "idle");
 
@@ -142,10 +142,11 @@ export function useCombatAnimations() {
   const triggerEnemyAttackAnim = useCallback(() => {
     if (pendingEnemyResult.current === "hurt") {
       triggerHurt();
+      onEnemyHitFrame?.();
     }
     setEnemyAttackTrigger((t) => t + 1);
     dispatchEnemy({ type: "ATTACK" });
-  }, [triggerHurt]);
+  }, [triggerHurt, onEnemyHitFrame]);
 
   const triggerEnemyCounterAttack = useCallback(() => {
     pendingEnemyResult.current = "parry";

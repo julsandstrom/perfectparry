@@ -42,7 +42,7 @@ export function SpriteDie({
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [trigger, onComplete]);
+  }, [trigger]);
 
   return (
     <div

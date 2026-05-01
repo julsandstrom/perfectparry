@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { EnemyConfig, PhaseBarConfig } from "../types";
 import {
   DEFAULT_ATTACK_BAR,
@@ -25,7 +25,8 @@ export function useCombat(enemyConfig: EnemyConfig, onMiss?: () => void) {
 
   const { phase, transition, resolve, setParryResult, frozen, showEndScreen } =
     useCombatPhase();
-  const anim = useCombatAnimations();
+  const enemyHitSoundRef = useRef<(() => void) | undefined>(undefined);
+  const anim = useCombatAnimations(() => enemyHitSoundRef.current?.());
   const engine = useCombatEngine(
     transition,
     resolve,
@@ -64,7 +65,9 @@ export function useCombat(enemyConfig: EnemyConfig, onMiss?: () => void) {
       else if (event.type === "NONE") anim.triggerEnemyAttack("hurt");
     },
   });
-
+  useEffect(() => {
+    enemyHitSoundRef.current = actions.onEnemyHitFrame;
+  }, [actions.onEnemyHitFrame]);
   const resetUI = useCallback(
     () => actions.setReleaseAt(null),
     [actions.setReleaseAt],

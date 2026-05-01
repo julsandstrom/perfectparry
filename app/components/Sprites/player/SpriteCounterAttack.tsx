@@ -5,7 +5,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 const FRAME_WIDTH = 100;
 const FRAME_HEIGHT = 100;
 const FRAME_COUNT = 9;
-const ATTACK_DURATION_MS = 1000;
+const ATTACK_DURATION_MS = 800;
 const HIT_FRAME = 3;
 const SCALE = 4;
 export function SpriteCounterAttack({

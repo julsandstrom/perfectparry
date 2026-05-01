@@ -5,7 +5,7 @@ import { useEffect, useState, useCallback } from "react";
 const FRAME_WIDTH = 100;
 const FRAME_HEIGHT = 100;
 const FRAME_COUNT = 6;
-const ATTACK_DURATION_MS = 1000;
+const ATTACK_DURATION_MS = 800;
 const HIT_FRAME = 3;
 const SCALE = 4;
 export function SpriteParry({
@@ -55,7 +55,7 @@ export function SpriteParry({
     setFrame(0);
     setHitFired(false);
     play();
-  }, [trigger, play]);
+  }, [trigger]);
 
   return (
     <div

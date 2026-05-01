@@ -5,7 +5,7 @@ const FRAME_WIDTH = 100;
 const FRAME_HEIGHT = 100;
 const FRAME_COUNT = 6;
 const SCALE = 4;
-const ATTACK_DURATION_MS = 1000;
+const ATTACK_DURATION_MS = 900;
 const HIT_FRAME = 3;
 
 export function SpriteAttack({
