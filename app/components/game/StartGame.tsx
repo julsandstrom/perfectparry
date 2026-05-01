@@ -47,7 +47,7 @@ export default function StartScreen({ onStart }: { onStart: () => void }) {
         </div>
         <button
           onClick={handleStart}
-          className="bg-[#FF4E4E] text-black px-10 py-3 rounded-xs font-girassol border-white/60 border-[0.2px]"
+          className="bg-[#A251FF] text-black px-10 py-3 rounded-xs font-girassol border-white/20 border-[0.2px]"
         >
           Fight Boss
         </button>

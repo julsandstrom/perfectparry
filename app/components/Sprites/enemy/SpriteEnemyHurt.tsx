@@ -42,7 +42,7 @@ export function SpriteEnemyHurt({
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [trigger]);
+  }, [trigger, onComplete]);
 
   return (
     <div

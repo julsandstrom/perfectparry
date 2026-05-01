@@ -5,7 +5,7 @@ const FRAME_WIDTH = 100;
 const FRAME_HEIGHT = 100;
 const FRAME_COUNT = 4;
 const SCALE = 4;
-const HURT_DURATION_MS = 600;
+const HURT_DURATION_MS = 1000;
 
 export function SpriteHurt({
   trigger,

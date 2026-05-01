@@ -5,7 +5,7 @@ const FRAME_WIDTH = 100;
 const FRAME_HEIGHT = 100;
 const FRAME_COUNT = 4;
 const SCALE = 4;
-const DIE_DURATION_MS = 600;
+const DIE_DURATION_MS = 1000;
 
 export function SpriteDie({
   trigger,
@@ -42,7 +42,7 @@ export function SpriteDie({
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [trigger]);
+  }, [trigger, onComplete]);
 
   return (
     <div

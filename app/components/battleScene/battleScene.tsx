@@ -33,7 +33,7 @@ export function BattleScene({
   onHitFrame,
   transition,
   playerStatus,
-  phase,
+  // phase,
 }: BattleSceneProps) {
   const playerLeft =
     anim.playerAnim === "walk_in" || anim.playerAnim === "attack"
