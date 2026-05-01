@@ -24,6 +24,8 @@ const girassol = Girassol({
   weight: "400",
   subsets: ["latin"],
   variable: "--font-girassol",
+  display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {

@@ -8,7 +8,6 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-neohellenic);
   --font-girassol: var(--font-girassol);
 }
 
