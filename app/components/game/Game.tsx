@@ -111,14 +111,13 @@ bg-[url('/bg-01.png')] bg-top bg-no-repeat bg-size-[100%_auto] bg-[#120C0C]"
       <div className="flex justify-center shrink-0">
         <Logo />
       </div>{" "}
-      <div className="w-full flex justify-center mt-20">
-        <HpBars enemyHp={engine.enemyHp} />
-      </div>
       {/* Bottom */}
       <div className="flex-1" />
       <div className="relative z-50 ">
-        {" "}
-        <HealthStatus playerStatus={engine.playerStatus} />
+        <div className="w-full flex justify-center mb-8">
+          <HpBars enemyHp={engine.enemyHp} playerHp={engine.playerHp} />
+        </div>
+        {/* <HealthStatus playerStatus={engine.playerStatus} /> */}
         <ActionButton
           phase={phase}
           frozen={frozen}

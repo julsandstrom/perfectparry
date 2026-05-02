@@ -57,11 +57,11 @@ export function BattleScene({
               </p>
             </span>
           )}{" "}
-          {/* {playerStatus === "low" && (
+          {playerStatus === "low" && (
             <span className="absolute z-60 flex flex-col items-center bottom-[60%] left-10">
-              <p className="text-base  text-[#cecece]">I need healing</p>
+              <p className="text-base  text-[#cecece]">That hurts</p>
             </span>
-          )} */}
+          )}
           {playerStatus === "critical" && (
             <span className="absolute z-60 flex flex-col items-center bottom-[60%] left-10">
               <p className="text-base text-[#cecece] ">I need healing!</p>
