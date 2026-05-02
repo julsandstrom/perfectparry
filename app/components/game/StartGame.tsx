@@ -2,6 +2,7 @@
 import { useCombatAnimations } from "@/app/hooks/useCombatAnimations";
 import { SpriteWalk } from "../Sprites/player/SpriteWalk";
 import Logo from "../ui/Logo";
+import { BowArrow, Fish, Sword, Swords } from "lucide-react";
 
 export default function StartScreen({ onStart }: { onStart: () => void }) {
   const anim = useCombatAnimations();
@@ -33,6 +34,24 @@ export default function StartScreen({ onStart }: { onStart: () => void }) {
           <p className="text-base text-center self-center">
             Stop the marker on the icons to perform actions
           </p>
+          <div className="flex gap-10 pb-2 justify-center w-full">
+            <div className="flex flex-col items-center">
+              Heal
+              <Fish />
+            </div>
+            <div className="flex flex-col items-center">
+              Bow
+              <BowArrow />
+            </div>
+            <div className="flex flex-col items-center">
+              Sword
+              <Sword />
+            </div>
+            <div className="flex flex-col items-center">
+              Parry
+              <Swords />
+            </div>
+          </div>
         </div>
         <div className="relative w-full min-h-10">
           <div className="absolute bottom-26 -right-18">
@@ -47,7 +66,7 @@ export default function StartScreen({ onStart }: { onStart: () => void }) {
         </div>
         <button
           onClick={handleStart}
-          className="bg-[#A251FF] text-black px-10 py-3 rounded-xs font-girassol border-white/20 border-[0.2px]"
+          className="bg-[#325298] text-[#F1F1F1] px-10 py-3 rounded-xs font-girassol border-white/20 border-[0.2px]"
         >
           Fight Boss
         </button>

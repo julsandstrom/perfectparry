@@ -12,6 +12,7 @@ import Lightning from "../ui/Lightning";
 import { CONFUSED_SKELETON } from "@/app/lib/combatConfig";
 import { useEffect } from "react";
 import HealthStatus from "../statusLabel/HealthStatus";
+import { HpBar } from "../ui/HpBar";
 
 interface GameProps {
   onRestart: () => void;
@@ -76,11 +77,11 @@ bg-[url('/bg-01.png')] bg-top bg-no-repeat bg-size-[100%_auto] bg-[#120C0C]"
             }
           : engine.playerStatus === "healthy"
             ? {
-                backgroundImage: `url('/bg-01.png'), linear-gradient(to top, #09380A 0%, #120C0C 15%, transparent 20%`,
+                backgroundImage: `url('/bg-01.png'), linear-gradient(to top, #324E60 0%, #120C0C 15%, transparent 20%`,
               }
             : engine.playerStatus === "low"
               ? {
-                  backgroundImage: `url('/bg-01.png'), linear-gradient(to top, #573A00 0%, #120C0C 15%, transparent 20%`,
+                  backgroundImage: `url('/bg-01.png'), linear-gradient(to top, #694930 0%, #120C0C 15%, transparent 20%`,
                 }
               : undefined
       }
@@ -94,7 +95,20 @@ bg-[url('/bg-01.png')] bg-top bg-no-repeat bg-size-[100%_auto] bg-[#120C0C]"
           transition={transition}
           phase={phase}
           playerStatus={engine.playerStatus}
-        />
+        />{" "}
+      </div>
+      <div className="absolute w-full top-[calc(90vw+5rem)]  z-50 flex justify-between items-end px-10">
+        <div className="flex flex-col w-full">
+          <span className="text-sm font-girassol w-full">You</span>
+          <HpBar hp={engine.playerHp} max={25} colorClass="bg-[#FF2020]" />
+          <span className="text-base">{engine.playerHp}hp</span>
+        </div>
+
+        <div className="flex flex-col items-end  w-full">
+          <span className="text-sm font-girassol  ">Skeleton</span>
+          <HpBar hp={engine.enemyHp} max={30} colorClass="bg-[#FF2020]" />
+          <span className="text-base">{engine.enemyHp}hp</span>
+        </div>
       </div>
       {lightning && <Lightning />}
       {showEndScreen && phase === "victory" && (
@@ -114,9 +128,6 @@ bg-[url('/bg-01.png')] bg-top bg-no-repeat bg-size-[100%_auto] bg-[#120C0C]"
       {/* Bottom */}
       <div className="flex-1" />
       <div className="relative z-50 ">
-        <div className="w-full flex justify-center mb-8">
-          <HpBars enemyHp={engine.enemyHp} playerHp={engine.playerHp} />
-        </div>
         {/* <HealthStatus playerStatus={engine.playerStatus} /> */}
         <ActionButton
           phase={phase}

@@ -55,13 +55,23 @@ export function BattleScene({
               <p className="text-xl font-bold text-white">
                 {lastCombatEvent.playerLabel}
               </p>
+              {(lastCombatEvent.playerHeal ?? 0) > 0 && (
+                <p className="text-xl font-bold text-[#7DC33A]">
+                  +{lastCombatEvent.playerHeal}
+                </p>
+              )}
+              {(lastCombatEvent.playerDamage ?? 0) > 0 && (
+                <span className="text-xl font-bold text-[#FF2020]">
+                  -{lastCombatEvent.playerDamage}
+                </span>
+              )}
             </span>
-          )}{" "}
-          {playerStatus === "low" && (
+          )}
+          {/* {playerStatus === "low" && (
             <span className="absolute z-60 flex flex-col items-center bottom-[60%] left-10">
               <p className="text-base  text-[#cecece]">That hurts</p>
             </span>
-          )}
+          )} */}
           {playerStatus === "critical" && (
             <span className="absolute z-60 flex flex-col items-center bottom-[60%] left-10">
               <p className="text-base text-[#cecece] ">I need healing!</p>

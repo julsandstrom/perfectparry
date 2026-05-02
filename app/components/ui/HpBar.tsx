@@ -9,7 +9,7 @@ export const HpBar = ({ hp, max, colorClass }: Props) => {
 
   return (
     <>
-      <div className="h-3 min-w-32  bg-none border-[0.2px] border-[#CECECE]/80 rounded-xs  w-full ">
+      <div className="h-3 max-w-24   bg-none border-[0.2px] border-[#CECECE]/30 rounded-xs  w-full ">
         <div
           className={colorClass + " h-full rounded-xs"}
           style={{ width: `${percent}%` }}

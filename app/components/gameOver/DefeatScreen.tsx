@@ -5,7 +5,7 @@ export const DefeatScreen = ({ onRestart }: { onRestart: () => void }) => {
       <div className="flex flex-col items-center justify-center gap-10">
         <button
           onClick={onRestart}
-          className="bg-white text-black rounded-xs px-6 py-2 w-40"
+          className="bg-[#325298] text-black rounded-xs px-6 py-2 w-40"
         >
           Try Again
         </button>
