@@ -3,6 +3,7 @@ import { useTimingBar } from "./useTimingBar";
 
 import { CombatActionsOptions } from "../types";
 import { evaluateZones } from "../lib/combatMath";
+import { useSoundEnabled } from "../context/SoundContext";
 
 export function useCombatActions({
   phase,
@@ -17,12 +18,23 @@ export function useCombatActions({
   const pendingAttack = useRef<number | null>(null);
   const pendingCounter = useRef<number | null>(null);
   const [releaseAt, setReleaseAt] = useState<number | null>(null);
+  const { soundEnabled } = useSoundEnabled();
+
+  const playSound = useCallback(
+    (ref: React.RefObject<HTMLAudioElement | null>) => {
+      if (!soundEnabled || !ref.current) return;
+      ref.current.currentTime = 0;
+      ref.current.play().catch(() => {});
+    },
+    [soundEnabled],
+  );
 
   const strikeAudioRef = useRef<HTMLAudioElement | null>(null);
   useEffect(() => {
     strikeAudioRef.current = new Audio("/sfx/strike-skeleton.mp3");
     strikeAudioRef.current.volume = 0.6;
   }, []);
+
   const healAudioRef = useRef<HTMLAudioElement | null>(null);
   useEffect(() => {
     healAudioRef.current = new Audio("/sfx/heal.mp3");
@@ -47,11 +59,8 @@ export function useCombatActions({
     playerHitAudioRef.current.volume = 0.6;
   }, []);
   const onEnemyHitFrame = useCallback(() => {
-    if (playerHitAudioRef.current) {
-      playerHitAudioRef.current.currentTime = 0;
-      playerHitAudioRef.current.play().catch(() => {});
-    }
-  }, []);
+    playSound(playerHitAudioRef);
+  }, [playSound]);
 
   const isParry = phase === "enemy_attack";
   const durationMs = isParry
@@ -78,13 +87,13 @@ export function useCombatActions({
       if (result === "miss") {
         if (missAudioRef.current) {
           missAudioRef.current.currentTime = 0;
-          missAudioRef.current.play().catch(() => {});
+          playSound(missAudioRef);
         }
         anim.triggerEnemyAttack("miss");
       } else {
         if (strikeAudioRef.current) {
           strikeAudioRef.current.currentTime = 0;
-          strikeAudioRef.current.play().catch(() => {});
+          playSound(strikeAudioRef);
         }
         anim.triggerEnemyHurt();
       }
@@ -95,11 +104,11 @@ export function useCombatActions({
       pendingCounter.current = null;
       if (strikeAudioRef.current) {
         strikeAudioRef.current.currentTime = 0;
-        strikeAudioRef.current.play().catch(() => {});
+        playSound(strikeAudioRef);
       }
       if (result !== "secondary") anim.triggerEnemyHurt();
     }
-  }, [phase, engine, anim]);
+  }, [phase, engine, anim, playSound]);
 
   const handlePointerDown = useCallback(() => {
     if (phase === "player_attack") start();
@@ -118,7 +127,7 @@ export function useCombatActions({
       } else if (zone?.outcome === "heal") {
         if (healAudioRef.current) {
           healAudioRef.current.currentTime = 0;
-          healAudioRef.current.play().catch(() => {});
+          playSound(healAudioRef);
         }
         engine.onAttack(snapshot);
       } else {
@@ -128,7 +137,16 @@ export function useCombatActions({
         anim.triggerWalkIn();
       }
     }
-  }, [phase, release, anim, setReleaseAt, attackBar, engine, onMiss]);
+  }, [
+    phase,
+    release,
+    anim,
+    setReleaseAt,
+    attackBar,
+    engine,
+    onMiss,
+    playSound,
+  ]);
 
   const handleTap = useCallback(() => {
     if (phase === "resolving") return;
@@ -142,7 +160,7 @@ export function useCombatActions({
           setTimeout(() => {
             if (counterAudioRef.current) {
               counterAudioRef.current.currentTime = 0;
-              counterAudioRef.current.play().catch(() => {});
+              setTimeout(() => playSound(counterAudioRef), 0);
             }
           }, 800);
         }
@@ -157,7 +175,7 @@ export function useCombatActions({
         if (zone?.outcome === "heal") {
           if (healAudioRef.current) {
             healAudioRef.current.currentTime = 0;
-            healAudioRef.current.play().catch(() => {});
+            playSound(healAudioRef);
           }
         }
         engine.onCounter(snapshot);
@@ -167,7 +185,7 @@ export function useCombatActions({
         anim.triggerCounter();
       }
     }
-  }, [phase, release, engine, anim, counterBar]);
+  }, [phase, release, engine, anim, counterBar, playSound]);
 
   return {
     progress,

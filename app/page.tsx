@@ -1,5 +1,10 @@
 import GameRoot from "./components/game/GameRoot";
+import { SoundProvider } from "./context/SoundContext";
 
 export default function Home() {
-  return <GameRoot />;
+  return (
+    <SoundProvider>
+      <GameRoot />
+    </SoundProvider>
+  );
 }
