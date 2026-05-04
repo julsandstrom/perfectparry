@@ -4,14 +4,16 @@ import { useEffect, useRef } from "react";
 const FRAME_WIDTH = 96;
 const FRAME_HEIGHT = 64;
 const FRAME_COUNT = 13;
-const SCALE = 2;
+
 const HURT_DURATION_MS = 800;
 
 export function SpriteEnemyDie({
   trigger,
+  scale = 2,
   onComplete,
 }: {
   trigger: number;
+  scale?: number;
   onComplete?: () => void;
 }) {
   const divRef = useRef<HTMLDivElement>(null);
@@ -29,7 +31,7 @@ export function SpriteEnemyDie({
         Math.floor((progress / HURT_DURATION_MS) * FRAME_COUNT),
       );
       if (divRef.current) {
-        divRef.current.style.backgroundPosition = `-${frame * FRAME_WIDTH * SCALE}px 0px`;
+        divRef.current.style.backgroundPosition = `-${frame * FRAME_WIDTH * scale}px 0px`;
       }
       if (progress < HURT_DURATION_MS) {
         rafRef.current = requestAnimationFrame(step);
@@ -48,11 +50,11 @@ export function SpriteEnemyDie({
     <div
       ref={divRef}
       style={{
-        width: FRAME_WIDTH * SCALE,
-        height: FRAME_HEIGHT * SCALE,
+        width: FRAME_WIDTH * scale,
+        height: FRAME_HEIGHT * scale,
         backgroundImage: "url('/Skeleton_01_White_Die.png')",
         backgroundRepeat: "no-repeat",
-        backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * SCALE}px ${FRAME_HEIGHT * SCALE}px`,
+        backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * scale}px ${FRAME_HEIGHT * scale}px`,
         backgroundPosition: `0px 0px`,
         imageRendering: "pixelated",
 

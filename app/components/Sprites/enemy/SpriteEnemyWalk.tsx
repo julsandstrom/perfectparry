@@ -4,14 +4,16 @@ import { useEffect, useRef } from "react";
 const FRAME_WIDTH = 96;
 const FRAME_HEIGHT = 64;
 const FRAME_COUNT = 10;
-const SCALE = 2;
-const WALK_DURATION_MS = 600;
+
+const WALK_DURATION_MS = 800;
 
 export function SpriteEnemyWalk({
   trigger,
   onComplete,
+  scale = 2,
   flipped = false,
 }: {
+  scale?: number;
   trigger: number;
   onComplete?: () => void;
   flipped?: boolean;
@@ -31,7 +33,7 @@ export function SpriteEnemyWalk({
         Math.floor((progress / WALK_DURATION_MS) * FRAME_COUNT),
       );
       if (divRef.current) {
-        divRef.current.style.backgroundPosition = `-${frame * FRAME_WIDTH * SCALE}px 0px`;
+        divRef.current.style.backgroundPosition = `-${frame * FRAME_WIDTH * scale}px 0px`;
       }
       if (progress < WALK_DURATION_MS) {
         rafRef.current = requestAnimationFrame(step);
@@ -50,11 +52,11 @@ export function SpriteEnemyWalk({
     <div
       ref={divRef}
       style={{
-        width: FRAME_WIDTH * SCALE,
-        height: FRAME_HEIGHT * SCALE,
+        width: FRAME_WIDTH * scale,
+        height: FRAME_HEIGHT * scale,
         backgroundImage: "url('/Skeleton_01_White_Walk.png')",
         backgroundRepeat: "no-repeat",
-        backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * SCALE}px ${FRAME_HEIGHT * SCALE}px`,
+        backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * scale}px ${FRAME_HEIGHT * scale}px`,
         backgroundPosition: `0px 0px`,
         imageRendering: "pixelated",
 

@@ -1,6 +1,7 @@
 import { CombatDisplayEvent, PhaseBarConfig } from "@/app/types";
 import AttackSelectionBar from "./AttackSelectionBar";
 import { SpriteWalkLoop } from "../Sprites/player/SpriteWalkLoop";
+import { useResponsiveScale } from "@/app/hooks/useResponsiveSpriteScale";
 
 interface TimingBarProps {
   progress: number;
@@ -17,6 +18,7 @@ export const TimingBar = ({
   lastCombatEvent,
   frozen,
 }: TimingBarProps) => {
+  const scale = useResponsiveScale({ sm: 1.5, md: 2, lg: 2.5 });
   const missed = (frozen ?? false) && lastCombatEvent?.hitZoneMin === null;
   const visualProgress = releaseAt ?? progress;
   const displayConfig =
@@ -26,7 +28,7 @@ export const TimingBar = ({
 
   return (
     <div
-      className="relative h-20 w-full   "
+      className="relative h-20 w-full lg:h-28  "
       style={{ backgroundColor: frozen && missed ? "" : "" }}
     >
       {displayConfig.zones.map((zone) => (
@@ -44,13 +46,13 @@ export const TimingBar = ({
         />
       ))}
       <div
-        className="absolute top-0 -bottom-10 z-50 flex items-end"
+        className="absolute top-0 -bottom-10 md:-bottom-15 lg:-bottom-16 z-30 flex items-end overflow-hidden"
         style={{
           left: `${visualProgress * 100}%`,
           transform: "translateX(-50%)",
         }}
       >
-        <SpriteWalkLoop frozen={frozen} scale={1.5} />
+        <SpriteWalkLoop frozen={frozen} scale={scale} />
       </div>
     </div>
   );

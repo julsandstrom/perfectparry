@@ -5,9 +5,8 @@ import { useEffect, useState } from "react";
 const FRAME_WIDTH = 100;
 const FRAME_HEIGHT = 100;
 const FRAME_COUNT = 6;
-const SCALE = 4;
 
-export function SpriteIdle() {
+export function SpriteIdle({ scale = 4 }: { scale?: number }) {
   const [frame, setFrame] = useState(0);
 
   useEffect(() => {
@@ -21,15 +20,15 @@ export function SpriteIdle() {
   return (
     <div
       style={{
-        width: FRAME_WIDTH * SCALE,
-        height: FRAME_HEIGHT * SCALE,
+        width: FRAME_WIDTH * scale,
+        height: FRAME_HEIGHT * scale,
         backgroundImage: "url('/Soldier-Idle.png')",
         backgroundRepeat: "no-repeat",
-        backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * SCALE}px ${
-          FRAME_HEIGHT * SCALE
+        backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * scale}px ${
+          FRAME_HEIGHT * scale
         }px`,
 
-        backgroundPosition: `-${frame * FRAME_WIDTH * SCALE}px 0px`,
+        backgroundPosition: `-${frame * FRAME_WIDTH * scale}px 0px`,
         imageRendering: "pixelated",
       }}
     />

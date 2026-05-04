@@ -196,7 +196,7 @@ export function useCombatAnimations(onEnemyHitFrame?: () => void) {
         setTimeout(() => {
           setParryTrigger((t) => t + 1);
           dispatchPlayer({ type: "PARRY" });
-        }, 500);
+        }, 800);
       }
     },
     [],

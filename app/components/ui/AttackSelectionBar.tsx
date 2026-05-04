@@ -35,7 +35,7 @@ const AttackSelectionBar = ({
 
       <div
         key={highlight ? "highlighted" : "normal"}
-        className={` absolute top-3 bottom-0 h-14 rounded-sm z-10   ${highlight ? "bar-shake" : ""}`}
+        className={` absolute top-3 bottom-0 h-14 rounded-sm z-10 lg:h-16   ${highlight ? "bar-shake" : ""}`}
         style={{
           left: `${min * 100}%`,
           width: `${(max - min) * 100}%`,
@@ -48,7 +48,7 @@ const AttackSelectionBar = ({
 
       <div
         key={highlight ? "icon-highlighted" : "icon-normal"}
-        className={`absolute top-6 bottom-0 z-50 flex flex-col h-10    items-center justify-center ${highlight ? "bar-shake" : ""}`}
+        className={`absolute top-6 bottom-0 z-50 flex flex-col h-10 lg:h-12    items-center justify-center ${highlight ? "bar-shake" : ""}`}
         style={{
           left: `${min * 100}%`,
           width: `${(max - min) * 100}%`,
@@ -56,9 +56,11 @@ const AttackSelectionBar = ({
       >
         <div
           style={{ transform: "translateY(-5px)" }}
-          className="flex flex-col items-center"
+          className="flex flex-col items-center justify-center lg:flex-row lg:gap-2"
         >
-          <span className="text-[#120C0C] text-sm leading-none">{label}</span>
+          <span className="text-[#120C0C] text-sm leading-none lg:text-xl">
+            {label}
+          </span>
           <div className="text-black">{icon}</div>
         </div>
       </div>

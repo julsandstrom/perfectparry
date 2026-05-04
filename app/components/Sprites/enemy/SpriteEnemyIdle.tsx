@@ -4,9 +4,8 @@ import { useEffect, useState } from "react";
 const FRAME_WIDTH = 96;
 const FRAME_HEIGHT = 64;
 const FRAME_COUNT = 8;
-const SCALE = 2;
 
-export function SpriteEnemyIdle() {
+export function SpriteEnemyIdle({ scale = 2 }: { scale?: number }) {
   const [frame, setFrame] = useState(0);
 
   useEffect(() => {
@@ -19,12 +18,12 @@ export function SpriteEnemyIdle() {
   return (
     <div
       style={{
-        width: FRAME_WIDTH * SCALE,
-        height: FRAME_HEIGHT * SCALE,
+        width: FRAME_WIDTH * scale,
+        height: FRAME_HEIGHT * scale,
         backgroundImage: "url('/Skeleton_01_White_Idle.png')",
         backgroundRepeat: "no-repeat",
-        backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * SCALE}px ${FRAME_HEIGHT * SCALE}px`,
-        backgroundPosition: `-${frame * FRAME_WIDTH * SCALE}px 0px`,
+        backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * scale}px ${FRAME_HEIGHT * scale}px`,
+        backgroundPosition: `-${frame * FRAME_WIDTH * scale}px 0px`,
         imageRendering: "pixelated",
 
         transform: "scaleX(-1)",

@@ -4,18 +4,20 @@ import { useEffect, useState, useCallback } from "react";
 const FRAME_WIDTH = 100;
 const FRAME_HEIGHT = 100;
 const FRAME_COUNT = 6;
-const SCALE = 4;
-const ATTACK_DURATION_MS = 900;
+
+const ATTACK_DURATION_MS = 800;
 const HIT_FRAME = 3;
 
 export function SpriteAttack({
   trigger,
   onHitFrame,
   onComplete,
+  scale = 4,
 }: {
   trigger: number;
   onHitFrame?: () => void;
   onComplete?: () => void;
+  scale?: number;
 }) {
   const [frame, setFrame] = useState(0);
   const [hitFired, setHitFired] = useState(false);
@@ -53,12 +55,12 @@ export function SpriteAttack({
   return (
     <div
       style={{
-        width: FRAME_WIDTH * SCALE,
-        height: FRAME_HEIGHT * SCALE,
+        width: FRAME_WIDTH * scale,
+        height: FRAME_HEIGHT * scale,
         backgroundImage: "url('/Soldier-Attack01.png')",
         backgroundRepeat: "no-repeat",
-        backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * SCALE}px ${FRAME_HEIGHT * SCALE}px`,
-        backgroundPosition: `-${frame * FRAME_WIDTH * SCALE}px 0px`,
+        backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * scale}px ${FRAME_HEIGHT * scale}px`,
+        backgroundPosition: `-${frame * FRAME_WIDTH * scale}px 0px`,
         imageRendering: "pixelated",
       }}
     />

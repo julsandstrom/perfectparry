@@ -162,7 +162,7 @@ export function useCombatActions({
               counterAudioRef.current.currentTime = 0;
               setTimeout(() => playSound(counterAudioRef), 0);
             }
-          }, 800);
+          }, 1200);
         }
         anim.triggerEnemyAttack("parry");
       } else if (event.type === "NONE") anim.triggerEnemyAttack("hurt");

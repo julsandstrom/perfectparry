@@ -71,25 +71,11 @@ export default function Game({
   return (
     <main
       className="relative flex flex-col h-dvh text-white
-bg-[url('/bg-01.png')] bg-top bg-no-repeat bg-size-[100%_auto] bg-[#120C0C]"
-      style={
-        engine.playerStatus === "critical"
-          ? {
-              backgroundImage: `url('/bg-01.png'), linear-gradient(to top, #550808 0%, #120C0C 15%, transparent 20%`,
-            }
-          : engine.playerStatus === "healthy"
-            ? {
-                backgroundImage: `url('/bg-01.png'), linear-gradient(to top, #324E60 0%, #120C0C 15%, transparent 20%`,
-              }
-            : engine.playerStatus === "low"
-              ? {
-                  backgroundImage: `url('/bg-01.png'), linear-gradient(to top, #694930 0%, #120C0C 15%, transparent 20%`,
-                }
-              : undefined
-      }
+  bg-[url('/background/bg-mobile.png')] sm:bg-[url('/background/bg-ipad-744.png')] md:bg-[url('/background/bg-desktop-1280.png')] xl:bg-[url('/background/bg-desktop-1728.png')]  bg-top bg-no-repeat bg-size-[100%_auto] bg-[#120C0C]"
+      data-status={engine.playerStatus}
     >
       {" "}
-      <div className="absolute w-full top-[70vw]">
+      <div className="absolute w-full top-[70vw] sm:top-[50vw] md:top-[30vw] lg:top-[20vw] xl:top-[20vw]">
         <BattleScene
           anim={anim}
           lastCombatEvent={engine.lastCombatEvent}
@@ -99,17 +85,17 @@ bg-[url('/bg-01.png')] bg-top bg-no-repeat bg-size-[100%_auto] bg-[#120C0C]"
           playerStatus={engine.playerStatus}
         />{" "}
       </div>
-      <div className="absolute w-full top-[calc(90vw+5rem)]  z-50 flex justify-between items-end px-10">
+      <div className="absolute w-full top-[calc(30vw+5rem)] sm:top-[calc(25vw+5rem)]   md:top-[calc(20vw+5rem)] lg:top-[calc(5vw+5rem)] xl:top-[calc(8vw+5rem)] z-50 flex justify-between items-end px-10 sm:px-20 xl:px-60 2xl:px-80">
         <div className="flex flex-col w-full">
-          <span className="text-sm font-girassol w-full">You</span>
+          <span className="text-sm font-girassol w-full xl:text-xl">You</span>
           <HpBar hp={engine.playerHp} max={25} colorClass="bg-[#FF2020]" />
-          <span className="text-base">{engine.playerHp}hp</span>
+          <span className="text-base xl:text-xl">{engine.playerHp}hp</span>
         </div>
 
         <div className="flex flex-col items-end  w-full">
-          <span className="text-sm font-girassol  ">Skeleton</span>
+          <span className="text-sm font-girassol xl:text-xl ">Skeleton</span>
           <HpBar hp={engine.enemyHp} max={30} colorClass="bg-[#FF2020]" />
-          <span className="text-base">{engine.enemyHp}hp</span>
+          <span className="text-base xl:text-xl">{engine.enemyHp}hp</span>
         </div>
       </div>
       {lightning && <Lightning />}
@@ -130,7 +116,6 @@ bg-[url('/bg-01.png')] bg-top bg-no-repeat bg-size-[100%_auto] bg-[#120C0C]"
       {/* Bottom */}
       <div className="flex-1" />
       <div className="relative z-50 ">
-        {/* <HealthStatus playerStatus={engine.playerStatus} /> */}
         <ActionButton
           phase={phase}
           frozen={frozen}

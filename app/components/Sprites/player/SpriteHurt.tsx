@@ -4,15 +4,17 @@ import { useCallback, useEffect, useState } from "react";
 const FRAME_WIDTH = 100;
 const FRAME_HEIGHT = 100;
 const FRAME_COUNT = 4;
-const SCALE = 4;
+
 const HURT_DURATION_MS = 1000;
 
 export function SpriteHurt({
   trigger,
   onComplete,
+  scale = 4,
 }: {
   trigger: number;
   onComplete?: () => void;
+  scale?: number;
 }) {
   const [frame, setFrame] = useState(0);
 
@@ -50,20 +52,20 @@ export function SpriteHurt({
   return (
     <div
       style={{
-        width: FRAME_WIDTH * SCALE,
-        height: FRAME_HEIGHT * SCALE,
+        width: FRAME_WIDTH * scale,
+        height: FRAME_HEIGHT * scale,
         overflow: "hidden",
         position: "relative",
       }}
     >
       <div
         style={{
-          width: FRAME_WIDTH * SCALE,
-          height: FRAME_HEIGHT * SCALE,
+          width: FRAME_WIDTH * scale,
+          height: FRAME_HEIGHT * scale,
           backgroundImage: "url('/Soldier-Hurt.png')",
           backgroundRepeat: "no-repeat",
-          backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * SCALE}px ${FRAME_HEIGHT * SCALE}px`,
-          backgroundPosition: `-${frame * FRAME_WIDTH * SCALE}px 0px`,
+          backgroundSize: `${FRAME_WIDTH * FRAME_COUNT * scale}px ${FRAME_HEIGHT * scale}px`,
+          backgroundPosition: `-${frame * FRAME_WIDTH * scale}px 0px`,
           imageRendering: "pixelated",
         }}
       />
