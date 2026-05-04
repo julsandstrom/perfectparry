@@ -7,20 +7,16 @@ interface HpbarProps {
 
 const HpBars = ({ enemyHp, playerHp }: HpbarProps) => {
   return (
-    <div className="grid grid-cols-2 gap-20">
+    <div className="flex flex-row justify-between items-start w-full px-4">
       <div className="flex flex-col">
-        <span className="w-full text-left text-sm font-girassol">You</span>
-        <div className="w-full justify-center">
-          <HpBar hp={playerHp} max={25} colorClass="bg-[#FF2020]" />
-          <span className="text-base ">{playerHp}hp</span>
-        </div>
+        <span className="text-sm font-girassol xl:text-xl">You</span>
+        <HpBar hp={playerHp} max={25} colorClass="bg-[#FF2020]" />
+        <span className="text-base xl:text-xl">{playerHp}hp</span>
       </div>
-      <div className="  flex flex-col">
-        <span className="w-full text-left text-sm font-girassol">Skeleton</span>
-        <div className="w-full justify-center">
-          <HpBar hp={enemyHp} max={30} colorClass="bg-[#FF2020]" />
-          <span className=" text-base ">{enemyHp}hp</span>
-        </div>
+      <div className="flex flex-col items-end">
+        <span className="text-sm font-girassol xl:text-xl">Skeleton</span>
+        <HpBar hp={enemyHp} max={30} colorClass="bg-[#FF2020]" />
+        <span className="text-base xl:text-xl">{enemyHp}hp</span>
       </div>
     </div>
   );

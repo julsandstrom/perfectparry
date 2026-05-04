@@ -1,18 +1,12 @@
 import { CombatStats } from "../types";
 
 export function calcScore(s: CombatStats): number {
-  const totalActions =
-    s.swordHits + s.arrowHits + s.blocks + s.heals + s.misses;
-  if (totalActions === 0) return 0;
-
   const hits = s.swordHits + s.arrowHits + s.blocks + s.heals;
-  const accuracy = hits / totalActions;
+  const net = hits - s.misses;
+  if (hits === 0) return 0;
 
-  const accuracyScore = accuracy * 8;
-  const bonusScore =
-    Math.min(s.arrowHits * 0.4, 1) + Math.min(s.heals * 0.5, 1);
-
-  return Math.round(Math.min(10, Math.max(0, accuracyScore + bonusScore)));
+  const ratio = (net + hits) / (2 * hits);
+  return Math.round(Math.min(10, Math.max(0, ratio * 10)));
 }
 
 export function calcTitle(s: CombatStats): { title: string; detail: string } {
@@ -40,6 +34,12 @@ export function calcTitle(s: CombatStats): { title: string; detail: string } {
       count: s.heals,
       title: "The Survivor",
       detail: `${s.heals} heals`,
+    },
+    {
+      key: "parries",
+      count: s.parries,
+      title: "The Guardian",
+      detail: `${s.parries} parries`,
     },
   ];
   const best = candidates

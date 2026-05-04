@@ -48,7 +48,7 @@ const AttackSelectionBar = ({
 
       <div
         key={highlight ? "icon-highlighted" : "icon-normal"}
-        className={`absolute top-6 bottom-0 z-50 flex flex-col h-10 lg:h-12    items-center justify-center ${highlight ? "bar-shake" : ""}`}
+        className={`absolute top-6 bottom-0 z-30 flex flex-col h-10 lg:h-12    items-center justify-center ${highlight ? "bar-shake" : ""}`}
         style={{
           left: `${min * 100}%`,
           width: `${(max - min) * 100}%`,

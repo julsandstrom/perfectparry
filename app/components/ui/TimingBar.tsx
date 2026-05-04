@@ -18,7 +18,7 @@ export const TimingBar = ({
   lastCombatEvent,
   frozen,
 }: TimingBarProps) => {
-  const scale = useResponsiveScale({ sm: 1.5, md: 2, lg: 2.5 });
+  const scale = useResponsiveScale({ sm: 1.5, md: 2, lg: 4 });
   const missed = (frozen ?? false) && lastCombatEvent?.hitZoneMin === null;
   const visualProgress = releaseAt ?? progress;
   const displayConfig =
@@ -46,7 +46,7 @@ export const TimingBar = ({
         />
       ))}
       <div
-        className="absolute top-0 -bottom-10 md:-bottom-15 lg:-bottom-16 z-30 flex items-end overflow-hidden"
+        className="absolute top-0 -bottom-10 md:-bottom-15 lg:-bottom-32 z-40 flex items-end overflow-hidden"
         style={{
           left: `${visualProgress * 100}%`,
           transform: "translateX(-50%)",

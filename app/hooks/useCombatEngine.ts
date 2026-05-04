@@ -40,6 +40,7 @@ export function useCombatEngine(
     swordHits: 0,
     arrowHits: 0,
     blocks: 0,
+    parries: 0,
     heals: 0,
     misses: 0,
   });
@@ -109,6 +110,8 @@ export function useCombatEngine(
       const nextHp = Math.min(PLAYER_BASE_HP, playerHpRef.current + zone.heal);
       playerHpRef.current = nextHp;
       setPlayerHp(nextHp);
+    } else if (zone?.outcome === "parry") {
+      setCombatStats((s) => ({ ...s, parries: s.parries + 1 }));
     }
     const damage = zone?.damage ?? 0;
     if (zone?.outcome === "sword")
@@ -145,7 +148,11 @@ export function useCombatEngine(
     });
 
     if (blocked) {
-      setCombatStats((s) => ({ ...s, blocks: s.blocks + 1 }));
+      if (counter > 0) {
+        setCombatStats((s) => ({ ...s, parries: s.parries + 1 }));
+      } else {
+        setCombatStats((s) => ({ ...s, blocks: s.blocks + 1 }));
+      }
       if (counter > 0) resolve("counter", 2500);
       else resolve("player_attack");
       return {
@@ -162,6 +169,7 @@ export function useCombatEngine(
       setTimeout(() => setPlayerHp(nextHp), 500);
       resolve("player_attack");
     }
+    setCombatStats((s) => ({ ...s, misses: s.misses + 1 }));
     return { event: { type: "HURT" }, result: hitResult };
   };
 
@@ -179,6 +187,7 @@ export function useCombatEngine(
       eventPhase: "counter",
     });
     if (zone?.heal) {
+      setCombatStats((s) => ({ ...s, heals: s.heals + 1 }));
       const nextHp = Math.min(PLAYER_BASE_HP, playerHpRef.current + zone.heal);
       playerHpRef.current = nextHp;
       setPlayerHp(nextHp);

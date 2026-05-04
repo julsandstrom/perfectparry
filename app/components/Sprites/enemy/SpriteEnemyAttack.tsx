@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 
 const FRAME_WIDTH = 96;
 const FRAME_HEIGHT = 64;
@@ -20,11 +20,11 @@ export function SpriteEnemyAttack({
   onComplete?: () => void;
 }) {
   const [frame, setFrame] = useState(0);
-  const [hitFired, setHitFired] = useState(false);
+  const hitFiredRef = useRef(false);
 
   const play = useCallback(() => {
     let start: number | null = null;
-    setHitFired(false);
+    hitFiredRef.current = false;
     const step = (t: number) => {
       if (start === null) start = t;
       const progress = t - start;
@@ -33,8 +33,8 @@ export function SpriteEnemyAttack({
         Math.floor((progress / ATTACK_DURATION_MS) * FRAME_COUNT),
       );
       setFrame(nextFrame);
-      if (!hitFired && nextFrame >= HIT_FRAME) {
-        setHitFired(true);
+      if (!hitFiredRef.current && nextFrame >= HIT_FRAME) {
+        hitFiredRef.current = true;
         onHitFrame?.();
       }
       if (progress < ATTACK_DURATION_MS) {
@@ -44,11 +44,11 @@ export function SpriteEnemyAttack({
       }
     };
     requestAnimationFrame(step);
-  }, [hitFired, onHitFrame]);
+  }, [onHitFrame]);
 
   useEffect(() => {
     setFrame(0);
-    setHitFired(false);
+    hitFiredRef.current = false;
     play();
   }, [trigger]);
 

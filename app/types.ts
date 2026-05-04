@@ -20,6 +20,7 @@ export interface CombatStats {
   arrowHits: number;
   blocks: number;
   heals: number;
+  parries: number;
   misses: number;
 }
 
