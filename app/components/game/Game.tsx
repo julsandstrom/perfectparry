@@ -113,7 +113,7 @@ export default function Game({
             />
           </button>
           <Logo />
-          <div className="w-20"></div>
+          <div className="w-10  sm:w-12 "></div>
         </div>{" "}
         {/* Bottom */}
         <div className="flex-1" />
