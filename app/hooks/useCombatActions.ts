@@ -19,6 +19,7 @@ export function useCombatActions({
   const pendingCounter = useRef<number | null>(null);
   const [releaseAt, setReleaseAt] = useState<number | null>(null);
   const { soundEnabled } = useSoundEnabled();
+  const [actionDisabled, setActionDisabled] = useState(false);
 
   const playSound = useCallback(
     (ref: React.RefObject<HTMLAudioElement | null>) => {
@@ -116,6 +117,7 @@ export function useCombatActions({
 
   const handlePointerUp = useCallback(() => {
     if (phase === "player_attack") {
+      setActionDisabled(true);
       const snapshot = release();
       setReleaseAt(snapshot);
       const { zone } = evaluateZones(snapshot, attackBar.zones);
@@ -147,6 +149,9 @@ export function useCombatActions({
     onMiss,
     playSound,
   ]);
+  useEffect(() => {
+    if (phase === "player_attack") setActionDisabled(false);
+  }, [phase]);
 
   const handleTap = useCallback(() => {
     if (phase === "resolving") return;
@@ -199,5 +204,6 @@ export function useCombatActions({
     handlePointerUp,
     handleTap,
     onEnemyHitFrame,
+    actionDisabled,
   };
 }

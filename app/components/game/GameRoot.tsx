@@ -37,6 +37,15 @@ export default function GameRoot() {
     audioRef.current = audio;
   };
 
+  const handleExit = () => {
+    audioRef.current?.pause();
+    audioRef.current = null;
+    endAudioRef.current?.pause();
+    endAudioRef.current = null;
+    setLightning(false);
+    setScreen("start");
+  };
+
   const triggerLightning = useCallback(() => {
     setLightning(true);
     if (soundEnabled) {
@@ -66,6 +75,7 @@ export default function GameRoot() {
       onMiss={triggerLightning}
       audioRef={audioRef}
       endAudioRef={endAudioRef}
+      onExit={handleExit}
     />
   );
 }

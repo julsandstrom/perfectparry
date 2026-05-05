@@ -21,28 +21,28 @@ const ActionButton = ({
   const isTapPhase = phase === "enemy_attack" || phase === "counter";
 
   const handlePointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
-    if (!isHoldPhase) return;
+    if (!isHoldPhase || frozen) return;
     e.currentTarget.setPointerCapture(e.pointerId);
     setIsHolding(true);
     onPointerDown();
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLButtonElement>) => {
-    if (!isHoldPhase) return;
+    if (!isHoldPhase || frozen) return;
     e.currentTarget.releasePointerCapture(e.pointerId);
     setIsHolding(false);
     onPointerUp();
   };
 
   const handlePointerCancel = (e: React.PointerEvent<HTMLButtonElement>) => {
-    if (!isHoldPhase) return;
+    if (!isHoldPhase || frozen) return;
     e.currentTarget.releasePointerCapture(e.pointerId);
     setIsHolding(false);
     onPointerUp();
   };
 
   const handleClick = () => {
-    if (!isTapPhase) return;
+    if (!isTapPhase || frozen) return;
     onTap();
   };
 
@@ -54,7 +54,7 @@ const ActionButton = ({
     <div className=" flex flex-col items-center ">
       <div className="flex flex-col gap-0 w-full h-full px-10 items-center">
         <button
-          disabled={frozen || phase === "resolving"}
+          disabled={frozen}
           className=" h-14 w-48 xl:w-60 xl:h-16 px-5 flex items-center justify-center text-center text-xl xl:text-3xl rounded-xl text-[#F1F1F1] bg-[#325298]   active:bg-[#2C3E65] transition-all select-none disabled:opacity-50 touch-none"
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}

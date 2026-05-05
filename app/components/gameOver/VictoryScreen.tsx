@@ -35,7 +35,7 @@ const VictoryScreen = ({
       <div className="flex flex-col items-center justify-center gap-10">
         <button
           onClick={onRestart}
-          className="bg-[#325298] text-[#F1F1F1] rounded-xs px-6 py-2 w-40 font-girassol lg:text-xl lg:w-60 lg:py-4"
+          className="bg-[#325298] text-[#F1F1F1] rounded-sm px-6 py-2 w-40 font-girassol lg:text-xl lg:w-60 lg:py-4"
         >
           Restart
         </button>
@@ -44,7 +44,7 @@ const VictoryScreen = ({
           href="https://www.linkedin.com/in/juliansandstrom"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-white border-[0.3px] border-white/20 rounded-xs px-6 py-2 inline-block lg:w-60 lg:py-4 text-center w-40 lg:text-xl"
+          className="text-white border-[0.3px] border-white/20 rounded-sm px-6 py-2 inline-block lg:w-60 lg:py-4 text-center w-40 lg:text-xl"
         >
           Contact developer
         </a>

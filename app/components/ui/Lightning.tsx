@@ -8,12 +8,35 @@ const Lightning = () => {
         preserveAspectRatio="xMidYMin meet"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <g
-          style={{
-            filter:
-              "drop-shadow(0 0 8px #c4baff) drop-shadow(0 0 20px #9080ff)",
-          }}
-        >
+        <defs>
+          <filter id="glow-strong" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow
+              dx="0"
+              dy="0"
+              stdDeviation="4"
+              floodColor="#c4baff"
+              floodOpacity="1"
+            />
+            <feDropShadow
+              dx="0"
+              dy="0"
+              stdDeviation="10"
+              floodColor="#9080ff"
+              floodOpacity="0.8"
+            />
+          </filter>
+          <filter id="glow-soft" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow
+              dx="0"
+              dy="0"
+              stdDeviation="3"
+              floodColor="#b8aaff"
+              floodOpacity="0.9"
+            />
+          </filter>
+        </defs>
+
+        <g filter="url(#glow-strong)">
           <polyline
             points="210,0 195,80 212,80 190,170 208,170 180,290"
             stroke="#e0dcff"
@@ -27,7 +50,8 @@ const Lightning = () => {
             fill="none"
           />
         </g>
-        <g style={{ filter: "drop-shadow(0 0 5px #b8aaff)" }}>
+
+        <g filter="url(#glow-soft)">
           <polyline
             points="300,0 286,60 300,60 275,130 290,130 260,230"
             stroke="#c8c2ff"

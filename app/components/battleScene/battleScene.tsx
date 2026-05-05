@@ -44,18 +44,18 @@ export function BattleScene({
   const enemyScale = useResponsiveScale({ sm: 2, md: 3, lg: 4 });
   const playerLeft =
     anim.playerAnim === "walk_in" || anim.playerAnim === "attack"
-      ? "left-[5%] sm:left-[40%] lg:left-[40%] xl:left-[45%] 2xl:left-[50%]"
+      ? "left-[12%] sm:left-[40%] lg:left-[40%] xl:left-[45%] 2xl:left-[50%]"
       : "-left-[30%] sm:-left-[5%] lg:-left-[10%] xl:left-[5%] 2xl:left-[10%] ";
 
   const enemyRight =
     (anim.enemyAnim === "walk_in" || anim.enemyAnim === "attack") &&
     !anim.isMissRetaliation
-      ? "right-[40%] sm:left-[16%] xl:left-[23%] 2xl:left-[25%]"
-      : "-right-[0%] sm:left-[65%] lg:sm:left-[60%] xl:sm:left-[60%]";
+      ? "right-[35%] sm:left-[16%] xl:left-[23%] 2xl:left-[25%]"
+      : "-right-[5%] sm:left-[65%] lg:sm:left-[60%] xl:sm:left-[60%]";
   return (
     <>
       <div className="relative w-full h-40">
-        <div className="absolute inset-x-0 -top-10 sm:left-20 sm:right-20 sm:-top-20 md:right-30 md:left-30 md:-top-15 lg:right-40 lg:left-40 lg:-top-20 xl:right-60 xl:left-60 xl:-top-20">
+        <div className="absolute inset-x-0 -top-20 sm:left-20 sm:right-20 sm:-top-20 md:right-30 md:left-30 md:-top-15 lg:right-40 lg:left-25 lg:-top-20 xl:right-60 xl:left-60 xl:-top-20">
           <HpBars playerHp={playerHp} enemyHp={enemyHp} />
         </div>
       </div>
