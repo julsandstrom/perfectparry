@@ -1,37 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Perfect Parry
 
-## Getting Started
+Perfect Parry is a turn-based combat game built in Next.js and TypeScript without using any game engines or game development libraries.
 
-First, run the development server:
+The project started as a technical challenge: how far can browser-native technologies be pushed when building game systems from scratch?
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Rather than relying on existing game frameworks, I designed and implemented the combat flow, state management, animations, game logic, and progression systems myself.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Why I Built It
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+I wanted to explore frontend development beyond traditional CRUD applications and gain a deeper understanding of state-driven architecture.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Games are excellent environments for solving complex UI problems because every interaction changes the application state. Building Perfect Parry forced me to think carefully about:
 
-## Learn More
+- State transitions
+- Event handling
+- UI synchronization
+- Animation timing
+- Game flow architecture
+- Maintainable frontend design
 
-To learn more about Next.js, take a look at the following resources:
+## Features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Turn-based combat system
+- State-machine driven game flow
+- Dynamic combat calculations
+- Responsive UI
+- Persistent game state
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Technical Challenges
 
-## Deploy on Vercel
+One of the main challenges was managing complex game states without introducing unpredictable behaviour.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+To solve this, I built the game around explicit state transitions where each action moves the game into a clearly defined state. This approach made the combat system easier to reason about, debug, and extend.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# perfectparry
+Another challenge was keeping the UI synchronized with combat events, animations, and player actions while maintaining a responsive user experience.
+
+## Tech Stack
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+
+## What I Learned
+
+This project significantly improved my understanding of:
+
+- State machines
+- Complex frontend architecture
+- Event-driven systems
+- Performance considerations
+- TypeScript application design
+- Building interactive products from scratch
+
+## Live Demo
+
+https://perfectparry.vercel.app/
